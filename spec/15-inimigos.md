@@ -40,24 +40,25 @@ Números à escala da **zona ×1,0** (a linha de base da fatia — WP2); zonas f
 |---|---|---|---|
 | Papel | o professor da esquiva | o professor do parry | o primeiro conjurador |
 | PV / DEF / Postura | 135 / 4 / 40 | 260 / 8 / 70 | 110 / 2 / 30 |
-| XP | 25 | 45 | 35 |
+| Almas | 25 | 45 | 35 |
+| Peças que usa (= pode largar) | grevas de couro, tiras do braço | **espaldar de ferro**, cinturão de placas | amuletos de osso (acessório) |
 | Velocidade | 4,5 m/s | 3,2 m/s | 3,5 m/s |
 
 **Lanceiro — os ataques:**
 
 | Ataque | Aviso | Marca | Dano | O que ensina |
 |---|---|---|---|---|
-| Estocada | 0,5 s — recua a lança à anca | aparável | 55 | esquiva lateral (a estocada é uma linha) |
-| Combo picado ×2 | 0,6 s — bate a lança no chão | aparável | 40+40 | esperar o segundo antes de responder |
-| Fecho: arremesso da lança | 0,8 s — arma o braço atrás | aparável (desvia) | 45 | não se fica parado ao longe; ele recupera a lança do chão ou saca uma curta (dano 40) |
+| Estocada | 0,5 s — recua a lança à anca **· som: raspar da lança na braçadeira** | aparável | 55 | esquiva lateral (a estocada é uma linha) |
+| Combo picado ×2 | 0,6 s — bate a lança no chão **· som: os dois toques secos no solo** | aparável | 40+40 | esperar o segundo antes de responder |
+| Fecho: arremesso da lança | 0,8 s — arma o braço atrás **· som: grunhido de arranque + assobio no voo** | aparável (desvia) | 45 | não se fica parado ao longe; ele recupera a lança do chão ou saca uma curta (dano 40) |
 
 **Brutamontes — os ataques (todos aparáveis, todos lentos — WP1):**
 
 | Ataque | Aviso | Marca | Dano | O que ensina |
 |---|---|---|---|---|
-| Pancada vertical | 0,9 s — ergue o tronco todo | aparável | 130 | o parry: é o convite mais lento e mais telegrafado do jogo |
-| Varrido horizontal | 0,6 s — roda os ombros | aparável | 100 | esquivar **para dentro** também funciona |
-| Fecho: passo esmagador | 0,7 s — salta com o peso | aparável | 110 | a distância não é abrigo |
+| Pancada vertical | 0,9 s — ergue o tronco todo **· som: arrasto grave do ferro a subir** (a lição de ouvido do WP12) | aparável | 130 | o parry: é o convite mais lento e mais telegrafado do jogo |
+| Varrido horizontal | 0,6 s — roda os ombros **· som: rangido do cinturão + sopro** | aparável | 100 | esquivar **para dentro** também funciona |
+| Fecho: passo esmagador | 0,7 s — salta com o peso **· som: o chão a queixar-se no impulso** | aparável | 110 | a distância não é abrigo |
 
 **Xamã** ⬜: projéctil lento (1,2 s de conjuração audível, aparável — devolve-se com o parry, sem dano ao xamã mas cancela e tira 30 de postura), e **totem** que dá +20% de velocidade aos orcs num raio de 8 m — morre num golpe. Ensina prioridade de alvo. Entra na expansão da zona orc.
 
@@ -66,7 +67,7 @@ Números à escala da **zona ×1,0** (a linha de base da fatia — WP2); zonas f
 | | Goblin faca | Goblin fundíbulo |
 |---|---|---|
 | PV / DEF / Postura | 60 / 0 / 20 | 50 / 0 / 15 |
-| XP | 15 | 15 |
+| Almas | 15 | 15 |
 | Velocidade | 5,0 m/s | 3,8 m/s |
 | Ataques | facada (0,5 s, aparável, 35) · salto às costas (0,7 s, **só esquiva**, 45 — larga-se com o dano) | pedra (1,0 s a rodar a funda, audível, aparável, 30) |
 
@@ -76,7 +77,7 @@ Aparecem **3 a 5**, nunca menos de 3. Com o círculo de agressão (2 de cada vez
 
 | | Kobold armadilheiro |
 |---|---|
-| PV / DEF / Postura | 70 / 2 / 20 · XP 20 · 4,2 m/s |
+| PV / DEF / Postura | 70 / 2 / 20 · almas 20 · 4,2 m/s |
 | Comportamento | **não procura combate**: foge para junto das armadilhas que armou e espera |
 | Armadilhas | espinhos (marca vermelha ténue no chão — vê-se a andar devagar, não a correr; 60 de dano, `só esquiva` no sentido literal) · corda de tropeço (derruba 1,0 s) |
 | Ataques | facada curta (0,4 s, aparável, 30) — só se encurralado |
@@ -90,7 +91,7 @@ Fraqueza de escola herdada do WP4: **bem: DEF −20 · mal: DEF +20**. É a raç
 | | Esqueleto de espada | Esqueleto arqueiro | Zumbi | Zumbi inchado |
 |---|---|---|---|---|
 | PV / DEF / Postura | 90 / 6 físico cortante ×0,5 dano recebido* / 30 | 70 / 4 / 20 | 180 / cortante ×0,5, contundente ×1,5, fogo ×2 / 60 | 120 / idem / 40 |
-| XP | 30 | 30 | 20 | 25 |
+| Almas | 30 | 30 | 20 | 25 |
 | Velocidade | 4,0 m/s | 3,0 m/s | 1,8 m/s (anda, nunca corre) | 2,2 m/s |
 
 \* **Osso não se corta, parte-se:** cortante faz metade, **contundente (martelos, bash) faz ×1,5** — a Lei 2 do lado do inimigo: a resposta é trocar de ferramenta, não subir número.
@@ -106,7 +107,7 @@ Registado no bestiário; a ficha completa (arena, fases, drops) é do **WP7**, a
 
 ### Mímico ⬜ — o castigo da ganância
 
-| PV / DEF / Postura | 240 / 10 / 80 · XP 80 |
+| PV / DEF / Postura | 240 / 10 / 80 · almas 80 |
 |---|---|
 
 Baú falso. **Sempre detectável antes** (regra de justiça): respira devagar — a tampa sobe 2 px a cada 3 s — e a fechadura é diferente da dos baús verdadeiros (uma língua visual a fixar no WP13, igual no jogo inteiro). Abrir sem olhar: mordida (**só esquiva**, 110) e o combate começa. Quem bate primeiro no baú em vez de o abrir ganha o primeiro golpe de borla. Larga loot de baú real + o dobro. Ensina: no mundo deste jogo, olhar primeiro é sempre opção — e paga.
@@ -117,7 +118,7 @@ Herdado do WP1: inimigos normais renascem quando o jogador **descansa ou morre**
 
 ## O que cada inimigo dá
 
-XP na tabela de cada ficha (os da fatia: derivados no WP2; XP nunca é a razão de repetir — ver regra 6). **Drops de item são do WP9** — este documento só fixa a regra herdada da Lei 2: inimigo comum larga materiais e consumíveis, **nunca** skills/pergaminhos (esses são de chefes e exploração).
+Almas na tabela de cada ficha (os da fatia: derivados no WP2; almas nunca são a razão de repetir — ver regra 8). **Drops de item são do WP9**, com duas regras fixadas aqui: inimigo comum larga materiais, consumíveis e **as peças que usa no corpo** (regra 7), **nunca** skills/pergaminhos (esses são de chefes e exploração).
 
 ## Encontros da fatia 1 — a colocação exacta
 
@@ -145,6 +146,7 @@ XP na tabela de cada ficha (os da fatia: derivados no WP2; XP nunca é a razão 
 ## O que continua aberto
 
 - **A confirmação do Mateus** às 7 raças e ao Ceifador (⏳ da instrução do Rico)
+- Sons dos ataques das raças ⬜ (goblins/kobolds/mortos-vivos) — fecham-se com as fichas completas, mesma regra 6
 - Camada exacta do Minotauro e do Ceifador na pirâmide → pergunta 13, deles
 - Quantos inimigos novos por zona futura → WP8, com a escala do mundo (pergunta 4)
 

@@ -18,19 +18,19 @@ O estado divide-se em dois sacos, e cada frase da gravação cai num deles:
 
 | Saco | O que contém | Quem guarda |
 |---|---|---|
-| **Personagem** (viaja contigo) | nível, XP, atributos, inventário, skills, pergaminhos, ampliações, **flags de chefes que TU mataste**, verbos recebidos | cada jogador, no seu PC |
+| **Personagem** (viaja contigo) | nível, almas, atributos, inventário, skills, pergaminhos, ampliações, **flags de chefes que TU mataste**, verbos recebidos | cada jogador, no seu PC |
 | **Mundo** (fica na casa) | atalhos abertos, estado da zona, inimigos comuns vivos/mortos desta sessão | o anfitrião |
 
 As consequências, uma a uma:
 
 1. **Inimigos comuns aparecem para os dois, sempre** — renascem ao descansar (WP1), portanto "já matei" nunca os apaga do mundo. É a primeira metade do 12:34, de borla.
 2. **Chefe morto para o anfitrião, vivo para o convidado:** o mundo é o do anfitrião — a arena está vazia e o portão aberto. O convidado **não** mata o Vorgar dele no mundo alheio vazio; mata-o no mundo dele (com o amigo a ajudar, papéis trocados). *Porquê:* fazer aparecer um chefe num mundo onde ele já morreu partia a coerência do espaço para o anfitrião — e a sessão seguinte com papéis trocados é exactamente o loop de co-op que eles descreveram.
-3. **Chefe vivo para os dois:** matam-no juntos → **conta para os dois**, recompensa completa para os dois (verbo + XP). É a segunda metade do 12:34.
-4. **Chefe que o convidado já matou no mundo dele:** ajuda na mesma, com a **recompensa reduzida do WP9** (40% XP, só materiais; verbos nunca duplicam).
+3. **Chefe vivo para os dois:** matam-no juntos → **conta para os dois**, recompensa completa para os dois (verbo + almas). É a segunda metade do 12:34.
+4. **Chefe que o convidado já matou no mundo dele:** ajuda na mesma, com a **recompensa reduzida do WP9** (40% das almas, só materiais; verbos nunca duplicam).
 5. **Atalhos são do mundo, não do personagem:** o convidado usa os atalhos do anfitrião, mas não os leva para casa. *Porquê:* o atalho é conhecimento do espaço — levar para casa um atalho que nunca se abriu é progresso fantasma.
 6. **Itens colocados** (a adaga na árvore, ampliações): instanciados (WP9) — cada personagem apanha a sua cópia, no mundo de quem for. Apanhado uma vez por personagem, para sempre.
 
-*Teste da Lei 1:* nada aqui cria caminho de poder que não seja jogar — o mundo alheio dá no máximo 40% de XP e materiais. ✅
+*Teste da Lei 1:* nada aqui cria caminho de poder que não seja jogar — o mundo alheio dá no máximo 40% das almas e materiais. ✅
 
 ## Transporte — como as duas casas se ligam
 
@@ -70,10 +70,23 @@ As consequências, uma a uma:
 |---|---|
 | Convidado desliga (crash, rage, jantar) | o mundo continua; inimigos em combate com ele largam o alvo; num chefe, a vida do chefe **reescala de ×1,8 para ×1,0 proporcionalmente ao que falta** (60% restantes a ×1,8 → 60% a ×1,0) — o anfitrião não herda uma luta de dois sozinho |
 | Convidado volta | re-entra no ponto de descanso da zona do anfitrião, nunca dentro da arena |
+| **Um jogador morre** (sem desligar) | **fica no mundo como corpo caído, 1 minuto** — regras em [`33-morte-e-almas.md`](33-morte-e-almas.md) §4; a ressurreição abaixo |
 | Anfitrião desliga | a sessão acaba (o mundo era dele); o convidado volta ao seu mundo, no seu ponto de descanso, **com tudo o que ganhou** — XP, itens e flags viajam no personagem, nada se perde |
 | Linha cai 5 s | pausa de sincronização até 10 s (inimigos congelam para o convidado); acima disso, trata-se como desligar |
 
 *Teste de justiça:* nenhuma queda de rede mata um personagem — a morte é sempre de um golpe lido mal, nunca de um router. É a Lei 4 da rede: instabilidade não é feia, é injusta. ✅
+
+## Ressurreição em co-op — os detalhes que o 33 delegou aqui
+
+`[DECIDIDO]` (Mateus, 31-07): corpo no chão 1 min; o parceiro canaliza **5–7 s em cima do corpo**; ressuscitado a tempo não perde nada; itens largados ficam no chão. **Substitui** o provisório deste documento e do WP1 ("morto até o combate acabar"). Os três detalhes delegados, fechados `[FABLE]`:
+
+| Detalhe | Decisão | Porquê |
+|---|---|---|
+| **Interrupção** | **dano cancela a canalização** (o progresso mantém-se: retomar continua de onde ia, não do zero) | sem interrupção, o risco desaparece e a jogada volta a ser botão — adopta a proposta `[CLAUDE]`; o progresso mantido evita que um golpe de área barato anule 6 s inteiros duas vezes seguidas |
+| **Vida ao ressuscitar** | **50% dos PV; frascos como estavam** | segundo fôlego, não segunda vida — proposta `[CLAUDE]` adoptada |
+| **Indicadores** | o morto vê o contador do minuto; o parceiro vê um feixe âmbar no corpo + o tempo restante ao aproximar-se (≤ 8 m) | a decisão de arriscar precisa do número à vista de quem arrisca (WP11 desenha) |
+
+Na rede: o corpo e a canalização são do **anfitrião** (estado de mundo); a barra de progresso replica-se aos dois; os 5–7 s afinam-se no WP15B. O chefe durante a canalização é decisão do WP7 — está lá fechada.
 
 ## Voz e texto
 

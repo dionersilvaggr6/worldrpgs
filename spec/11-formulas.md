@@ -29,9 +29,9 @@ O que eles decidiram: modelo Dark Souls, pontos por nível, distribuídos à esc
 | Pontos por nível | **1** (num atributo à escolha) |
 | Nível máximo | **100** `[FABLE]` — eles sugeriram "100 ou, sei lá, 150" (06:33); adopto o mais baixo. *Alternativa descartada:* 150 — mais níveis com soft caps é só mais grind aparente |
 | Fatia 1 | níveis 1–10 |
-| Custo do nível n | `XP = 80 + 20×n` (nível 2 custa 120, nível 10 custa 280; total 1→10: **1.880 XP**) |
+| Custo do nível n | `custo = 80 + 20×n` **almas** (nível 2 custa 120, nível 10 custa 280; total 1→10: **1.880**; total 1→100: **~109.000**) — o nome fechou em [`33-morte-e-almas.md`](33-morte-e-almas.md): almas = experiência e moeda |
 
-**XP na fatia:** lanceiro 25 · brutamontes 45 · Vorgar 400. Uma travessia limpa de Brumal + Toca rende ~350 XP; zerar a fatia com as mortes normais deixa o jogador por volta do **nível 6–8, não do 10**. *Teste da Lei 1:* o cap da fatia não é garantido nem necessário — o critério 3 da fatia (nível 1, zero pontos, mata o Vorgar) continua a ser a prova de que nível nenhum é obrigatório. ✅
+**Almas na fatia:** lanceiro 25 · brutamontes 45 · Vorgar 400. Uma travessia limpa de Brumal + Toca rende ~350; zerar a fatia com as mortes normais deixa o jogador por volta do **nível 6–8, não do 10**. *Teste da Lei 1:* o cap da fatia não é garantido nem necessário — o critério 3 da fatia (nível 1, zero pontos, mata o Vorgar) continua a ser a prova de que nível nenhum é obrigatório. ✅
 
 ## A fórmula de dano
 

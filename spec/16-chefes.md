@@ -28,8 +28,9 @@ O que foi dito: 1 + 10 + 20 + 30 (Rico, 03:25) vs 1 + 30 + 20 (Mateus, 11:54); "
 | Alternância | troca de alvo após cada sequência; **nunca o mesmo ataque `só esquiva` duas vezes seguidas no mesmo jogador** | em co-op, o que não se está a olhar tem de ser sobrevivível |
 | Postura | barra própria; dano de postura recebido **×0,5**; Cambaleio de chefe: **2,5 s**, riposte aberto | o crítico em chefe é conquista acumulada, não spam de bash |
 | Fases | mudam **padrões**, não números — a fase 2 traz ataques novos, não os velhos mais rápidos | Lei 2; e é o que faz a segunda hora de tentativas ser descoberta, não repetição |
-| Morte do jogador | reset total do chefe (WP1); nova tentativa < 30 s (critério 4 da fatia) | a tentativa é a unidade de aprendizagem |
-| Recompensa | **um verbo** — skill ou pergaminho, uma vez — + XP; nunca "+X% de dano" | Lei 2 na economia (WP3/WP4/WP9) |
+| Morte do jogador | reset total do chefe (WP1); nova tentativa < 30 s (critério 4 da fatia). **As almas ficam na arena** ([`33-morte-e-almas.md`](33-morte-e-almas.md) §4) — recuperá-las é entrar outra vez, e isso é de propósito | a tentativa é a unidade de aprendizagem |
+| **Ressurreição na arena** | o chefe **prioriza o ressuscitador** durante a canalização de 5–7 s `[FABLE]` — cabe ao par criar a janela (afastar, esperar o fim de um padrão longo). *Alternativa descartada:* o chefe ignorar a canalização — tirava à jogada exactamente o risco que a torna jogada ([`33-morte-e-almas.md`](33-morte-e-almas.md) §4) | a ressurreição é uma jogada, não um botão |
+| Recompensa | **um verbo** — skill ou pergaminho, uma vez — + almas + **uma peça do que veste** (33 §3); nunca "+X% de dano" | Lei 2 na economia (WP3/WP4/WP9) |
 | Whiff punível | todo o chefe tem ≥ 1 ataque que, falhado, o deixa ≥ 1,0 s exposto | agressão premiada: a janela de dano não é só pós-parry |
 | Sem lixo na arena | nenhum inimigo comum entra durante a luta | a leitura é do duelo; adds são regra de camada 2+, e mesmo aí anunciados |
 
@@ -43,8 +44,8 @@ Guardião (camada 3) da **Toca**, fatia 1. Orc de guerra a 1,6× a escala do bru
 | DEF | 10 | 10 |
 | Dano | leve 120 · pesado 190 | idem, alterna alvo |
 | Postura | 100 (recebe ×0,5) | idem |
-| XP | 400 | 400 a cada um |
-| Recompensa | skill **Investida do Guarda** + abre o portão | idem (loot instanciado, WP0) |
+| Almas | 400 | 400 a cada um |
+| Recompensa | skill **Investida do Guarda** + **o elmo dele** (peça de armadura — [`33-morte-e-almas.md`](33-morte-e-almas.md) §3: larga o que usa) + abre o portão | idem (loot instanciado, WP0) |
 
 **Arena:** a última sala da Toca — círculo de 20 × 16 m, 2 pilares de pedra, tochas nas paredes (âmbar alto — WP12). Os pilares **param a investida dele** e partem-se ao segundo choque: a arena abre ao longo da luta. Chão limpo, sem buracos — a morte aqui é dele, não da câmara (WP1B).
 
@@ -54,11 +55,11 @@ Guardião (camada 3) da **Toca**, fatia 1. Orc de guerra a 1,6× a escala do bru
 
 | # | Ataque | Aviso (≥ 0,5 s) | Marca | Dano | A resposta certa |
 |---|---|---|---|---|---|
-| 1 | Cutilada dupla | 0,6 s — o ombro direito recua | aparável | 120 + 120 | aparar o 2.º (o 1.º vem 0,4 s antes — aparar cedo é o erro clássico) |
-| 2 | Pancada do portão | 0,9 s — ergue o machado a duas mãos | aparável | 190 | o convite de parry; **falhada, crava no chão: 1,2 s exposto** (o whiff punível) |
-| 3 | Investida de ombro | 0,7 s — patada no chão, baixa a cabeça | **só esquiva** 🔴 | 140 | esquiva lateral tardia; guiá-lo a um pilar = Cambaleio grátis de 1,5 s |
-| 4 | Agarrão | 0,25 s de brilho 🔴 + 0,5 s de braço aberto | **só esquiva** | 170 + arremesso 3 m | a esquiva **para dentro** do braço contrário |
-| 5 | Varrido baixo | 0,5 s — agacha e roda o tronco | aparável | 100 | pune circular colado; salta-se com a esquiva (i-frames), não com salto — não há salto |
+| 1 | Cutilada dupla | 0,6 s — o ombro direito recua · **som: duplo silvo curto** | aparável | 120 + 120 | aparar o 2.º (o 1.º vem 0,4 s antes — aparar cedo é o erro clássico) |
+| 2 | Pancada do portão | 0,9 s — ergue o machado a duas mãos · **som: arrasto grave** | aparável | 190 | o convite de parry; **falhada, crava no chão: 1,2 s exposto** (o whiff punível) |
+| 3 | Investida de ombro | 0,7 s — patada no chão, baixa a cabeça · **som: bufo + patada** | **só esquiva** 🔴 | 140 | esquiva lateral tardia; guiá-lo a um pilar = Cambaleio grátis de 1,5 s |
+| 4 | Agarrão | 0,25 s de brilho 🔴 + 0,5 s de braço aberto · **som: silvo agudo** (a regra de ouvido) | **só esquiva** | 170 + arremesso 3 m | a esquiva **para dentro** do braço contrário |
+| 5 | Varrido baixo | 0,5 s — agacha e roda o tronco · **som: raspar circular no chão** | aparável | 100 | pune circular colado; salta-se com a esquiva (i-frames), não com salto — não há salto |
 
 Sequências típicas: 1→5 (anti-colagem) · 3→2 (chega e pune) · 5→4 (o varrido empurra para o agarrão — a armadilha da fase).
 
@@ -72,9 +73,9 @@ Mantém 1, 3 e 4. O 2 e o 5 saem; entram:
 
 | # | Ataque | Aviso | Marca | Dano | A resposta certa |
 |---|---|---|---|---|---|
-| 6 | Tempestade | 0,8 s — cruza os machados no peito | **só esquiva** 🔴 | 90 ×3 toques | gira em espiral 4 m para fora — corre-se para **longe**, não à volta |
-| 7 | Arremesso | 0,7 s — braço atrás, um machado só | aparável (desvia) | 130 | **o machado volta** 1,2 s depois: segunda esquiva sem novo aviso visual — o som (assobio) é o aviso; a lição de ouvido do WP12 |
-| 8 | Fúria do portão (1× por luta, aos 30%) | salto + marca 🔴 no chão 1,2 s | **só esquiva** | 200 | a área é grande (r 4 m) mas a marca é honesta; em co-op cai no jogador **sem** o alvo actual |
+| 6 | Tempestade | 0,8 s — cruza os machados no peito · **som: zumbido crescente** | **só esquiva** 🔴 | 90 ×3 toques | gira em espiral 4 m para fora — corre-se para **longe**, não à volta |
+| 7 | Arremesso | 0,7 s — braço atrás, um machado só · **som: assobio no voo — e no regresso** | aparável (desvia) | 130 | **o machado volta** 1,2 s depois: segunda esquiva sem novo aviso visual — o som (assobio) é o aviso; a lição de ouvido do WP12 |
+| 8 | Fúria do portão (1× por luta, aos 30%) | salto + marca 🔴 no chão 1,2 s · **som: silêncio de 0,3 s e queda** | **só esquiva** | 200 | a área é grande (r 4 m) mas a marca é honesta; em co-op cai no jogador **sem** o alvo actual |
 
 *Teste da Lei 1, por escrito:* nível 1, zero pontos — dano recebido 100–170 por golpe contra 420 PV (morre em 3–4 erros, nunca em 1); TTK 53 golpes leves = 4–7 min de leitura (WP2); todos os avisos ≥ 0,5 s contra 300 ms de i-frames; os `só esquiva` têm marca vermelha; o whiff do ataque 2 e os pilares dão janelas de dano a quem não apara. Vence-se sem um único ponto gasto — mais devagar, com menos margem. É o critério 3 da fatia, e esta ficha é o contrato dele. ✅
 

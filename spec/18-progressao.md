@@ -1,6 +1,6 @@
 # 18 — Progressão, loot e economia
 
-> **WP9 · Fable** (31-07-2026). O que se ganha, onde, e porquê. Herda: XP e nível do WP2 ([`11-formulas.md`](11-formulas.md)), a Lei 2 aplicada ao loot (chefes dão verbos — WP3/WP4/WP7), os segredos que pagam em opções (WP8), e as duas frases da gravação que mandam aqui: os drops em dupla (05:29 → 05:41, com a resposta do Mateus perdida no áudio) e a **recompensa menor ao ajudar** (12:34). Tudo `[FABLE]` salvo indicação.
+> **WP9 · Fable** (31-07-2026 · realinhado às decisões da tarde de 31-07: [`33-morte-e-almas.md`](33-morte-e-almas.md) fechou as perguntas 7, 10 e 14 — **a moeda chama-se almas, cai ao morrer, e é também a experiência**; este documento foi uniformizado a esse nome e a essas regras). O que se ganha, onde, e porquê. Herda: almas e nível do WP2 ([`11-formulas.md`](11-formulas.md)), a Lei 2 aplicada ao loot (chefes dão verbos — WP3/WP4/WP7), os segredos que pagam em opções (WP8), e as duas frases da gravação que mandam aqui: os drops em dupla (05:29 → 05:41, com a resposta do Mateus perdida no áudio) e a **recompensa menor ao ajudar** (12:34). Tudo `[FABLE]` salvo indicação.
 
 ## A regra que organiza a economia inteira
 
@@ -13,9 +13,11 @@
 
 ## A curva de progressão — nível esperado por zona
 
-Derivada da curva de custo do WP2 (`XP = 80 + 20×n`) e dos orçamentos de XP por zona. **O nível esperado é referência de margem, nunca requisito** — os tectos da Lei 1 (WP2) garantem que se entra em qualquer zona com qualquer nível.
+**As almas perdem-se ao morrer** (caem onde caíste; morrer outra vez perde-as de vez — [`33-morte-e-almas.md`](33-morte-e-almas.md) §1 e §4). A curva abaixo assume exploração com mortes normais **e** as perdas do caminho — é por isso que é referência, não meta. Custo total do nível 1→100 pela fórmula do WP2: **~109 000 almas**; zerar rende ~16 000 — o tecto 100 é para quem rejoga, exactamente como o WP2 queria.
 
-| Zona (WP8) | XP total da zona (inimigos + segredos, 1 passagem) | Nível esperado à saída |
+Derivada da curva de custo do WP2 (`custo(n) = 80 + 20×n almas`) e dos orçamentos de almas por zona. **O nível esperado é referência de margem, nunca requisito** — os tectos da Lei 1 (WP2) garantem que se entra em qualquer zona com qualquer nível.
+
+| Zona (WP8) | Almas na zona (inimigos + segredos, 1 passagem) | Nível esperado à saída |
 |---|---|---|
 | Brumal (fatia) | ~750 (inimigos ~350 + Vorgar 400) | 6–8 |
 | Selva Funda / Campas | ~1 800 cada | 12–16 |
@@ -23,7 +25,7 @@ Derivada da curva de custo do WP2 (`XP = 80 + 20×n`) e dos orçamentos de XP po
 | Cimeira | ~3 200 | 30–34 |
 | O Portão | ~3 800 | 38–42 |
 
-Zerar tudo com exploração honesta ≈ nível 40 de ~16 000 XP — **longe do tecto 100**: o tecto existe para quem quer rejogar e experimentar builds, não como meta. *Teste da Lei 1:* nenhum número desta tabela é verificado por porta nenhuma; um jogador que ignore metade das zonas chega ao Portão a nível 25 e vence por leitura, com menos margem. ✅
+Zerar tudo com exploração honesta ≈ nível 40 de ~16 000 almas — **longe do tecto 100**: o tecto existe para quem quer rejogar e experimentar builds, não como meta. *Teste da Lei 1:* nenhum número desta tabela é verificado por porta nenhuma; um jogador que ignore metade das zonas chega ao Portão a nível 25 e vence por leitura, com menos margem. ✅
 
 ## Drops em co-op — a pergunta 5, escolhida e justificada
 
@@ -37,7 +39,7 @@ Zerar tudo com exploração honesta ≈ nível 40 de ~16 000 XP — **longe do t
 
 `[SUGERIDO]` (12:34): *"tu me ajuda a matar, e aí tu ganha uma recompensa menor."* A mecânica precisa do progresso individual do WP10 (o inimigo pode estar morto para um e vivo para o outro). Os números:
 
-| Situação | XP | Loot |
+| Situação | Almas | Loot |
 |---|---|---|
 | Inimigo vivo para os dois | 100% para cada | cópia para cada (instanciado) |
 | Vivo só para o dono do mundo; o ajudante **já o matou** no seu progresso | dono 100% · **ajudante 40%** | dono normal · ajudante só materiais |
@@ -47,9 +49,9 @@ Zerar tudo com exploração honesta ≈ nível 40 de ~16 000 XP — **longe do t
 
 ## Moeda e vendedores — pendurados na gravação de narrativa
 
-**Sem moeda separada, por agora.** A fatia não tem economia (WP0); e **se** os vendedores existirem (a pergunta é do WP8B — NPCs são território virgem), a proposta é **uma moeda só: o XP também paga** (à Dark Souls: subir de nível e comprar disputam o mesmo bolso — cada compra é uma decisão).
+**Confirmado pela decisão das almas** ([`33-morte-e-almas.md`](33-morte-e-almas.md) §1): **uma moeda só — as almas pagam nível e, se houver vendedores, compras.** A proposta original deste documento ficou decidida por cima; o resto da secção mantém-se para quando a gravação do WP8B responder aos vendedores. A fatia não tem economia (WP0); e **se** os vendedores existirem (a pergunta é do WP8B — NPCs são território virgem), a proposta é **uma moeda só: as almas também pagam** (à Dark Souls: subir de nível e comprar disputam o mesmo bolso — cada compra é uma decisão).
 
-*Porquê:* duas moedas (XP + ouro) pedem duas torneiras e dois ralos para equilibrar — trabalho a dobrar para duas pessoas; uma moeda faz do vendedor mais uma escolha de progressão. *Alternativa descartada:* ouro separado — só se justifica com economia grande (vários vendedores, casas de leilão…), que este jogo não quer. **Decide-se na gravação do WP8B** — se a resposta for "mundo vazio e hostil", esta secção morre inteira e ninguém chora.
+*Porquê:* duas moedas (almas + ouro) pedem duas torneiras e dois ralos para equilibrar — trabalho a dobrar para duas pessoas; uma moeda faz do vendedor mais uma escolha de progressão. *Alternativa descartada:* ouro separado — só se justifica com economia grande (vários vendedores, casas de leilão…), que este jogo não quer. **Decide-se na gravação do WP8B** — se a resposta for "mundo vazio e hostil", esta secção morre inteira e ninguém chora.
 
 O que um vendedor venderia, se existir (para a gravação ter chão): consumíveis, materiais em quantidade limitada por visita (sem stock infinito — o farm de loja também é farm), e **nunca** armas/skills/pergaminhos acima do que o mundo dá de borla — a loja poupa tempo, não substitui exploração.
 
@@ -59,7 +61,7 @@ O que um vendedor venderia, se existir (para a gravação ter chão): consumíve
 
 | O quê | Onde | Regra |
 |---|---|---|
-| XP | lanceiro 25 · brutamontes 45 · Vorgar 400 (WP2/WP6) | sempre |
+| Almas | lanceiro 25 · brutamontes 45 · Vorgar 400 (WP2/WP6) | sempre |
 | Skill *Lançamento de Adaga* | oco da árvore morta (WP8) | 1× por personagem |
 | Ampliação do Frasco (3→4) | atrás da cascata de bruma (WP8) | 1× por personagem |
 | Skill *Investida do Guarda* | Vorgar (WP7) | 1× por personagem |
@@ -69,16 +71,18 @@ O que um vendedor venderia, se existir (para a gravação ter chão): consumíve
 
 | Fonte | Dá | Nunca dá |
 |---|---|---|
-| Inimigo comum | XP + materiais da raça (osso, couro, ferro — faixas por zona) | verbos, armas |
+| Inimigo comum | almas + materiais da raça (osso, couro, ferro — faixas por zona) | verbos, armas |
 | Baú comum | consumíveis, Limalha, 1 arma colocada por zona | — |
 | Segredo (WP8: ≥3/zona) | opções permanentes: ampliações, talismãs, pergaminhos | números puros |
 | Mímico (WP6) | o conteúdo do baú real + dobro dos materiais | — |
-| Guardião/subchefe (WP7) | **um verbo** (skill ou pergaminho) + XP alto | +X% de seja o que for |
+| Guardião/subchefe (WP7) | **um verbo** (skill ou pergaminho) + muitas almas | +X% de seja o que for |
 | O Ultra | o fim do jogo | — |
 
-## O que se perde ao morrer
+## O que se perde ao morrer — DECIDIDO (31-07)
 
-**Nada, provisoriamente** — formalizado no WP1, herdado do WP0. A **pergunta 10 continua deles**: é a decisão de tom do jogo inteiro (perder XP não gasto à Dark Souls? recuperá-lo no local da morte?). O que este documento acrescenta para essa gravação: se decidirem perder-algo, a proposta técnica é *XP não gasto cai no local da morte, uma chance de recuperar* — punição de tensão, não de grind; e os tectos da Lei 1 não mexem. Fica pronta, à espera do sim ou do não.
+A pergunta 10 fechou em [`33-morte-e-almas.md`](33-morte-e-almas.md): **as almas por gastar caem onde morreste; recuperam-se voltando lá; morrer antes de as apanhar perde-as de vez** (quatro casos de co-op na matriz do §4). O provisório "nada se perde" do WP0/WP1 está substituído.
+
+**O que se larga além das almas** `[FABLE]`, fechando o `[EM ABERTO]` do [`34-catalogo-e-comandos.md`](34-catalogo-e-comandos.md) §3: **os frascos por usar e o item consumível activo (R)** — o parceiro pode apanhá-los e devolver. **Nunca** o equipamento vestido nem as skills. *Porquê:* é o que torna o corpo um sítio de decisão sem criar um sistema de recuperação de equipamento inteiro; adopta a proposta `[CLAUDE]` tal como está. *Alternativa descartada:* largar a arma da mão — desarmar um jogador já em desvantagem é castigo que vira frustração, não tensão.
 
 ## Ideias para depois
 
@@ -91,9 +95,9 @@ O que um vendedor venderia, se existir (para a gravação ter chão): consumíve
 | Para | O quê |
 |---|---|
 | **WP10** | a matriz do 40% precisa do estado individual de "já matei isto" sincronizado — é requisito de rede |
-| **WP11** | o ecrã de XP/nível no descanso; aviso "recompensa reduzida" discreto ao entrar no mundo do outro |
+| **WP11** | o ecrã de almas/nível no descanso; aviso "recompensa reduzida" discreto ao entrar no mundo do outro |
 | **WP8B (gravação)** | a proposta de moeda única e o que um vendedor venderia — chão para a conversa de NPCs |
-| **WP15B** | os orçamentos de XP por zona são hipóteses a medir (o nível esperado real sai das sessões de teste) |
+| **WP15B** | os orçamentos de almas por zona são hipóteses a medir (o nível esperado real sai das sessões de teste) |
 
 ## O que continua aberto
 
@@ -103,4 +107,4 @@ O que um vendedor venderia, se existir (para a gravação ter chão): consumíve
 
 ## Ligações
 
-[`11-formulas.md`](11-formulas.md) (curva de XP) · [`17-mundo.md`](17-mundo.md) (onde vive o loot) · [`16-chefes.md`](16-chefes.md) (verbos) · [`07-multiplayer.md`](07-multiplayer.md) (12:34) · [`10-fatia-1.md`](10-fatia-1.md)
+[`11-formulas.md`](11-formulas.md) (curva de almas) · [`17-mundo.md`](17-mundo.md) (onde vive o loot) · [`16-chefes.md`](16-chefes.md) (verbos) · [`07-multiplayer.md`](07-multiplayer.md) (12:34) · [`10-fatia-1.md`](10-fatia-1.md)
