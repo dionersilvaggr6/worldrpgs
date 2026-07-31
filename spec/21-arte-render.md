@@ -15,7 +15,7 @@ A frase de estilo canónica já existe e é uma só — [`art/prompts/00-estilo.
 O que este documento acrescenta é a **tradução dessa frase para 3D**:
 
 - **Formas:** silhuetas fortes e exageradas — os ombros do brutamontes 1,5× o realista, o machadão maior do que devia. Num souls-like lê-se a silhueta, não o detalhe: **a animação é a informação; o modelo é o portador.**
-- **Superfícies:** facetado suave, **cor por vértice + rampas de gradiente + folhas de acabamento (trim sheets)** em vez de textura única por objecto. PBR desligado — metal/rugosidade fixos por material.
+- **Superfícies:** o look é pintado-à-mão (frase de estilo), com o orçamento do [`30-qualidade-visual.md`](30-qualidade-visual.md): personagens com **albedo + normal + ORM a 2048²** — o normal dá volume às formas grandes, nunca poro de pele; cenário em trim sheets e atlas de 1024². PBR simplificado, sem texturas 4K. **A barra é a do 30: orçamento consciente, não PS1.**
 - **Proporções de personagem: 1:6,5** (heróicas, não *chibi*). *Porquê:* o parry lê-se no braço e na anca; proporções cartoon encurtam membros e escondem telegrafias. *Alternativa descartada:* voxel/blocos — barato, mas mata a leitura de animação que é o jogo.
 - **Referências** (régua, não cópia): **Ashen** (souls-like low-poly a sério), **Absolver** (combate legível estilizado), **Tunic** (cor e leitura à distância), **Valheim** (bruma e luz a esconder polígonos). O *grim humor* da frase vive nos adereços e nas descrições — **nunca** na telegrafia.
 
@@ -38,18 +38,20 @@ A Toca escurece a mesma paleta e sobe o âmbar. Cada bioma futuro = paleta próp
 
 A medição da pergunta 0b ([`09-tecnico.md`](09-tecnico.md)) validou o greybox: 60 fps cravados no cenário da fatia, com ~6× de folga média. **Essa folga é este orçamento** — e a ressalva escrita lá ("sem animação de esqueleto — a incógnita cara") é exactamente o que a secção 3 abaixo orça. Medido no alvo (máquina do Rico), quente, em combate 2+3; **estourar uma linha = parar conteúdo e optimizar** (marco 1/WP15).
 
+**Revisto ao [`30-qualidade-visual.md`](30-qualidade-visual.md)** (31-07 — "não é PS1"): as faixas de malha e textura são as do 30; o que este documento acrescenta são os tectos de cena que o Iris Xe impõe por cima delas.
+
 | Recurso | Orçamento | Nota |
 |---|---|---|
-| Triângulos em cena | ≤ **800 k** visíveis | a névoa aos 60 m corta o resto |
-| Jogador | ≤ 8 000 tris | por classe, vestes incluídas |
-| Inimigo comum | ≤ 5 000 tris | lanceiro/brutamontes partilham base |
-| Vorgar | ≤ 14 000 tris | está sozinho em cena quando importa |
-| Adereço | 150–1 500 tris | por tamanho |
+| Triângulos em cena | ≤ **1,5 M** visíveis | a névoa aos 60 m corta o resto; **valida-se no marco 2 — se o Iris Xe disser menos, corta-se cenário, não personagens** |
+| Jogador | **10 000–15 000 tris** (30) | por classe, vestes incluídas |
+| Inimigo comum | **6 000–10 000 tris** (30) | lanceiro/brutamontes partilham base |
+| Vorgar | **20 000–30 000 tris** (30) | está sozinho em cena quando importa |
+| Adereço | 200–2 000 tris (30) | por tamanho |
 | Chamadas de desenho | ≤ **500** | atlas + batching; é o limite que o Iris Xe sente primeiro |
 | Esqueletos | jogador 45 ossos · inimigo 30 · Vorgar 60 · **2 influências/vértice** | animação é CPU+largura de banda — é aqui que a folga dos 6× se gasta |
 | Personagens animados em cena | ≤ **8** (2 jogadores + 5 inimigos + 1 reserva) | tecto de desenho de encontros para o WP6/WP8 |
-| Texturas | personagem 1024² · trim sheets 1024² · adereços 512² · **sem 2K em lado nenhum** | tudo em atlas |
-| Memória de texturas residente | ≤ **500 MB** | RAM partilhada: cada MB de textura é RAM que o jogo perde |
+| Texturas | personagem **2048²** (albedo+normal+ORM — 30) · cenário/trim sheets 1024² · adereços 512² | tudo em atlas; 2K **só** em personagens |
+| Memória de texturas residente | ≤ **800 MB** | subiu com os 2048² dos personagens (30); RAM partilhada — cada MB de textura é RAM que o jogo perde; o working set de 2,5 GB não mexe |
 | Working set total | ≤ **2,5 GB** | o tecto real são 3–4 GB (pergunta 0); 2,5 deixa o SO respirar — e a medição 0b já viu a memória a crescer: vigiar é regra |
 | Partículas vivas | ≤ 300 · ≤ 4 emissores/personagem | §5 |
 | Alvo / mínimo | **60 fps / 50 fps** com escala dinâmica | critério 5 do WP0 |
@@ -58,8 +60,15 @@ A medição da pergunta 0b ([`09-tecnico.md`](09-tecnico.md)) validou o greybox:
 
 ### Construção
 
-- **Um corpo base + peças fixas por classe** (cabeça/vestes coladas offline), **um esqueleto para as 6 classes**; troca-se em jogo só a arma na mão e o escudo no antebraço. É o caminho que o WP13 apontou (KayKit/Quaternius como âncora de autor) levado à regra. *Alternativa descartada:* sistema modular de peças em jogo — rigging e atravessamentos ao quadrado, para uma gaveta (armadura) que a recomendação do WP5 nem quer.
+- **Um corpo base + um esqueleto para as 6 classes**, com **4 pontos de encaixe de armadura** (elmo, peito, mãos, pernas — a armadura por peças do [`33-morte-e-almas.md`](33-morte-e-almas.md) §3 obriga a modular, e vê-se no corpo porque "o que se vê pode cair") + arma na mão e escudo no antebraço. **Realinhado:** a primeira versão desta regra descartava o modular — a decisão da armadura inverteu-a; o custo controla-se com peças desenhadas **sobre o mesmo corpo base** (sem re-rigging por peça) e testadas contra as animações uma vez por *slot*, não uma vez por peça.
 - **Lanceiro e brutamontes partilham a malha base de orc** (brutamontes a 1,3× com ombros próprios) — 1 esqueleto, 2 variações. Vorgar é malha própria (1,6×, adereços de armadura — lista de compras do WP13).
+
+### O viewmodel de primeira pessoa — a conta nova ([`29-perspectiva.md`](29-perspectiva.md))
+
+A perspectiva dupla acrescenta um **conjunto de braços-e-arma de 1.ª pessoa** separado do corpo. A conta `[FABLE]`, por cima da lista abaixo: 5 famílias × ~5 clips (leve×combo, pesado, idle, bloqueio/parry onde a família apara) + 3 conjurações + frasco + rolamento (mãos) ≈ **+32 clips**. Duas notas que controlam o custo:
+
+- **Adopto a recomendação `[CLAUDE]` do 29: a fatia 1 afina-se em 3.ª pessoa primeiro** — o viewmodel entra logo a seguir (fatia 1.5), quando os números do combate estiverem fechados; animar duas vistas de números ainda vivos é pagar tudo duas vezes.
+- Em co-op o parceiro vê-te **sempre** em 3.ª pessoa — o conjunto de corpo completo abaixo é obrigatório de qualquer forma; o viewmodel é sempre um acrescento, nunca um substituto.
 
 ### A lista fina de animações — durações-contrato
 

@@ -2,15 +2,9 @@
 
 > **WP8 · Fable** (31-07-2026). O mundo em números. O que herda: mundo aberto com dungeons escondidas `[DECIDIDO]` (02:50 → 03:12), mapa grande `[DECIDIDO]` (12:13), biomas `[DECIDIDO]` (12:13 → 12:21), selva e floresta nomeadas (11:37), 3D (11:28). As duas perguntas vermelhas que vivem aqui — **"grande é quanto?" (4)** e **"biomas são níveis?" (2)** — são deles: este documento põe as propostas em formato de decisão e trabalha com o provisório marcado. Tudo `[FABLE]` salvo indicação.
 
-## "Mapa grande é quanto?" — a pergunta 4 em formato de decisão
+## "Mapa grande é quanto?" — DECIDIDO (31-07): ~30 min a pé, 10+ biomas
 
-"Grande" não se constrói; zonas constroem-se. A proposta muda a unidade de medida:
-
-**Opção A — grande por zonas, não por hectares.** O mundo é uma rede de **6 zonas** feitas à mão (+ o núcleo final), cada uma com 2–3 min de travessia limpa (600–900 m de caminho — a régua do WP0). Total caminhável na versão "zerável": ~35–45 min de travessia contínua, **densa** — cada zona com a sua dungeon escondida, o seu subchefe, os seus segredos. *Ganha:* cabe em duas pessoas (é ~6× a fatia, que já está orçada), cabe nos 8 GB (uma zona + vizinha em memória), e "grande" sente-se pela **variedade**, que é o que os biomas prometem. *Perde:* não é um Elden Ring — quem esperar horizonte infinito nota o desenho por zonas.
-
-**Opção B — um contínuo grande a sério** (~10–16 km²). *Ganha:* a fantasia literal do "mapa grande". *Perde:* multiplica arte, colisões, IA e streaming por área vazia — é exactamente o ponto 3 do risco de escopo ([`00-visao.md`](00-visao.md)), e enche RAM que não existe (Lei 4).
-
-**A minha recomendação: A.** O "grande" que eles descreveram na gravação era sempre sobre *haver muito que descobrir* (biomas, dungeons, chefes) — nunca sobre quilómetros vazios. **Decidem: Mateus + Rico.** Até lá, tudo abaixo assume A, marcado provisório.
+A pergunta 4 fechou (`DECISOES.md`, manhã de 31-07): **~30 minutos de travessia a pé, 10 ou mais biomas.** A forma continua a ser a que este documento propôs — **rede de zonas feitas à mão, densas, ligadas por gargantas** — agora com a contagem deles: **10 zonas + o núcleo final**, cada uma com 2–3 min de travessia limpa (10 × ~3 min ≈ os 30 min decididos ✅). As três obrigações que a decisão pendurou no WP8 ficam assumidas: **densidade mínima por zona** (1 dungeon + 1 chefe âncora + 3 segredos + 1 atalho, tabela abaixo), **reutilização de peças** (famílias de adereços por bioma, com a paleta a fazer a diferença — WP12/WP13), e **viagem rápida** (secção própria). A divergência "6 vs 10+" apontada no 99 resolve-se para cima: **o WP8 cresce para 10.**
 
 ## A rede de zonas — o mundo proposto
 
@@ -24,7 +18,13 @@ Cada zona: bioma próprio, paleta com cor de assinatura (WP12), 1 dungeon escond
 | 4 | **Fojo** | desfiladeiros e minas | kobolds (armadilhas) | **Minotauro** (guardião, no labirinto) | ⬜ |
 | 5 | **Costa Quebrada** | falésias, vento, chuva fina | orcs do mar / mímicos nos destroços | a desenhar | ⬜ |
 | 6 | **Cimeira** | montanha, neve, ar limpo (o único bioma sem bruma — a vista é a recompensa) | a desenhar | subchefe a desenhar | ⬜ |
-| 7 | **O Portão** | núcleo final | élites | o Ultra (camada 1) | ⬜ |
+| 7 | **Cinzal** | floresta queimada, cinza a cair, brasas — o bioma do Fogo | a desenhar (fracos a fogo ficam em casa) | a desenhar | ⬜ |
+| 8 | **Os Fundões** | caverna colossal, escuro comprado com tochas, cristais | kobolds profundos | a desenhar | ⬜ |
+| 9 | **Devesa Dourada** | bosque outonal bonito de mais — a zona-armadilha | mímicos em densidade, o cofre do mundo | a desenhar | ⬜ |
+| 10 | **Lameiro** | brejo tropical fundo, água pela cintura (a selva molhada de 11:37) | a desenhar | a desenhar | ⬜ |
+| 11 | **O Portão** | núcleo final | élites | o Ultra (camada 1) | ⬜ |
+
+As zonas 7–10 são `[FABLE]` ao nível do nome e do gancho — cumprem os "10+ biomas" decididos; o interior de cada uma desenha-se no seu pacote de conteúdo, como sempre. A paleta com cor de assinatura (WP12) é o que impede 10 biomas de parecerem 4.
 
 - **Como se ligam:** rede com anéis, não linha — Brumal abre para 2 e 3; a partir daí há sempre ≥ 2 direcções possíveis. A ordem "esperada" existe (numeração), mas nenhuma porta a impõe.
 - **Transições:** gargantas físicas (portões de pedra, troncos caídos, cortinas de bruma) que mascaram o streaming — carrega-se a zona seguinte ao entrar na garganta. Uma zona + a vizinha em memória, nunca mais (orçamento de 2,5 GB, WP12). *Alternativa descartada:* mundo contínuo sem costuras — streaming aberto de verdade não cabe nos 8 GB com folga honesta.
@@ -64,6 +64,21 @@ O caminho esperado (encontros exactos no WP6):
 **Segredos de Brumal (3):** ampliação do Frasco (WP5) atrás da cascata de bruma; a adaga no oco da árvore; um miradouro com vista para a Selva Funda — o teaser da zona 2, e nada mais. *Regra: todo o segredo paga em opção (Lei 2), nunca em números.*
 
 **Atalho:** portão de madeira trancado por dentro, da clareira do brutamontes à orla — abre-se ao voltar da árvore morta; corta a travessia para < 40 s e serve o critério de morte < 30 s quando o renascimento ainda é na orla.
+
+**Os dois FOVs no traçado** ([`29-perspectiva.md`](29-perspectiva.md)): tudo o que é interior valida-se a **55° e a 90°** — tectos ≥ 2,5 m (regra do WP1B), corredores ≥ 3 m de largura nas dungeons (a 90° um corredor de 2 m vira túnel), e as arenas de chefe testadas nas duas vistas antes de fechar (WP15B observa nas duas).
+
+## Pontos de descanso — distância e descoberta (o `[EM ABERTO]` do 33 §2, fechado)
+
+`[FABLE]` — os pontos de descanso do [`33-morte-e-almas.md`](33-morte-e-almas.md) (recarregam frascos, sobem nível, **renascem os inimigos**) colocam-se assim:
+
+| Regra | Valor |
+|---|---|
+| Quantos | **2 por zona** — um na boca (o de chegada) e um a ~60% do caminho; +1 à porta de cada dungeon (a boca da Toca já o é — WP0) |
+| Descoberta | **acende-se**: uma pira apagada que o jogador acende ao tocar — descobrir é um acto, não um raio de proximidade |
+| Visibilidade | **fumo fino âmbar, visível a 40 m** (na paleta, o âmbar é "ponto de interesse" — WP12); nunca escondidos: segredos pagam em opções, o descanso é infra-estrutura |
+| Distância à arena | do descanso mais próximo à porta de um chefe: **≤ 60 s de corrida com o atalho aberto** — é o que segura o retry < 30 s da fatia dentro do modelo novo de renascimento |
+
+*Alternativa descartada:* descansos escondidos como recompensa de exploração — castigar quem explora mal com menos infra-estrutura é dupla pena; a exploração já paga em ampliações e verbos.
 
 ## Navegação, mapa e viagem
 

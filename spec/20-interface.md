@@ -13,13 +13,19 @@ Posições em coordenadas de 1920×1080; tudo escala com a opção "tamanho do H
 | **Cargas de magia** | sob a stamina | pips de 14 px | 1 pip por carga total (Sab 14 → 7 pips); vazios ficam ocos |
 | **Magias equipadas** | canto inf. esquerdo (32, 940) | 3 quadrados de 72 px | a activa à frente e maior; **F** roda (WP1); o custo em cargas no canto do ícone — responde ao 04:55: **3 visíveis, sempre** |
 | **Hotbar** | fundo ao centro (760–1160, 1000) | **5 espaços** de 72 px | teclas 1–5 (WP1); o item activo (R) com moldura; quantidade no canto |
-| **Habilidade de classe** | à direita da hotbar | 72 px | ícone + recarga em varrimento circular; tecla **V** |
+| **Habilidade de classe** | à direita da hotbar | 72 px | ícone + recarga em varrimento circular; tecla **G** (WP3, regra dos comandos do 34) |
+| **Arte de arma** | à esquerda da hotbar | 72 px | ícone da arte da arma equipada; tecla **V** (WP5) |
+| **Skills activas** | junto à arte de arma | 2×56 px | slots `X`/`Z` (WP3); só aparecem se a skill equipada for activa |
 | **Vida do chefe** | fundo (480–1440, 944) | 960×22 px + nome | só em arena; a barra de postura dele por baixo, fina (960×6) |
 | **Parceiro** | sob a tua vida (32, 84) | 200×12 px + nome | vida e estado (a beber, caído, longe →seta); **quem o chefe persegue** tem um olho âmbar junto ao nome (WP7/WP10) |
 | **Aviso de latência** | canto sup. direito | ícone 28 px | só quando > 150 ms (WP10); nunca número, só o ícone |
 | **Pistas de interacção** | centro-baixo, sobre o objecto | texto 20 px | "E — apanhar" a ≤ 2 m e a olhar; nunca setas para longe |
 
-**O que o HUD não tem, de propósito:** minimapa (WP8), números de dano a saltar dos inimigos (*alternativa descartada:* damage numbers — transformam leitura de animação em leitura de contabilidade; a barra do inimigo em lock-on chega), contador de XP permanente (só no ecrã de descanso e um cintilar ao ganhar — WP12), missões/objectivos (não há — WP8B).
+**Contador de almas** (realinhado ao [`33-morte-e-almas.md`](33-morte-e-almas.md)): canto inferior direito, número simples. Com as almas a caírem na morte, o que trazes por gastar é **informação de risco** — tem de estar à vista para a ganância ser uma decisão. Substitui o "sem contador de XP permanente" da primeira versão deste documento, pela razão exacta que o 33 dá: um jogador com 5.000 almas joga diferente de um com 200, e para isso tem de as ver.
+
+**Ressurreição em co-op** (33 §4 + WP10): o morto vê o **contador do minuto** no centro-baixo do seu ecrã; o parceiro vê um **feixe âmbar** no corpo e, a ≤ 8 m, o tempo restante; durante a canalização de 5–7 s, barra de progresso sobre o corpo, visível aos dois.
+
+**O que o HUD não tem, de propósito:** minimapa (WP8), números de dano a saltar dos inimigos (*alternativa descartada:* damage numbers — transformam leitura de animação em leitura de contabilidade; a barra do inimigo em lock-on chega), missões/objectivos (não há — WP8B).
 
 **Barra do inimigo comum:** só com lock-on — sobre a cabeça, 120×8 px, com a postura por baixo (120×4). Some 2 s depois de soltar o lock.
 
@@ -49,11 +55,11 @@ Posições em coordenadas de 1920×1080; tudo escala com a opção "tamanho do H
 
 ## Configurações — a lista completa
 
-**Gráficos:** ecrã inteiro/janela · resolução (nativa por omissão) · escala dinâmica on/off (on) · limite de fps (60) · brilho · **sem presets de qualidade** — o jogo tem um alvo único (Lei 4); *alternativa descartada:* low/medium/high — três combinações a equilibrar e testar para duas máquinas conhecidas é trabalho sem cliente.
+**Gráficos:** ecrã inteiro/janela · resolução (nativa por omissão) · escala dinâmica on/off (on) · limite de fps (60) · brilho · **perspectiva: 1.ª ou 3.ª pessoa** ([`29-perspectiva.md`](29-perspectiva.md) — troca fora de combate; em 1.ª: FOV 75–90°, balanço de passo on/off) · **sem presets de qualidade** — o jogo tem um alvo único (Lei 4); *alternativa descartada:* low/medium/high — três combinações a equilibrar e testar para duas máquinas conhecidas é trabalho sem cliente.
 
 **Áudio:** 5 canais separados (geral, música, efeitos, ambiente, vozes — WP12) · o aviso sonoro de telegrafia **não tem slider próprio**: vive em "efeitos", que nunca deve ir a zero (aviso ao tentar).
 
-**Comandos:** remapeamento total de teclado e rato (o mapa do WP1 é a omissão) · sensibilidade do rato · inverter Y · o esquema de comando (WP1) aparece se um comando for ligado.
+**Comandos:** remapeamento total de teclado e rato (o mapa do WP1 é a omissão, **+ `G` habilidade de classe, `V` arte de arma, `X`/`Z` skills activas** — este documento valida as teclas da regra dos comandos do 34: todas ✅ livres no mapa) · sensibilidade do rato · inverter Y · o esquema de comando (WP1) aparece se um comando for ligado.
 
 **Jogo:** tamanho do HUD (×1,0 / ×1,25 / ×1,5) · mostrar pistas de interacção (on) · legendas das pistas sonoras (off — escreve "passos atrás", "grito de alerta"; a acessibilidade que faz falta a eles é bem-vinda, conformidade formal não é objectivo) · idioma: **português, único** (briefing: jogam os dois em português).
 
