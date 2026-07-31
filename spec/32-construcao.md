@@ -48,11 +48,9 @@ Nenhuma trava o M0, mas todas chegam cedo:
 
 | | Onde |
 |---|---|
-| O que se perde ao morrer | pergunta 10 — decide o tom, e o M2 vai precisar |
-| Como se cura | pergunta 7 |
-| Existe armadura | pergunta 14 |
+| ~~Morte · cura · armadura~~ | **fecharam no [`33-morte-e-almas.md`](33-morte-e-almas.md)** (perguntas 10, 7 e 14) — o M2 herda almas, frascos e peças |
 | Drops em co-op · escala de chefe a dois | perguntas 5 e 6 — o M3 precisa |
-| 6 zonas ou 10+ | assinalado na pergunta 4 — o M5 precisa |
+| ~~6 zonas ou 10+~~ | **decidido 10+; o WP8 cresceu para 10** ([`17-mundo.md`](17-mundo.md)) |
 | Lock-on em primeira pessoa | [`29-perspectiva.md`](29-perspectiva.md) — o M2 precisa |
 
 **Quando bateres numa destas, não adivinhes:** escreve a pergunta na issue de coordenação e segue para outra coisa. São decisões dos donos, e são baratas de responder e caras de refazer.

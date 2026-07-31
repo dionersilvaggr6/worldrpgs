@@ -39,7 +39,7 @@ Uma reserva é uma linha na tabela. Custa trinta segundos e evita deitar fora um
 | WP15 | `spec/24-plano.md` | Fable | 31-07 | ✅ entregue no branch — M0–M7, M1 já medido, riscos com resposta |
 | WP15B | `spec/28-testes.md` | Fable | 31-07 | ✅ entregue no branch — protocolos, sintomas, ordem de afinação. **Todos os 20 pacotes do briefing estão escritos.** |
 
-| **Realinhamento A3** | os 11 docs do PR #11 vs `DECISOES.md` | Fable | 31-07 | 🔨 em curso — branch `claude/game-spec-completa-81xz3g` (almas, ressurreição, armadura, comandos, perspectiva, qualidade) |
+| **Realinhamento A3** | os 11 docs do PR #11 vs `DECISOES.md` | Fable | 31-07 | ✅ entregue no branch — almas/ressurreição (WP9/WP10/WP6/WP7), catálogo+comandos (WP3/WP4/WP5), perspectiva+qualidade+10 zonas (WP12/WP11/WP8). **Falta do A3: a passagem do protocolo de referências (31) pelos 11 docs** — é o próximo pacote |
 
 *Estados: 🔨 em curso · ✅ entregue · ⏸️ parado (dizer porquê)*
 

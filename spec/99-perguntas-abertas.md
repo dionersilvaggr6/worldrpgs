@@ -69,7 +69,7 @@ Se o mago nível 3 lança mais depressa que o nível 1, o nível está a dar van
 ### 4. ~~"Mapa grande" é quanto?~~ ✅ RESPONDIDA
 `[DECIDIDO]` (Mateus + Rico, 31-07-2026) — **~30 min a pé, 10+ biomas** (escala Elden Ring). A fatia 1 continua a ser Brumal sozinha; o resto cresce zona a zona. O WP8 herda três obrigações: densidade mínima por zona, estratégia de reutilização de peças, e viagem rápida. Ver [`05-mundo.md`](05-mundo.md).
 
-⚠️ **Diferença por acertar:** o WP8 ([`17-mundo.md`](17-mundo.md)) desenhou **6 zonas** de 2–3 min + núcleo final (~35–45 min de travessia). Os minutos batem certo com a decisão; o **número de zonas não** — foram aprovados 10+. Ou o WP8 cresce para 10, ou os donos revêem o número. Não é bloqueio: a fatia 1 é uma zona só.
+✅ **Diferença acertada (realinhamento 31-07):** o WP8 **cresceu para 10 zonas + núcleo** ([`17-mundo.md`](17-mundo.md)) — 4 zonas novas com nome e gancho `[FABLE]`, ~30 min de travessia total, como decidido.
 → [`05-mundo.md`](05-mundo.md)
 
 ---

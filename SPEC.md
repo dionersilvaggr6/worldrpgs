@@ -34,12 +34,12 @@ RPG 3D para PC, **primeira ou terceira pessoa à escolha**, souls-like, co-op pa
 | 10 | [Fatia 1](spec/10-fatia-1.md) | O primeiro jogável: sistemas completos, conteúdo mínimo, critérios de feito | 🟢 **aprovada pelos dois** (31-07) |
 | 11 | [Atributos e fórmulas](spec/11-formulas.md) | Os 6 atributos, fórmula de dano, curvas dos inimigos da fatia | 🟠 números de partida `[FABLE]` (WP2) — validam-se no protótipo |
 | 12 | [Classes](spec/12-classes.md) | As 8 fichas, habilidades especiais, skills, e a tensão das evoluções proposta | 🟠 `[FABLE]` (WP3) — evoluções aguardam decisão A/B dos dois |
-| 13 | [Magia, por dentro](spec/13-magia.md) | Bem/mal com mecânica proposta, catálogo, cargas, pergaminhos, encantamentos | 🟠 `[FABLE]` (WP4) — bem/mal aguarda o sim dos dois (pergunta 8) |
-| 14 | [Armas e equipamento](spec/14-equipamento.md) | Catálogo completo de armas, Lei 3 em números, frasco de cura, armadura em proposta (WP5) | 🟠 proposta `[FABLE]` — pergunta 7 e 14 aguardam os dois |
+| 13 | [Magia, por dentro](spec/13-magia.md) | Bem/mal **aprovado** — a fatia usa as duas escolas (a Ruína passou ao mal), catálogo, cargas, pergaminhos | 🟢 `[FABLE]` (WP4), realinhado 31-07 |
+| 14 | [Armas e equipamento](spec/14-equipamento.md) | Catálogo de armas, Lei 3 em números, frasco, **armadura por peças (decidida)**, artes de arma na tecla V (WP5) | 🟢 `[FABLE]`, realinhado 31-07 ao 33/34 |
 | 15 | [Bestiário](spec/15-inimigos.md) | IA comum, as 7 raças em fichas com telegrafias, encontros da fatia (WP6) | 🟠 proposta `[FABLE]` — raças aguardam o sim do Mateus |
 | 16 | [Chefes](spec/16-chefes.md) | Regras de camada da pirâmide, regras de todo o chefe, ficha completa do Vorgar (WP7) | 🟠 proposta `[FABLE]` — total da pirâmide (pergunta 13) fica com os dois |
-| 17 | [Mundo e mapa](spec/17-mundo.md) | Rede de 6 zonas em números, dungeons com a regra das duas pistas, traçado de Brumal, tensões 2 e 4 propostas (WP8) | 🟠 proposta `[FABLE]` — escala e soft gating aguardam os dois |
-| 18 | [Progressão e loot](spec/18-progressao.md) | Curva por zona, loot instanciado, o 40% de quem ajuda, moeda única proposta (WP9) | 🟠 proposta `[FABLE]` — perguntas 5 e 10 continuam dos dois |
+| 17 | [Mundo e mapa](spec/17-mundo.md) | **10 zonas + núcleo (~30 min, decidido)**, dungeons com a regra das duas pistas, pontos de descanso, traçado de Brumal (WP8) | 🟢 `[FABLE]`, realinhado 31-07 — a divergência 6-vs-10 fechou para cima |
+| 18 | [Progressão e loot](spec/18-progressao.md) | Curva por zona **em almas**, loot instanciado, o 40% de quem ajuda, o que se larga ao morrer (WP9) | 🟠 `[FABLE]`, realinhado 31-07 — pergunta 5 continua deles |
 | 19 | [Multiplayer e rede](spec/19-rede.md) | O 12:34 resolvido (dois sacos de estado), transporte, autoridade dividida, quedas (WP10) | 🟠 proposta `[FABLE]` — transporte e fogo amigo aguardam os dois |
 | 20 | [Interface](spec/20-interface.md) | HUD ao pixel, mochila 24, magias 3-visíveis, menus, configurações completas (WP11) | 🟠 proposta `[FABLE]` — resolve o 04:55 das magias no ecrã |
 | 21 | [Arte, render, animação, efeitos e som](spec/21-arte-render.md) | Direcção de arte, orçamentos da Lei 4, lista de animações, fichas de efeitos, som completo (WP12) | 🟠 proposta `[FABLE]` — estilo (pergunta 15) aguarda os dois |
@@ -48,17 +48,6 @@ RPG 3D para PC, **primeira ou terceira pessoa à escolha**, souls-like, co-op pa
 | 24 | [Plano de construção](spec/24-plano.md) | M0–M7 com verificação jogável por marco; M1 já medido; riscos com resposta (WP15) | 🟢 pronto para o Opus 5 — é o documento de arranque da construção |
 | 25 | [Câmara, controlo e game feel](spec/25-controlo.md) | Câmara, input buffer, latência, hit-stop (WP1B) | 🟠 proposta `[CLAUDE]`, números afinam-se no protótipo |
 | 26 | [Narrativa e NPCs](spec/26-narrativa.md) | Proposta mínima + as 7 perguntas que só uma gravação responde (WP8B) | 🟠 guião de gravação pronto, decisões são dos donos |
-| 14 | [Equipamento](spec/14-equipamento.md) | Armas, armadura, cura, melhoria (WP5) | 🟠 `[FABLE]`, entregue 31-07 |
-| 15 | [Inimigos](spec/15-inimigos.md) | Bestiário das 7 raças, IA comum, encontros (WP6) | 🟠 `[FABLE]`, entregue 31-07 |
-| 16 | [Chefes](spec/16-chefes.md) | Camadas e a ficha completa do Vorgar (WP7) | 🟠 `[FABLE]`, entregue 31-07 |
-| 17 | [Mundo](spec/17-mundo.md) | Rede de zonas, dungeons, traçado de Brumal (WP8) | 🟠 `[FABLE]`, entregue 31-07 |
-| 18 | [Progressão](spec/18-progressao.md) | Curva, loot, economia, morte (WP9) | 🟠 `[FABLE]`, entregue 31-07 |
-| 19 | [Rede](spec/19-rede.md) | Co-op, autoridade, transporte (WP10) | 🟠 `[FABLE]`, entregue 31-07 |
-| 20 | [Interface](spec/20-interface.md) | HUD, mochila, menus, configurações (WP11) | 🟠 `[FABLE]`, entregue 31-07 |
-| 21 | [Arte e render](spec/21-arte-render.md) | Animações, efeitos, som (WP12) | 🟠 `[FABLE]`, entregue 31-07 |
-| 23 | [Técnico](spec/23-tecnico.md) | Engine, sistemas, ferramentas (WP14) | 🟠 `[FABLE]`, entregue 31-07 |
-| 24 | [Plano](spec/24-plano.md) | M0–M7, riscos (WP15) | 🟠 `[FABLE]`, entregue 31-07 |
-| 28 | [Testes](spec/28-testes.md) | Protocolos, sintomas, afinação (WP15B) | 🟠 `[FABLE]`, entregue 31-07 |
 | 34 | [**Catálogo e comandos**](spec/34-catalogo-e-comandos.md) | 30 armaduras, ~20 armas/classe, e a regra de que toda a habilidade diz como se activa | 🟢 escala e regra fixadas |
 | 33 | [**Morte e almas**](spec/33-morte-e-almas.md) | Almas, frascos, armadura, ressurreição em co-op | 🟢 fecha as perguntas 7, 10 e 14 |
 | 32 | [**Construção**](spec/32-construcao.md) | **A fase nova** — regras de código, o que muda no fluxo | 🟢 arrancou 31-07 |
