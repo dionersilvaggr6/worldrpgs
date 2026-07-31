@@ -39,6 +39,8 @@ Uma reserva é uma linha na tabela. Custa trinta segundos e evita deitar fora um
 | WP15 | `spec/24-plano.md` | Fable | 31-07 | ✅ entregue no branch — M0–M7, M1 já medido, riscos com resposta |
 | WP15B | `spec/28-testes.md` | Fable | 31-07 | ✅ entregue no branch — protocolos, sintomas, ordem de afinação. **Todos os 20 pacotes do briefing estão escritos.** |
 
+| **Realinhamento A3** | os 11 docs do PR #11 vs `DECISOES.md` | Fable | 31-07 | 🔨 em curso — branch `claude/game-spec-completa-81xz3g` (almas, ressurreição, armadura, comandos, perspectiva, qualidade) |
+
 *Estados: 🔨 em curso · ✅ entregue · ⏸️ parado (dizer porquê)*
 
 > Nota (31-07, Fable): uma segunda sessão do Fable chegou a duplicar WP1–WP4 sem ver estas reservas (os branches ainda não estavam na `main`). Resolvido a favor das versões com PR aberto e protótipo — as duplicadas foram descartadas no merge, e é por casos destes que a reserva se faz com push imediato.
