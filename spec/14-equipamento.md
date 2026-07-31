@@ -25,6 +25,23 @@ Uma família = um conjunto de animações (a unidade de custo do WP12/WP13). A f
 
 Famílias novas entram com os frames fechados **no WP1** (é ele o dono de frames e MV) — este catálogo fixa identidade, números de dano e requisitos.
 
+## A arte de arma — a tecla partilhada (regra dos comandos, 34 §2)
+
+**Cada arma tem uma arte, activada numa tecla só — `V`** `[FABLE]` (livre no mapa do WP1; o WP11 valida). O que a tecla faz depende da arma na mão — é o único modo que escala para as **~20 armas por classe (~120)** decididas no 34. A arte é da **família** por omissão (variações por arma são a excepção, não a regra):
+
+| Família | Arte de arma (na tecla `V`) | Custo |
+|---|---|---|
+| Espadas retas | **Guarda-alta** — postura 1,2 s: o próximo golpe recebido é aparado como parry de escudo | 20 stamina |
+| Adagas | **Passo-navalha** — passo lateral curto (1,5 m) + corte no mesmo tempo | 15 |
+| Machados grandes | **Giro** — 360°, acerta tudo em 2,3 m, MV 1,8 | 35 |
+| Cajados | **Varrer arcano** — empurra 2 m tudo em cone (0 dano, espaço) | 15 |
+| Lanças | **Muralha de pontas** — recuo + estocada dupla | 22 |
+| Martelos | **Terramoto** — pancada no chão, postura em área | 30 |
+| Arcos | **Tiro carregado** — a puxa segura vira perfurante | munição |
+| Escudos | a investida já é a arte (tabela do WP1) | 15 |
+
+O catálogo das 120 constrói-se **arma a arma por cima da fatia** (34 §1: "nunca de uma vez"); cada arma nova traz a linha completa — dano, requisito, escala, **e a arte, com a coluna "tecla existe? ✅ partilhada"**.
+
 ## Catálogo de armas
 
 As 5 da fatia repetem os valores já fixados (WP1/WP2), para o catálogo viver num sítio só. Colunas: dano base · requisito · escala (atributo + peso do WP2: forte 1,0 · médio 0,6 · fraco 0,3) · alcance.
@@ -75,7 +92,7 @@ O modelo do WP1: escudo absorve **100% físico / 50% mágico**, custo de stamina
 
 | Parâmetro | Valor |
 |---|---|
-| **Frasco de Bruma** | 3 cargas na fatia 1; ampliável até 5 (ampliações escondidas, uma por zona — Lei 2: exploração paga em opções permanentes) |
+| **Frasco de Bruma** | 3 cargas na fatia 1; ampliável até 5 (ampliações escondidas, uma por zona — Lei 2: exploração paga em opções permanentes). **Fecha o `[EM ABERTO]` do 33 §2: melhorar = MAIS frascos, nunca mais fortes** `[FABLE]` — a cura fixa em 40% mantém a conta de TTK legível para quem desenha chefes; *alternativa descartada:* frascos mais fortes — cura variável esconde a margem real do jogador ao parceiro e ao WP15B |
 | Cura por gole | 40% dos PV máximos |
 | Beber | 1,2 s (estado UsoDeItem do WP1), movimento a 50%; **dano interrompe e perde a carga** — beber é decisão, não reflexo |
 | Recarrega | ao descansar no ponto de renascimento (o mesmo que restaura cargas de magia — WP4 — e renasce inimigos) |
@@ -84,17 +101,30 @@ O modelo do WP1: escudo absorve **100% físico / 50% mágico**, custo de stamina
 
 Outros consumíveis (facas de arremesso, bombas, antídotos) ⬜ — entram com a economia (WP9), debaixo da regra: consumível dá conveniência, **nunca a única resposta a um padrão**.
 
-## Armadura — a pergunta 14, em formato de decisão
+## Armadura — DECIDIDA (31-07): existe, por peças, e cada uma é uma escolha
 
-Nunca dita na gravação. Duas opções:
+A pergunta 14 fechou ao contrário da minha recomendação, e fechou bem: [`33-morte-e-almas.md`](33-morte-e-almas.md) §3 e [`34-catalogo-e-comandos.md`](34-catalogo-e-comandos.md) §1 mandam — **armadura existe, ~30, por peças (elmo/peito/mãos/pernas), inimigos largam o que vestem, e nenhuma peça existe só para dar +2 de defesa.** O sistema `[FABLE]`, sobre a saída `[CLAUDE]` do 33:
 
-**Opção A — sem sistema de armadura.** Defesa vem da Constituição (WP2); cada classe tem vestes visuais próprias, fixas. *Ganha:* a esquiva é uma constante do jogo (Lei 1 sem asteriscos), custo de arte mínimo (Lei 4: 6 modelos, não 18), zero equilíbrio extra. *Perde:* uma gaveta clássica de loot de corpo.
+**As regras do corpo:**
 
-**Opção B — 3 arquétipos de peso** (leve/médio/pesado, conjunto único): o peso troca i-frames por defesa — e o WP1 já deixou escrito que, se armadura entrar, as classes de peso do rolamento definem-se **lá**. *Ganha:* uma escolha de corpo com sabor souls. *Perde:* triplica a arte de personagem e torna a leitura do parceiro variável.
+| Regra | Valor |
+|---|---|
+| Peças | 4 espaços: elmo, peito, mãos, pernas — misturáveis à vontade |
+| **Peso total** → esquiva | leve (0–8): rolamento base do WP1 · médio (9–16): distância 3,0 m · pesado (17+): **0,66 s, i-frames 15** (frames 5–20), distância 2,6 m — troca, não upgrade |
+| Resistências | **por tipo** (corte, contundente, fogo, raio, mal/bem), nunca "defesa" plana — escolher armadura é ler o inimigo que vem |
+| Tecto da Lei 1 | nenhuma peça reduz > **10%** do dano de um golpe; o conjunto todo > **25%** — dentro do padrão dos 40% da Constituição (WP2) |
+| **Habilidade por peça** (34 §1) | **passiva ou condicional, nunca de tecla** — 30 armaduras com 30 teclas era impossível; com 30 efeitos passivos é trivial. Cada peça responde a "porque usaria esta?" sem ser com número maior |
+| Drop | o que o inimigo veste pode cair (fichas no WP6); chefes largam uma peça garantida (WP7) |
 
-**A minha recomendação: A** — para duas pessoas com Iris Xe, a B compra uma gaveta de loot ao preço do triplo da arte e de uma esquiva com nota de rodapé. O loot de corpo pode vir de **talismãs** (acessórios sem malha — ver ideias).
+**Esqueleto do catálogo** — ~30 peças = ~7 conjuntos temáticos × 4 + avulsas; os três primeiros, para dar chão (o resto cresce zona a zona, com os inimigos que as vestem):
 
-**Precisa de decisão de:** Mateus + Rico. Até lá, a spec segue com A (é o estado da fatia 1 no WP0).
+| Conjunto | Origem | Peso | Exemplo de habilidade (tipo) |
+|---|---|---|---|
+| **Couro do Lanceiro** | orcs de Brumal | leve | grevas: *sprint custa −20% de stamina* (passiva) |
+| **Placas do Brutamontes** | orcs de Brumal | pesado | espaldar: *o primeiro golpe que te interromperia por segundo não interrompe, 1×/20 s* (condicional) |
+| **Elmo do Guarda-Portão** | Vorgar (peça única) | médio | *a Investida do Guarda quebra +10 de postura* (passiva — casa com a skill dele) |
+
+**Fatia 1:** as vestes iniciais de classe (sem stats) + **as 3 linhas acima como drops** — 9 peças, chega para provar o sistema sem crescer a fatia. *Teste da Lei 1:* peso compra-se com esquiva, resistência tem tecto, habilidade nunca é número puro — a armadura muda **como se joga**, nunca decide se se vence. ✅ Os **talismãs** da secção de ideias continuam válidos como loot sem malha.
 
 ## Montarias
 
@@ -119,7 +149,8 @@ O cavalo (05:15, `[SUGERIDO]`) continua guardado — um mapa de minutos não pre
 
 ## O que continua aberto
 
-- **Pergunta 7** (frasco vs poções) e **pergunta 14** (armadura) — deles, com as propostas acima na mesa
+- ~~Perguntas 7 e 14~~ — **fechadas em 31-07** ([`33-morte-e-almas.md`](33-morte-e-almas.md)): frascos recarregáveis ✅ (o Frasco de Bruma é a implementação) e armadura por peças ✅ (sistema acima)
+- O catálogo das ~120 armas e ~30 peças — cresce arma a arma por cima da fatia (34 §1)
 - Preços e drops de tudo isto → WP9 · Frames das famílias novas → WP1 quando entrarem
 
 ## Ligações

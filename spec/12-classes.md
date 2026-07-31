@@ -27,6 +27,8 @@ Verificação contra os requisitos do WP2: o Berserker cumpre o machadão **exac
 
 ## Habilidade especial — uma por classe `[FABLE]`
 
+**Como se activam** (regra dos comandos, [`34-catalogo-e-comandos.md`](34-catalogo-e-comandos.md)): as seis são **activas, numa tecla dedicada de habilidade — `G`** `[FABLE]` (perto do WASD, livre no mapa do WP1; o WP11 valida). Uma tecla para as seis, porque cada personagem só tem uma habilidade de cada vez. *Alternativa descartada:* uma tecla por habilidade — seis teclas para seis coisas que nunca coexistem é desperdício do orçamento de entrada.
+
 Nenhuma escala com atributos ou nível; custos e tempos fixos. *Teste da Lei 2, comum a todas:* cada uma dá algo **para fazer**, nunca um multiplicador passivo.
 
 | Classe | Habilidade | O que faz | Custo / recarga |
@@ -45,17 +47,17 @@ Nenhuma escala com atributos ou nível; custos e tempos fixos. *Teste da Lei 2, 
 `[DECIDIDO]` (06:04, 07:02) — skills activáveis definem o que o personagem é bom a fazer. O sistema `[FABLE]`:
 
 - **Formato: lista, não árvore.** Cada skill é uma técnica concreta; sem pré-requisitos em cadeia. *Alternativa descartada:* árvore — profundidade ilusória, e com 8 classes é combinatória a mais para dois jogadores.
-- **2 slots activos**; troca livre fora de combate.
+- **2 slots**; troca livre fora de combate. **Activação** (regra dos comandos): skills **condicionais/passivas** não gastam tecla; skills **activas** usam a tecla de skill — **`X`** para o slot 1, **`Z`** para o slot 2 `[FABLE]` (o WP11 valida; na prática quase todas as assinaturas abaixo são condicionais — só o Chute é activo).
 - **Na fatia 1: a técnica de assinatura de cada classe** (1 skill, já no slot). Como se ganham mais: proposta — **largadas por chefes e dungeons** (a Lei 2 aplicada ao loot: chefes dão opções novas, não números). Fica `[FABLE]` a confirmar com o resto da economia (WP9).
 
-| Classe | Técnica de assinatura | Efeito |
-|---|---|---|
-| Guerreiro | **Chute** | quebra-guarda: 30 de postura, empurra 2 m; 10 stamina |
-| Feiticeiro | **Conjuração em passo** | o Dardo (só ele) conjura-se a andar a 70%, em vez dos 40% |
-| Tanque | **Muro** | bloquear nos primeiros 6 frames do bloqueio custa 0 de stamina — o timing vira recompensa |
-| Assassino | **Golpe às costas** | ataques pelas costas: MV ×1,5 (posicional, não passivo de números: exige estar lá) |
-| Berserker | **Braço de ferro** | o pesado carregado do machadão pode segurar-se indefinidamente |
-| Paladino | **Imposição** | o parry dele também apara **projécteis mágicos** |
+| Classe | Técnica de assinatura | Efeito | Tipo · como se activa | Tecla existe? |
+|---|---|---|---|---|
+| Guerreiro | **Chute** | quebra-guarda: 30 de postura, empurra 2 m; 10 stamina | **activa** · tecla de skill (`X`) | ✅ |
+| Feiticeiro | **Conjuração em passo** | o Dardo (só ele) conjura-se a andar a 70%, em vez dos 40% | passiva · — | ✅ n/a |
+| Tanque | **Muro** | bloquear nos primeiros 6 frames do bloqueio custa 0 de stamina — o timing vira recompensa | condicional · dispara ao bloquear no tempo | ✅ n/a |
+| Assassino | **Golpe às costas** | ataques pelas costas: MV ×1,5 (posicional, não passivo de números: exige estar lá) | condicional · dispara pela posição | ✅ n/a |
+| Berserker | **Braço de ferro** | o pesado carregado do machadão pode segurar-se indefinidamente | condicional · segurar o pesado | ✅ n/a |
+| Paladino | **Imposição** | o parry dele também apara **projécteis mágicos** | condicional · dispara ao aparar | ✅ n/a |
 
 *Teste da Lei 1:* nenhuma técnica mexe em janelas nem em regeneração — mudam opções de jogada. O Golpe às costas multiplica MV, mas só existe se o jogador **conquistar a posição**: é habilidade paga em posicionamento, não estatística. ✅
 

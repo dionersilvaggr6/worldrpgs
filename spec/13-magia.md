@@ -10,7 +10,9 @@
 - Encantamentos existem; "espada de fogo" `[DECIDIDO]` (00:38 → 00:45)
 - Do WP1: conjurar trava o movimento a 40%; **interrupção gasta a carga**; o cajado é o plano B sem custo. Do WP2: `cargas = 4 + ⌊Sabedoria/4⌋`; dano de magia escala com Sabedoria (peso 1,0).
 
-## A proposta para o bem e o mal `[FABLE]` — pede o sim dos dois
+## A proposta para o bem e o mal — ✅ **APROVADA** `[DECIDIDO]` (Mateus + Rico, 31-07-2026)
+
+A pergunta 8 fechou: **bem = controlo sem preço; mal = mais forte, pago em PV à vista.** E com uma instrução que muda a fatia: **a fatia 1 usa as duas escolas** (DECISOES.md, manhã de 31-07).
 
 **Bem = controlo sem preço. Mal = poder com preço, pago em vida.**
 
@@ -38,15 +40,19 @@
 
 Colunas: custo em cargas · tempo de conjuração · alcance · dano base (escala com Sab, WP2) · o verbo. Telegrafia de cada magia é obrigatória no WP12 (efeitos): quem está à frente — inimigo **ou parceiro** — tem de ler o que aí vem.
 
-### Fatia 1 — escola do bem, as três do WP0
+### Fatia 1 — as três do WP0, agora com as duas escolas
 
-| Magia | Cargas | Tempo | Alcance | Dano base | O verbo | Fatia 1? |
-|---|---|---|---|---|---|---|
-| **Dardo** | 1 | 0,8 s | 18 m (projéctil, 20 m/s) | 45 | ferir à distância, barato e fiável | ✅ |
-| **Ruína** | 3 | 1,6 s (parado) | área raio 4 m, até 12 m; marca no chão 0,5 s antes | 70 | mudar uma sala inteira | ✅ |
-| **Égide** | 2 | 0,5 s | o próprio | — | absorve 120 de dano OU dura 2,5 s; hiper-armadura enquanto dura | ✅ |
+`[FABLE]` (realinhamento 31-07) — a decisão "a fatia usa as duas escolas" cumpre-se **sem crescer a fatia**: das três magias aprovadas, **a Ruína passa à escola do mal** — era já a de maior impacto, e é nela que o preço de sangue se testa a jogar. Pela regra do ~1,5× por carga, o dano sobe de 70 para **90**, pago com **8% dos PV**. *Alternativa descartada:* acrescentar uma 4.ª magia do mal — crescia a fatia aprovada "como está", e o WP0 manda mais do que a conveniência.
 
-Três verbos, zero escalões — a Lei 2 tal como o WP0 a fixou. O Feiticeiro de arranque (Sab 14 → **7 cargas**) faz 7 Dardos, ou 2 Ruínas + 1 Dardo, ou 2 Égides + 3 Dardos: o bolso único é o puzzle.
+| Magia | Escola | Cargas | Tempo | Alcance | Dano base | Preço | O verbo | Fatia 1? |
+|---|---|---|---|---|---|---|---|---|
+| **Dardo** | bem | 1 | 0,8 s | 18 m (projéctil, 20 m/s) | 45 | — | ferir à distância, barato e fiável | ✅ |
+| **Ruína** | **mal** | 3 | 1,6 s (parado) | área raio 4 m, até 12 m; marca no chão 0,5 s antes | **90** | **8% dos PV** | mudar uma sala inteira — e sangrar por isso | ✅ |
+| **Égide** | bem | 2 | 0,5 s | o próprio | — | — | absorve 120 de dano OU dura 2,5 s; hiper-armadura enquanto dura | ✅ |
+
+Três verbos, zero escalões — a Lei 2 tal como o WP0 a fixou. O Feiticeiro de arranque (Sab 14 → **7 cargas**, 380 PV) faz 7 Dardos, ou 2 Ruínas + 1 Dardo (pagando ~61 PV), ou 2 Égides + 3 Dardos: o bolso único é o puzzle, e agora o corpo também entra na conta.
+
+**Como se activa** (regra dos comandos, 34): **`C` conjura a magia seleccionada; `F` roda entre as 3 equipadas** — já no mapa do WP1. ✅
 
 ### Fatia 2+ — esboço com um verbo cada (⬜ tudo)
 
