@@ -27,12 +27,36 @@ node transcribe.mjs "C:/Users/mjnol/Videos/<ficheiro>.mp4" \
   --topic "Sessao N de brainstorm do WorldRPGs: RPG souls-like 3D co-op..."
 ```
 
-## Estado — 31-07-2026
+## Estado — 31-07-2026, fim da sessão do Fable
 
 - Sessão 1 gravada (30-07, 13m13s), transcrita e especificada
-- Repo criado, estrutura montada, 11 documentos de spec escritos
-- **O código vive em [`game/`](game/)** — decisão nova do Mateus (31-07, 17:41), que substitui o "zero código": estava num disco só, sem cópia nem revisão possível. Histórico completo trazido por `git subtree`
-- Próximo: sessão 2, com o guião de `spec/99-perguntas-abertas.md`
+- Repo criado, estrutura montada, 20 pacotes de spec escritos
+- **O código vive em [`game/`](game/)** — decisão do Mateus (31-07, 17:41), que substitui o "zero código": estava num disco só, sem cópia nem revisão possível. Histórico completo trazido por `git subtree` (PR #13, **merged**)
+- **Método novo** (Mateus, 31-07): voltas pequenas — reservar → escrever spec + `game/data` → PR → uma linha na issue #3 → pegar no próximo **sem esperar**. O Claude revê e faz merge sozinho.
+
+### Onde ficámos — 3 PRs abertos, empilhados por esta ordem
+
+| PR | Volta | O que traz | Estado |
+|---|---|---|---|
+| [#14](https://github.com/MateusJuni0/worldrpgs/pull/14) | 1 | 12 fichas de bioma (`spec/49` + `biomes.json`); o greybox lê a paleta de Brumal da ficha | aberto, mergeable |
+| [#15](https://github.com/MateusJuni0/worldrpgs/pull/15) | 2 | 12 fichas de raça (`spec/50` + `races.json`); laço bioma↔raça validado nos dois sentidos | aberto, empilhado no #14 |
+| [#16](https://github.com/MateusJuni0/worldrpgs/pull/16) | 3 | WP5 camada 1 (`spec/51` + `armor.json` + famílias/kits no `weapons.json`) | aberto, empilhado no #15 |
+
+**Auto-teste: 130 → 226 verificações, 0 falhas.** Guarda de coerência ✅ nos três.
+
+### ⏳ À espera do Mateus — 6 instruções do Rico por confirmar
+
+Registadas em [`DECISOES.md`](DECISOES.md) (31-07 · noite), citadas na issue #3. **Um 👍 dele fecha-as como `[DECIDIDO]`:** kit inicial por classe · menos almas por chefe repetido em co-op · armadura de chefe cai e equipa-se · aleatório só nos inimigos comuns · pool de drop filtrada pelo bioma · **a identidade do Assassino** (furtividade + velocidade + sangramento + habilidade nova, duas adagas de arranque).
+
+### 🔨 O que ficou a meio, e é o próximo trabalho
+
+1. ⚠️ **A identidade do Assassino** — o kit (duas adagas) está feito; **o desenho não**. Está marcado *em revisão* em [`spec/12-classes.md`](spec/12-classes.md) com os três guardas que a proposta tem de passar. *Um painel de subagentes foi lançado para isto e morreu no limite de sessão (31-07, ~21h) sem produzir nada — não há trabalho perdido, há trabalho por fazer.*
+2. **Volta 4 — magia** (a maior e a favorita do Mateus): escolas, grelha de verbos sem casas vazias, melhoria em 3 eixos
+3. Voltas 5–10: bestiário · instâncias de arma · chefes · sistemas · mundo · alinhamento
+
+### Números por implementar que estão em dados e ainda não jogam
+
+`golpes_universais` (7 golpes, incl. o **em corrida** — o que mais muda o combate) · `armor.json` inteiro (o equipar é do WP11/M2) · a segunda adaga do Assassino (`[PROTO]` cosmética: o offhand só sabe ser escudo) · as habilidades Eco, Passo Sombra e Julgamento.
 
 ## Decisões que definem tudo
 

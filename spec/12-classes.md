@@ -34,11 +34,21 @@ Nenhuma escala com atributos ou nível; custos e tempos fixos. *Teste da Lei 2, 
 | Guerreiro | **Ímpeto** | avanço de 6 m que termina em golpe (MV 1,2) — o gap closer que mais ninguém tem | 30 stamina · 15 s |
 | Feiticeiro | **Eco** | repete a última magia lançada **sem gastar carga** — "um feitiço a mais", como o Mateus disse (08:53) | 60 s |
 | Tanque | **Provocação** | inimigos num raio de 8 m atacam-no durante 4 s — a ferramenta de co-op ("segura o brutamontes") | 30 s |
-| Assassino | **Passo Sombra** | a próxima esquiva (janela de 3 s) atravessa o inimigo; o primeiro golpe pelas costas nos 2 s seguintes é backstab (MV 2,0) | 25 s |
+| Assassino | **Passo Sombra** ⚠️ **em revisão** | a próxima esquiva (janela de 3 s) atravessa o inimigo; o primeiro golpe pelas costas nos 2 s seguintes é backstab (MV 2,0) | 25 s |
 | Berserker | **Fúria** | 8 s de hiper-armadura em todos os golpes; **não pode bloquear nem esquivar enquanto dura** — troca a defesa por avanço | 45 s |
 | Paladino | **Julgamento** | 10 s com a arma carregada de **raio** — muda o tipo de dano, e com ele as fraquezas que contam (WP6) | 40 s |
 
 *Alternativas descartadas:* as ideias soltas da gravação que eram números ("mais vida, mais força", 08:39) — a correcção do Rico às 09:21 manda; e habilidades com recurso próprio de usos — mais um contador no ecrã sem ganho de decisão.
+
+### ⚠️ O Assassino está em revisão — instrução do Rico (31-07)
+
+> *"o assassino tera furtividade velocidade e dano de sangramento, cria alguma habilidade especial, a arma de inicio do assassino pode ser duas adagas."* — Rico, 31-07-2026 (⏳ falta a confirmação do Mateus)
+
+**Já feito** ([`51-familias.md`](51-familias.md) §5): o kit inicial passou a **duas adagas** + máscara e botas de pano. A segunda adaga é `[PROTO]` cosmética — o offhand só tem mecânica de escudo hoje; o parry continua a funcionar porque a adaga está na lista do WP1.
+
+**Por fechar, e é a parte de desenho:** as três palavras dele — **furtividade**, **velocidade**, **dano de sangramento** — mais a habilidade especial nova. O `Passo Sombra` acima ou evolui para isso ou dá lugar; a decisão vem com a proposta, não antes. O sangramento liga ao estado alterado proposto em [`51-familias.md`](51-familias.md) §7: **o Assassino é a classe do sangramento**.
+
+⚠️ **Os três guardas que a proposta tem de passar:** a furtividade não pode obrigar a IA nova cara (Lei 4 — Iris Xe) · a velocidade não pode ser "+X%" (Lei 2 — opções, não números) · e nenhuma delas pode fazer do Assassino a classe *correcta* para alguma coisa (Lei 3).
 
 ## Skills
 

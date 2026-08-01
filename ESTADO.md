@@ -191,7 +191,15 @@ Mundo vasto + ~61 chefes + 10+ biomas + ~120 armas + 30 armaduras + ~70 anéis +
 
 | Quem | O quê |
 |---|---|
-| **Fable** | [`prompts/BRIEFING-FABLE-2.md`](prompts/BRIEFING-FABLE-2.md) — o briefing completo |
-| **Rico** | trazer o `worldrpgs-game` para `game/` neste repositório |
+| **Fable** | ⚠️ **a identidade do Assassino** (marcada *em revisão* no [`12-classes.md`](spec/12-classes.md)), depois a **volta 4 — magia** |
+| **Mateus** | ⏳ **6 instruções do Rico à espera do 👍** — [`DECISOES.md`](DECISOES.md), 31-07 · noite. E os PRs #14, #15, #16 |
 | **Donos** | as perguntas 22, 24 e 28 do [`99`](spec/99-perguntas-abertas.md), e uma gravação para a narrativa |
-| **Claude** | rever o que chega, gerar as imagens quando o catálogo abrir |
+| **Claude** | rever o que chega · ⭐ **gerar os 11 ícones de armadura** (fatia 1, prioridade sobre biomas e raças) |
+
+### As três voltas de 31-07, e onde estão
+
+| PR | Volta | Auto-teste |
+|---|---|---|
+| [#14](https://github.com/MateusJuni0/worldrpgs/pull/14) | 12 fichas de bioma · fecha as perguntas 4 e 13 | 130 → **160** |
+| [#15](https://github.com/MateusJuni0/worldrpgs/pull/15) | 12 fichas de raça · o motor das 24 fichas fica completo | → **194** |
+| [#16](https://github.com/MateusJuni0/worldrpgs/pull/16) | famílias, armadura, kits · a tensão da armadura resolvida | → **226** |
