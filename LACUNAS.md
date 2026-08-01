@@ -10,6 +10,39 @@
 
 ---
 
+## 🐛 O ecrã de inventário rebenta ao seleccionar itens — apanhado a jogar, 01-08
+
+**O Rico abriu o jogo para ver como estava e apanhou isto em segundos.** Não foi um auditor: foi alguém a carregar num item.
+
+```
+SCRIPT ERROR: Invalid call 'String' constructor: espada recta
+   at: InventoryMenu._show_detail (res://src/ui/inventory_menu.gd:218)
+```
+
+Dispara em `_select_item` **e** em `_set_filter`, ou seja **sempre que se abre a lista ou se muda de filtro**. O painel de detalhe fica sem as linhas de facto.
+
+### A causa, verificada e não adivinhada
+
+⭐ **Em Godot 4, `String(x)` não é uma conversão universal — é um construtor com assinaturas fixas, e `String(int)` não existe.** Confirmei-o a correr:
+
+```
+Parse Error: No constructor of "String" matches the signature "String(int)".
+```
+
+E o `weapons.json` declara `"hands": 1` — um inteiro. Como vem de `data.get()`, o tipo é `Variant` e o compilador **não pode apanhar**; falha só em runtime, na mão do jogador. Foi por isso que passou nos 9703 testes: nenhum exercita este caminho com uma arma real.
+
+### A correcção
+
+**`String(…)` → `str(…)`** nas linhas de `src/ui/inventory_menu.gd` que recebem valores de dados: **218** (`hands`, int), **219** (`range`, float) e **227** (`refinement`). O `str()` aceita qualquer `Variant`; é essa a função de conversão.
+
+⚠️ **As outras oito ocorrências do ficheiro (186, 187, 213, 217, 221, 223, 225, 229, 231) são seguras hoje** porque os valores são texto — mas são a mesma armadilha à espera do primeiro campo numérico. Trocar todas por `str()` custa o mesmo e fecha a classe inteira.
+
+⭐ **E o teste que faltava**, para isto não voltar: um caso que abra o detalhe de **uma arma, uma armadura e um material reais do catálogo** e verifique que as linhas de facto saem preenchidas. O painel a ficar vazio é o sintoma, e é silencioso.
+
+**⛔ Não lhe toquei:** `inventory_menu.gd` está na lista de ficheiros com dono do [`prompts/PARA-O-OPUS-DO-RICO.md`](prompts/PARA-O-OPUS-DO-RICO.md) §3.
+
+---
+
 ## 🔎 Auditoria de 01-08 — 23 achados confirmados
 
 **Corrida pelo Fable com 35 agentes em quatro lentes** (a camada de rede nova · privacidade e licenças num repo público · coerência da spec · a regra dos números em dados). ⭐ **Cada achado foi verificado por um segundo agente que abriu o ficheiro** — os que não se confirmaram foram deitados fora, e alguns eram do próprio auditor a não perceber o contexto.
