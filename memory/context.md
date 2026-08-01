@@ -11,7 +11,7 @@ Especificar por inteiro um RPG 3D souls-like co-op para dois, antes de escrever 
 | | |
 |---|---|
 | **Mateus** | Dono do projeto. Grava as sessões, aprova. |
-| **Rico** (= Dioner) | Co-autor do design. Tem ideias, commita, propõe. Tratar sempre por Rico. |
+| **Rico** | Co-autor do design. Tem ideias, commita, propõe. Tratar sempre por Rico. |
 | **Claude** | Transcreve, organiza, estrutura a spec, aponta tensões e escopo. Não inventa design. |
 | **Fable (do Rico)** | Vai construir, a partir do que estiver escrito. |
 

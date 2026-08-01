@@ -17,7 +17,7 @@ Fluxo: eles falam numa chamada → o OBS grava → transcrição → o que ficou
 | | |
 |---|---|
 | **Mateus** (`MateusJuni0`) | Dono. Aprova tudo. Faz o merge. |
-| **Rico** (`dionersilvaggr6`, = Dioner) | Co-autor do design. Abre PRs. **Tratar sempre por Rico.** |
+| **Rico** | Co-autor do design. Abre PRs. **Tratar sempre por Rico.** |
 | **Fable** | Agente do Rico. Detalha a spec, seguindo `prompts/BRIEFING-FABLE.md`. |
 | **Opus 5** | Quem vai construir, depois da spec estar feita. |
 
@@ -57,7 +57,7 @@ Por ordem de gravidade:
 
 - **Não faças merge.** Quem aprova é o Mateus. Comentas o veredito e ficas por aí.
 - **Não reescrevas a spec ao rever.** Aponta, não corrijas por cima.
-- **Não trates o Rico por Dioner.**
+- **Trata-o sempre por Rico** — nunca por outro nome, mesmo que apareça numa conta, num commit ou numa citação. *(A regra dizia o outro nome para o proibir, o que o punha num repositório público. Funciona igual sem ele.)*
 
 ## Coordenação entre agentes
 

@@ -23,7 +23,7 @@ Comando:
 
 ```bash
 cd ~/.openclaw/workspace/tools/session-transcriber
-node transcribe.mjs "C:/Users/mjnol/Videos/<ficheiro>.mp4" \
+node transcribe.mjs "<caminho-do-video>.mp4" \
   --out ~/.openclaw/workspace/projects/worldrpgs/design \
   --speakers "Mateus,Rico" \
   --topic "Sessao N de brainstorm do WorldRPGs: RPG souls-like 3D co-op..."
@@ -76,4 +76,4 @@ Registadas em [`DECISOES.md`](DECISOES.md) (31-07 · noite), citadas na issue #3
 
 - **O microfone do Mateus falhou na sessão 1.** ~20 falas dele saíram `[ininteligível]`, incluindo a resposta à pergunta dos drops (05:40). Verificar o áudio dele no OBS antes da sessão 2.
 - `gemini-2.5-flash` no transcritor. Os `gemini-3.x` dão 429 no free tier.
-- As chaves `GEMINI_API_KEY*` do `workspace/.env` estão mortas; a que funciona está hardcoded em `workspace/wiki/enrique-rocha/transcribe.mjs`.
+- **A configuração de chaves do transcritor está fora deste repositório** e resolve-se na máquina de quem transcreve. ⚠️ *(A linha que aqui estava dizia onde existia uma chave válida em texto simples. Isso é um mapa para quem procura, e este repositório é público — removida a 01-08-2026. **A chave em causa deve ser rodada**: apagar a linha não a apaga do histórico do git.)*

@@ -10,6 +10,52 @@
 
 ---
 
+## 🔎 Auditoria de 01-08 — 23 achados confirmados
+
+**Corrida pelo Fable com 35 agentes em quatro lentes** (a camada de rede nova · privacidade e licenças num repo público · coerência da spec · a regra dos números em dados). ⭐ **Cada achado foi verificado por um segundo agente que abriu o ficheiro** — os que não se confirmaram foram deitados fora, e alguns eram do próprio auditor a não perceber o contexto.
+
+### ✅ Já corrigidos neste PR
+
+| | O quê |
+|---|---|
+| 🔒 | **O `BRAIN.md` dizia onde existia uma chave Gemini válida em texto simples**, com o caminho do ficheiro. A chave **não** está neste repositório — mas a linha era um mapa para quem procura, e o repo é público. ⚠️ **A chave tem de ser rodada pelo Mateus:** apagar a linha não a apaga do histórico do git |
+| 🔒 | **`BRAIN.md`** tinha um caminho absoluto com o nome de utilizador real de uma das máquinas |
+| 🔒 | **`CLAUDE.md` e `memory/context.md`** ligavam o nome próprio real do Rico à conta de GitHub. A regra *"não lhe chames X"* nomeava X para o proibir — reescrita para funcionar sem o nomear |
+| 🔒 | **O `LACUNAS.md` repetia 9 vezes os nomes das transcrições privadas** que o `.gitignore` protege. Falha minha: limpei o `MAPA.md` e deixei estas |
+| ✅ | O gerador do mapa (secção abaixo) |
+
+### 🔴 Para quem tem o ficheiro — os dois que travam
+
+| | Achado | Dono |
+|---|---|---|
+| 🔴 | ⭐ **O guarda da regra de ouro nunca falha nada.** O `game_data.gd` acumula os problemas de coerência em `load_errors` e faz `push_error` — mas **`push_error` não muda o código de saída do Godot**, e `grep -rn "load_errors"` mostra que **ninguém lê essa lista**. O `self_test.gd` sai pelo seu próprio contador. Ou seja: os dados podem divergir da spec e **tudo passa a verde**. Correcção de uma linha: `_check(GameData.load_errors.is_empty(), …)` no `self_test.gd` | dono do `self_test.gd` |
+| 🔴 | ⭐ **O `spec/56` ensina o contrário de um `[DECIDIDO]`.** A §6 inteira especifica o desbloqueio de loja por tomos — *"o vendedor vende o que TU encontraste"* — e o Mateus revogou isso a 01-08 (*"os vendedores vendem tudo do jogo nao so o que eu achei"*). O documento **não tem banner de camada histórica**, ao contrário do 13/16/17/34. ⚠️ **E o `SPEC.md` é pior:** resume o 56 pela regra revogada **e carimba-o 🟢** — quem lê o índice sai já com a regra errada sem abrir o ficheiro. *Atenuante: a loja ainda não existe em código, portanto é risco e não regressão* | dono do `56` e do `SPEC.md` |
+
+### 🟠 Coerência — o que a spec afirma e não bate com o disco
+
+| | Achado | Dono |
+|---|---|---|
+| 🟠 | **O `ESTADO.md` conta mal o projecto:** diz *"18 ficheiros `.gd` · 17 catálogos JSON"*; são **121** `.gd` em `game/src/` e **19** JSON. É a tabela que o próprio documento apresenta como *"o retrato do projecto"* | dono do `ESTADO.md` |
+| 🟠 | **O número de testes está desactualizado em nove sítios:** `9531` no `ESTADO.md` (×6), `44`, `60`, `63`, `99`; e **`8435`** no `game/CLAUDE.md` e no `CODEX-CONTEXTO.md` — que são lidos no arranque de cada tarefa. O valor real é **9703** | vários |
+| 🟠 | **O `spec/64` proíbe nominalmente a 7.ª origem que o Mateus decidiu.** Diz *"só aparecem as seis classes"*; o `DECISOES.md` diz que o Mago do Mal entra no ecrã de criação. ⚠️ **Não é para reescrever já** — o `weapons.json` declara o cartão impossível por falta de relicário, atributos e postura. Precisa de banner, não de reescrita | dono do `64` |
+| 🟠 | **O `ESTADO.md` diz que não existem coisas que existem:** o ecrã de criação (`game_shell.gd`), o `appearance.json` e a roda de feitiços (`spell_wheel.gd`) estão todos no disco e testados | dono do `ESTADO.md` |
+| 🟠 | **A minha própria entrada anterior sobre o 19.º catálogo estava meia errada** — o guarda já conta 19. O que ainda vale: `status_effects.json` é **contado e não verificado**, e o `game_data.gd` não o expõe | Fable *(corrijo)* |
+
+### 🟠 A regra de ouro — números de combate fora dos dados
+
+| | Achado | Dono |
+|---|---|---|
+| 🟠 | **`player.gd:765` tem o arco de ataque `110°` escrito em código.** Não existe chave em JSON nenhum. ⭐ O caminho do inimigo faz o contrário e faz bem: lê `arc_degrees` do `enemies.json`, declarado 79 vezes | dono do `player.gd` |
+| 🟠 | **`player.gd:308,311` tem o limiar toque-vs-segurar como `9` à mão, duplicado em duas linhas que têm de concordar.** São os 150 ms que o `spec/25` fixa | dono do `player.gd` |
+| 🟠 | **`combat.json` tem `cast_move_multiplier` que ninguém lê** — o runtime usa outra chave, no `spells.json`. O único leitor é um teste, que assim verifica um número morto | dono do combate |
+| 🟠 | ⭐ **16 testes tautológicos** no `status_effect_self_test.gd`: comparam um bloco do JSON com outro bloco do **mesmo** JSON. Passam sempre e não provam nada — o valor devia estar ancorado ao literal da spec | dono dos estados |
+
+### 🌐 Na minha camada de rede — corrijo eu
+
+Sete achados, todos reais. Estão na secção da rede, mais abaixo, e vão no PR seguinte.
+
+---
+
 ## 🔒 O gerador do mapa publicava nomes de ficheiros privados — corrigido 01-08
 
 **Encontrado ao investigar um link partido, e é maior do que o link.**
@@ -74,7 +120,7 @@ O `MAPA.md` é gerado pelo [`tools/mapa.mjs`](tools/mapa.mjs), que **varria o di
 | ✅ | ~~**Os 70 anéis não tinham cliente e cinco inventavam sistemas**~~ **RESOLVIDO** — vocabulário fechado de clientes; cinco efeitos reescritos sem travessia/matchmaking novos | [`74`](spec/74-fecho-da-revisao-2.md) §2 · pergunta 55 |
 | ✅ | ~~**Cinco dos seis instrumentos mágicos não existiam**~~ **DEPENDÊNCIA FECHADA** — só `cajado` é prometido e tem ficha 1,0; os outros cinco saíram das escolas até 56 lhes dar slot/comportamento | [`74`](spec/74-fecho-da-revisao-2.md) §2 |
 | 🔴 | ⚠️ **O limitador de 60 de `settings_system.gd` colide com FIFO:** na zona completa limpa, FIFO + `Engine.max_fps=60` deu p99 **29,691 ms** e 1% low 32,9; cap 120 deu p99 **16,666 ms** e 1% low 56,6, mas ainda um pico isolado de 33,33 ms. `[CODEX]` recomenda omissão 120 quando FIFO está activo (razão: única variante que fez passar p99 sem cortar imagem; sem cap foi rejeitado a 19,469 ms). **Falta o dono de `game/src/autoload/settings_system.gd` consumir `presentation.recommended_engine_cap_with_fifo`; esta árvore não pode editar esse ficheiro.** O teste quente integrado 2+5 e o tecto de pior frame continuam abertos | [`PERF`](game/PERF.md) · [`74`](spec/74-fecho-da-revisao-2.md) §5 · [`medição`](medicoes/animacao-esqueleto-2026-08-01.json) |
-| 🔴 | ⚠️ **O guarda de coerência não passa na `main` actual:** `MAPA.md` ainda liga a `design/ideas/2026-07-31_0006__2026-07-30-23-52-46.ideas.md` e `design/transcripts/2026-07-31_0006__2026-07-30-23-52-46.md`, mas ambos estão ausentes. Regenerar o mapa ou restaurar as fontes na árvore que possui esses ficheiros; desempenho não lhes mexeu | `node tools/check-coerencia.mjs` em 01-08-2026 · `MAPA.md` linhas 47–48 |
+| 🔴 | ⚠️ **O guarda de coerência não passa na `main` actual:** `MAPA.md` ainda liga a *(um registo de sessão privado, gitignored)* e *(um registo de sessão privado, gitignored)*, mas ambos estão ausentes. Regenerar o mapa ou restaurar as fontes na árvore que possui esses ficheiros; desempenho não lhes mexeu | `node tools/check-coerencia.mjs` em 01-08-2026 · `MAPA.md` linhas 47–48 |
 | 🔴 | ⚠️ **O novo catálogo autorizado `game/data/status_effects.json` eleva `game/data` de 18 para 19 JSON, mas o guarda tem o total 18 hardcoded e `GameData` ainda não o inclui na validação central.** O dono de `tools/check-coerencia.mjs` deve aceitar/validar o 19.º catálogo e o dono de `game/src/autoload/game_data.gd` deve expô-lo ou reconhecer que `StatusEffectManager` o carrega; esta árvore só pode escrever no catálogo e em `game/src/status/`. Até lá, o auto-teste passa 9703/9703 mas o guarda acrescenta este terceiro erro aos dois links já conhecidos. | `game/data/status_effects.json` · `node tools/check-coerencia.mjs` em 01-08-2026 |
 | 🔴 | ⚠️ **O conjunto residente “zona actual + todas as vizinhas” ganhou orçamento e fail-safe, mas não ganhou a decisão nem a prova no alvo.** `[CODEX]` reservou 1 638/2 560 MiB para mundo/arte: Fojo com 6 zonas impõe **256 MiB incrementais por zona**; a proposta `actual + transição` permite 512 MiB por zona. Na Iris Xe/15,73 GiB local, uma Brumal elevou working set **481,1→550,2 MiB** e a candidata partilhada chegou a **619,4 MiB**; memória passou, mas `Greybox.build()` publicou a vizinha em **113,004 ms** e foi recusado pelo gate de 20 ms. **Falta repetir no i5-1334U/8 GiB do Rico e medir seis zonas finais distintas, que ainda não existem.** | [`ORCAMENTO`](game/src/world/zones/ORCAMENTO.md) · [`medição local`](game/src/world/zones/medicao-streaming-local.json) · revisão 2 · [`69`](spec/69-catalogo-do-mundo.md) §6 · pergunta 50 |
 | 🔴 | ⚠️ **Invocações sem tecto colidem com o máximo de oito actores animados.** Um encontro de 2 jogadores + 5 inimigos já ocupa 7; sobra uma vaga para invocações dos dois, chefe portátil e qualquer reserva. Sem orçamento global, a promessa do mago pode exceder a Lei 4 na primeira conjuração extra | revisão 2 · [`21`](spec/21-arte-render.md) §2 · [`52`](spec/52-mago-do-mal.md) §10 · pergunta 51 |
@@ -143,7 +189,7 @@ Relatório completo: [`docs/REVISAO-3.md`](docs/REVISAO-3.md). As linhas `⏳` s
 | 🟠 | **Artes de arma têm dados, mas não têm acção de input/runtime.** `controls.json` não declara `weapon_art` e `player.gd` não executa `arte_1mao`/`arte_2maos`; os perfis iniciais marcam `blocked_missing_input_action` em vez de fingir que a arte funciona. | quatro perguntas do fio solto · `spec/34` §2b |
 | 🟠 | **Alinhar a spec antiga com a decisão nova.** `spec/12`, `51` e `64` ainda dizem três `longsword`/exactamente seis origens; a decisão do Mago do Mal e a queixa de 01-08 são posteriores. Esta árvore não é dona desses ficheiros. | `DECISOES.md` 01-08 · pedido directo do Mateus |
 | 🟠 | **O agente `armas-e-melhorias` deve reconciliar os perfis e posturas `[CODEX]` do Tanque/Paladino e a stamina/base da katana.** Razão dos perfis: a origem tem de se sentir na mão; alternativa descartada: três IDs diferentes com o mesmo ataque ou pose genérica. Não sobrescrever silenciosamente os frames/posturas que esse agente medir. | possível colisão anunciada pelo Mateus |
-| 🟠 | **O guarda global está vermelho por dois links partidos em `MAPA.md`.** Os alvos `design/ideas/2026-07-31_0006__2026-07-30-23-52-46.ideas.md` e `design/transcripts/2026-07-31_0006__2026-07-30-23-52-46.md` não existem. Os 18 JSON/2797 contratos deram 0 erros; `MAPA.md` é gerado e não pertence a esta árvore. | `node tools/check-coerencia.mjs` em 01-08 |
+| 🟠 | **O guarda global está vermelho por dois links partidos em `MAPA.md`.** Os alvos *(um registo de sessão privado, gitignored)* e *(um registo de sessão privado, gitignored)* não existem. Os 18 JSON/2797 contratos deram 0 erros; `MAPA.md` é gerado e não pertence a esta árvore. | `node tools/check-coerencia.mjs` em 01-08 |
 | 🟠 | **O Godot gerou três sidecars `.gd.uid` não rastreados.** São `game/src/tests/repro_inicio.gd.uid` e os dois `game/src/weapons/starting*.gd.uid`; a propriedade concedida cobre apenas os `.gd`, por isso não os incluí. Os donos devem decidir se estes UIDs gerados entram ou se a política de `.gitignore` os cobre. | import obrigatório + execução directa do contrato |
 | 🟠 | **O repro termina com `9 ObjectDB instances were leaked at exit`.** Todas as seis origens chegaram a `ARRANQUE OK` e os saves foram limpos, mas a fuga pertence ao ciclo de vida do repro/casca, fora dos ficheiros desta árvore; o dono deve fechar os nós/referências e voltar a medir. | `repro-inicio.tscn` headless em 01-08 |
 | ⏳ | **Mago do Mal preparado, não inventado.** `loadouts._pending_mago_do_mal` regista a 7.ª origem `[DECIDIDO]`, mas não contém `main/offhand`: falta o relicário no catálogo, atributos e postura executável. Activar só quando esses contratos existirem. | `DECISOES.md` 01-08 · Lei 3 |
@@ -305,7 +351,7 @@ Relatório completo: [`docs/REVISAO-3.md`](docs/REVISAO-3.md). As linhas `⏳` s
 | 🟠 | **`[CODEX]` O céu/luz novo está implementado e medido, mas ainda não entra no nível enquanto o dono de `greybox.gd` não o ligar.** Substituir a construção local de `WorldEnvironment`/`Sun` por `EnvironmentAtmosphere.build_world_environment(preset, palette, biome)` e `EnvironmentAtmosphere.build_sun(preset, biome)`. Razão: céu procedural com sol baixo, bruma por altura e gradação literal dos presets ficaram isolados nos ficheiros do agente do céu; alternativa descartada: editar `greybox.gd` nesta árvore e colidir com o agente de desempenho | `game/src/visual/environment_atmosphere.gd` · `game/src/visual/sky_atmosphere.gd` · `environment_atmosphere_probe.gd` |
 | ✅ | ~~⚠️ **A conversão visual, passos 1–3**~~ **FEITA E MEDIDA 01-08** — paleta de luz/névoa vem da ficha do bioma; contraste, dessaturação e vinheta são graduados; Kenney/KayKit substituem chão, árvores, rochas e Toca com rugosidade. A primeira versão falhou a Lei 4 a 57,4 fps e foi optimizada até 60/60/60 | [`47`](spec/47-do-greybox-ao-visual.md) §4 · [`PERF`](game/PERF.md) |
 | ✅ | ~~**Capturas em todo o marco**~~ **FEITAS 01-08** — seis pontos canónicos revistos depois de cada passo; os PNG finais ficam em `game/captures/` fora do git | [`47`](spec/47-do-greybox-ao-visual.md) §5 |
-| 🔵 | **`MAPA.md` aponta para dois registos de sessão que não existem nesta worktree** — `design/ideas/2026-07-31_0006__2026-07-30-23-52-46.ideas.md` e `design/transcripts/2026-07-31_0006__2026-07-30-23-52-46.md`; a guarda tem 0 erros novos de JSON/contratos, mas termina com estes 2 links partidos preexistentes | `node tools/check-coerencia.mjs` · 01-08 |
+| 🔵 | **`MAPA.md` aponta para dois registos de sessão que não existem nesta worktree** — *(um registo de sessão privado, gitignored)* e *(um registo de sessão privado, gitignored)*; a guarda tem 0 erros novos de JSON/contratos, mas termina com estes 2 links partidos preexistentes | `node tools/check-coerencia.mjs` · 01-08 |
 | 🔵 | **Os 11 documentos antigos não trazem tabela `eles·nós·diferença` nem citam fontes** | [`31`](spec/31-referencias.md) |
 | 🔵 | **Economia de vendedores** — a loja vende conveniência, nunca poder | [`39`](spec/39-estudo-profundo.md) §11 |
 | 🔵 | **Validar as constantes de física a jogar** (marco 2) | [`36`](spec/36-fisica.md) |
@@ -620,7 +666,7 @@ Atributo que controla i-frames *(viola a nossa Lei 1)* · durabilidade *(só ger
 | 🟠 | **Arco exacto existe no pack cru, mas não nos assets importados.** Importar selectivamente `bow_withString.gltf` de KayKit Adventurers para `game/assets/` e registar a proveniência. Até lá `arco` fica deliberadamente sem prop em vez de mentir com uma besta. Katana e haste também pedem modelos finais próprios | `art/models/kaykit-adventurers/` · dono de assets/`ASSETS.md` |
 | 🟠 | **O som ainda só distingue leve/pesado, não família.** Se a identidade sonora por família for exigida, o dono de áudio/dados deve declarar os cues e o dono do `Player` consumi-los; não derivar pelo nome da arma nem hardcodar ficheiros | `game/src/player/player.gd` · catálogo de áudio/dados |
 | 🟠 | **A captura revela roupa procedural negra e blocos de botas/ombro que escondem parte da silhueta.** Não vem dos componentes de arma/golpe e não foi alterado porque `character_visual.gd` pertence a outro agente | `game/src/visual/character_visual.gd` |
-| 🟠 | **A guarda de coerência geral termina com dois links partidos anteriores a esta árvore.** Os alvos `design/ideas/2026-07-31_0006__2026-07-30-23-52-46.ideas.md` e `design/transcripts/2026-07-31_0006__2026-07-30-23-52-46.md` não existem. Os 19 JSON/2797 contratos passam; o dono do mapa deve corrigir ou retirar os dois links | `MAPA.md` · `node tools/check-coerencia.mjs` |
+| 🟠 | **A guarda de coerência geral termina com dois links partidos anteriores a esta árvore.** Os alvos *(um registo de sessão privado, gitignored)* e *(um registo de sessão privado, gitignored)* não existem. Os 19 JSON/2797 contratos passam; o dono do mapa deve corrigir ou retirar os dois links | `MAPA.md` · `node tools/check-coerencia.mjs` |
 ## 🌲 Exploração de Brumal — comparação, implementação e coordenação (01-08-2026)
 
 ### Protocolo do `31`: eles · nós · diferença
@@ -659,4 +705,4 @@ Atributo que controla i-frames *(viola a nossa Lei 1)* · durabilidade *(só ger
 | 🔴 | Persistir `SHORTCUT_ID` em `world.shortcuts_open` quando `shortcut_opened` disparar e chamar `restore_shortcuts(...)` ao carregar. O campo existe, mas não há hoje API de commit; sem dono do save, a prova de restauro só é isolada | sinal `shortcut_opened(shortcut_id)` · `restore_shortcuts(PackedStringArray)` |
 | 🔴 | Repetir captura e medição integradas, sem outros Godot/agentes a renderizar, depois de o greybox limpar a floresta pelas novas rotas. As capturas atuais provam silhueta/grade, mas não podem aprovar a leitura do percurso completo | auditoria do módulo: 5 instâncias de malha; atalho: 2; achado: 2; zero luz dinâmica/partículas |
 | 🔵 | Incluir `exploration_self_test.gd` no agregador central se os donos quiserem que as 25 provas corram dentro de `selftest.tscn`; esta árvore não possui o agregador | comando isolado documentado no ficheiro; o gate central de 9 703 não deve regredir |
-| 🔵 | `node tools/check-coerencia.mjs` encontrou dois links já partidos em `MAPA.md`: `design/ideas/2026-07-31_0006__2026-07-30-23-52-46.ideas.md` e o transcript homónimo. Não pertencem à exploração e esta árvore não altera `MAPA.md` | dono do mapa decide restaurar os dois documentos ou retirar as referências; 19 JSON e 2 797 contratos passaram, estes foram os únicos erros |
+| 🔵 | `node tools/check-coerencia.mjs` encontrou dois links já partidos em `MAPA.md`: *(um registo de sessão privado, gitignored)* e o transcript homónimo. Não pertencem à exploração e esta árvore não altera `MAPA.md` | dono do mapa decide restaurar os dois documentos ou retirar as referências; 19 JSON e 2 797 contratos passaram, estes foram os únicos erros |
