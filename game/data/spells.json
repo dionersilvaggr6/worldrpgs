@@ -247,7 +247,7 @@
     "mv": 1,
     "base_damage": 45,
     "speed": 20,
-    "max_range": 18,
+    "max_range": 26,
     "movement_locked": false,
     "weight": "light",
     "upgrades": [
@@ -309,7 +309,7 @@
     "mv": 1,
     "base_damage": 70,
     "radius": 4,
-    "max_range": 12,
+    "max_range": 18,
     "telegraph_seconds": 0.5,
     "movement_locked": true,
     "weight": "heavy",

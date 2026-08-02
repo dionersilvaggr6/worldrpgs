@@ -47,6 +47,8 @@ var hitstop_frames := 0
 
 var target: Node3D
 var home := Vector3.ZERO
+## Ha quanto tempo o alvo esta fora de vista (spec/15: desiste aos 6 s).
+var _unseen_for := 0.0
 
 var state := State.IDLE
 var _state_frame := 0
@@ -411,6 +413,40 @@ func _target_valid() -> bool:
 	return is_instance_valid(target) and (not target.has_method("is_alive") or target.call("is_alive"))
 
 
+## Larga o alvo e volta ao posto. spec/15: "regressa, e cura ao chegar".
+## A cura ao chegar e do dono do bestiario — aqui trata-se so de largar,
+## que e a metade que impedia fugir.
+func _give_up_chase() -> void:
+	_unseen_for = 0.0
+	target = null
+	_change_state(State.PATROL if not _patrol_points.is_empty() else State.IDLE)
+
+
+## Ve o alvo? Um raio simples do peito ao peito, contra o cenario.
+##
+## NAO usa cone de visao nem memoria de posicao: isso e IA cara, e a Lei 4
+## manda numa Iris Xe. Um raio por inimigo por frame, com no maximo 5 inimigos
+## em cena (o tecto do WP12), custa o que nao se mede.
+func _has_line_of_sight() -> bool:
+	if not _target_valid():
+		return false
+	var space := get_world_3d().direct_space_state
+	if space == null:
+		return true  # sem mundo fisico (testes headless) assume-se que ve
+	var from := global_position + Vector3.UP * 1.2
+	var to: Vector3 = (target as Node3D).global_position + Vector3.UP * 1.2
+	var query := PhysicsRayQueryParameters3D.create(from, to)
+	query.exclude = [get_rid()]
+	# So o cenario tapa a vista. Sem esta mascara, o proprio corpo do jogador
+	# contava como parede e o inimigo desistia com o alvo a frente do nariz.
+	query.collide_with_areas = false
+	var hit := space.intersect_ray(query)
+	if hit.is_empty():
+		return true
+	var blocker: Variant = hit.get("collider")
+	return blocker == target
+
+
 func _refresh_target_actionability() -> void:
 	if not _target_valid() or not target.has_method("state_name"):
 		return
@@ -456,9 +492,35 @@ func _tick_chase(delta: float) -> void:
 		return
 
 	var dist := _distance_to_target()
-	if dist > float(data["leash_range"]):
-		_change_state(State.PATROL if not _patrol_points.is_empty() else State.IDLE)
+
+	# A TRELA MEDE-SE DO POSTO, NAO DO ALVO. spec/15-inimigos.md: "Desistencia:
+	# 6 s sem ver o alvo, ou a 30 m DO POSTO: regressa, e cura ao chegar".
+	#
+	# ⚠️ Estava a medir a distancia ao JOGADOR, e por isso ninguem desistia
+	# nunca. A conta: o jogador corre a 5,0 m/s e o lanceiro persegue a 4,6 —
+	# ganham-se 0,4 m/s, logo eram precisos ~85 s a correr em linha recta para
+	# abrir os 34 m. Uma curva, um obstaculo ou uma pausa de stamina e a
+	# distancia fecha-se outra vez. Na pratica seguiam pelo mapa inteiro, que
+	# foi o que o Rico apanhou a jogar (02-08).
+	#
+	# Medida do posto, a trela passa a ser o que a spec quer: um territorio.
+	# Sair dele e uma decisao do jogador que FUNCIONA — e "fugir tem de
+	# funcionar sempre" e a regra do soft gating (spec/04).
+	if home.distance_to(global_position) > float(data["leash_range"]):
+		_give_up_chase()
 		return
+
+	# A segunda metade da regra de desistencia, que nao existia de todo:
+	# 6 s sem ver o alvo. Sem isto, um inimigo que perde o jogador atras de
+	# uma rocha fica a persegui-lo ate ao fim da trela, em vez de voltar ao
+	# posto — e o jogador nunca aprende que se pode quebrar a perseguicao.
+	if _has_line_of_sight():
+		_unseen_for = 0.0
+	else:
+		_unseen_for += delta
+		if _unseen_for >= float(data.get("give_up_seconds", 6.0)):
+			_give_up_chase()
+			return
 
 	_face_target(delta)
 	_gap_timer -= delta

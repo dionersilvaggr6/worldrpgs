@@ -44,9 +44,29 @@ Colunas: custo em cargas · tempo de conjuração · alcance · dano base (escal
 
 | Magia | Cargas | Tempo | Alcance | Dano base | O verbo | Fatia 1? |
 |---|---|---|---|---|---|---|
-| **Dardo** | 1 | 0,8 s | 18 m (projéctil, 20 m/s) | 45 | ferir à distância, barato e fiável | ✅ |
-| **Ruína** | 3 | 1,6 s (parado) | área raio 4 m, até 12 m; marca no chão 0,5 s antes | 70 | mudar uma sala inteira | ✅ |
+| **Dardo** | 1 | 0,8 s | **26 m** (projéctil, 20 m/s) | 45 | ferir à distância, barato e fiável | ✅ |
+| **Ruína** | 3 | 1,6 s (parado) | área raio 4 m, até **18 m**; marca no chão 0,5 s antes | 70 | mudar uma sala inteira | ✅ |
 | **Égide** | 2 | 0,5 s | o próprio | — | absorve 120 de dano OU dura 2,5 s; hiper-armadura enquanto dura | ✅ |
+
+### ⚠️ O alcance subiu a 02-08, e a razão é uma conta
+
+`[FABLE]` — o Rico jogou e disse que *"o alcance de magia está muito curto"*. Fui ao número em vez de afinar a olho, e o problema não era o alcance em si:
+
+| | |
+|---|---|
+| Os inimigos dão por ti a | **16 m** (`aggro_range`) |
+| O Dardo chegava a | **18 m** |
+| Margem para abrir com magia | ⚠️ **2 metros** |
+
+⭐ **Com 2 m de margem, a magia nunca chega a ser uma opção à distância** — lanças já dentro do raio de consciência deles, e a luta é sempre ao perto. Não é a magia que era fraca: era o alcance a estar *colado* ao aggro.
+
+**A regra nova, e é dela que saem os números:** o alcance de ataque à distância mede-se **contra o `aggro_range`, não em abstracto**. Dardo = aggro + 10 m; Ruína = aggro + 2 m (é a de área, e paga em tempo de conjuração o que não paga em alcance).
+
+A 4,6 m/s de perseguição, 10 m de margem são **2,2 s** — dois lançamentos antes do contacto. É o suficiente para a magia abrir a luta sem a resolver.
+
+*Alternativa descartada:* baixar o `aggro_range` dos inimigos em vez de subir o alcance. **Perdia mais do que ganhava** — o aggro curto faz inimigos que ignoram o jogador à frente do nariz, e isso lê-se como bug, não como desenho.
+
+⚠️ **O que isto não quebra:** kitar continua travado pelo anti-kite dos 4 s (WP1) — quem se afasta a lançar vê o inimigo mudar para comportamento de fecho. E o número volta a validar-se a jogar; se ainda parecer curto, o próximo passo é o `aggro_range`, não mais alcance.
 
 Três verbos, zero escalões — a Lei 2 tal como o WP0 a fixou. O Feiticeiro de arranque (Sab 14 → **7 cargas**) faz 7 Dardos, ou 2 Ruínas + 1 Dardo, ou 2 Égides + 3 Dardos: o bolso único é o puzzle.
 

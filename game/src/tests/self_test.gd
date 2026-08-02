@@ -378,7 +378,7 @@ func _test_task5_execution_contracts() -> void:
 	if GameData.has_method("spell_delivery_contract"):
 		var dardo_contract: Dictionary = GameData.call("spell_delivery_contract", "dardo") as Dictionary
 		_check(float(dardo_contract.get("speed_m_s", 0.0)) == 20.0
-			and float(dardo_contract.get("max_range_m", 0.0)) == 18.0,
+			and float(dardo_contract.get("max_range_m", 0.0)) == 26.0,
 			"T5/Dardo: override da ficha prevalece sobre a forma")
 	for spell_id_value: Variant in GameData.spells.get("order", []):
 		var spell_id := String(spell_id_value)
@@ -1320,8 +1320,8 @@ func _test_spell_catalogue() -> void:
 		"a piromancia usa a media de Inteligencia e Fe")
 	# magia, mana, tempo, dano base, alcance
 	var table := [
-		["dardo", 12, 0.8, 45, 18.0],
-		["ruina", 35, 1.6, 70, 12.0],
+		["dardo", 12, 0.8, 45, 26.0],
+		["ruina", 35, 1.6, 70, 18.0],
 		["egide", 25, 0.5, 0,  0.0],
 	]
 	for row: Array in table:
