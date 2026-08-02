@@ -7,6 +7,7 @@ const ChestRewardServiceScript = preload("res://src/loot/chest_reward_service.gd
 const WorldChestScript = preload("res://src/world/chest.gd")
 const LootFeedbackScript = preload("res://src/loot/loot_feedback.gd")
 const ChestManagerScript = preload("res://src/world/chest_manager.gd")
+const PickupManagerScript = preload("res://src/world/pickup_manager.gd")
 
 var _passed := 0
 var _failed := 0
@@ -22,6 +23,16 @@ class TestHud:
 
 	func toast(message: String, _seconds := 0.0) -> void:
 		last_toast = message
+
+
+class TestInventory:
+	extends Node
+	var added: Dictionary = {}
+
+	func add_item(item_key: String, count: int) -> Dictionary:
+		added[item_key] = int(added.get(item_key, 0)) + count
+		return {"ok": true, "key": item_key, "count": count,
+			"total": int(added[item_key]), "message": "recolhido"}
 
 
 func _initialize() -> void:
@@ -53,13 +64,38 @@ func _run() -> void:
 		"baralho: as dez cartas saem uma vez sem reposicao")
 	_test_all_common_decks(policy, enemies)
 	_test_biome_filter(policy)
+	_test_inventory_addition()
 	_test_chests(policy, economy)
 	_test_interest_comparison(policy)
 	_test_all_item_feedback(policy, enemies)
 	_test_presentation_contract(economy, _load_json("res://data/controls.json"))
 	_test_world_manager(economy, enemies, policy)
+	await _test_enemy_ground_pickup(economy, enemies)
 	print("=== espolio: %d passaram, %d falharam ===" % [_passed, _failed])
 	quit(1 if _failed > 0 else 0)
+
+
+func _test_inventory_addition() -> void:
+	var item_key := "consumivel:resina_bruma"
+	var state := _inventory_state({}, "longsword")
+	var inventory: Dictionary = ((state.get("character", {}) as Dictionary).get(
+		"inventory", {}) as Dictionary)
+	inventory["favorite_items"] = [item_key]
+	inventory["quick_slots"] = [item_key]
+	var inventory_system := root.get_node("InventorySystem")
+	var result: Dictionary = inventory_system.call(
+		"add_item_to_state", state, item_key, 2) as Dictionary
+	var items: Dictionary = (((state.get("character", {}) as Dictionary).get(
+		"inventory", {}) as Dictionary).get("items", {}) as Dictionary)
+	_check(bool(result.get("ok", false)) and int(items.get(item_key, 0)) == 2,
+		"recolha: acrescenta a quantidade ao inventario sem limite")
+	_check((inventory_system.call("quick_slot_candidates", "item", state) as Array).has(item_key),
+		"recolha: um consumivel favorito pode ir para o acesso rapido")
+	var invalid_key := "arma:id_inexistente"
+	var invalid: Dictionary = inventory_system.call(
+		"add_item_to_state", state, invalid_key, 1) as Dictionary
+	_check(not bool(invalid.get("ok", false)) and not items.has(invalid_key),
+		"recolha: ID fora dos catalogos falha fechado")
 
 
 func _test_all_common_decks(policy: RefCounted, enemies: Dictionary) -> void:
@@ -250,6 +286,65 @@ func _test_world_manager(economy: Dictionary, enemies: Dictionary,
 	hud.queue_free()
 	player.queue_free()
 	world.queue_free()
+
+
+func _test_enemy_ground_pickup(economy: Dictionary, enemies: Dictionary) -> void:
+	var world := Node3D.new()
+	root.add_child(world)
+	var player := Node3D.new()
+	root.add_child(player)
+	var hud := TestHud.new()
+	root.add_child(hud)
+	var inventory := TestInventory.new()
+	root.add_child(inventory)
+	var manager = PickupManagerScript.new()
+	root.add_child(manager)
+	var configured: bool = manager.setup(world, player, hud, "brumal", {
+		"economy": economy,
+		"enemies": enemies,
+		"equipment": _load_json("res://data/equipment.json"),
+		"inventory_system": inventory,
+		"mount_chests": false,
+	})
+	var at := Vector3(4.0, 0.0, 0.0)
+	var spawned: Dictionary = manager.present_enemy_reward({
+		"event_id": "enemy:orc_spearman:0",
+		"resolved_card": "arma:dagger",
+	}, at, _inventory_state({"arma:dagger": 1}, "longsword"))
+	var pickups: Array = manager.active_pickups()
+	var audit: Dictionary = pickups[0].call("audit") as Dictionary \
+		if pickups.size() == 1 else {}
+	_check(configured and String(spawned.get("status", "")) == "spawned"
+		and pickups.size() == 1 and int(audit.get("mesh_instances", 0)) == 2
+		and int(audit.get("dynamic_lights", -1)) == 0,
+		"queda: morte apresenta silhueta e brilho baratos no chao")
+	player.global_position = at
+	Input.action_press("interact")
+	await process_frame
+	Input.action_release("interact")
+	await process_frame
+	_check(manager.pickup_count() == 0 and hud.last_toast.contains("Adaga"),
+		"recolha: aproximar e carregar em interact confirma o item visivelmente")
+	var consumable_key := "consumivel:resina_bruma"
+	var second_at := Vector3(5.0, 0.0, 0.0)
+	manager.spawn_pickup(consumable_key, 2, second_at, {"interest": {
+		"name": "Resina de Bruma", "reason": "Prepara outra resposta.",
+	}})
+	player.global_position = second_at
+	Input.action_press("interact")
+	await process_frame
+	Input.action_release("interact")
+	await process_frame
+	_check(int(inventory.added.get(consumable_key, 0)) == 2
+		and manager.pickup_count() == 0,
+		"recolha: item pendente entra no inventario antes de desaparecer")
+	manager.queue_free()
+	hud.queue_free()
+	inventory.queue_free()
+	player.queue_free()
+	world.queue_free()
+	for _cleanup_frame: int in 3:
+		await process_frame
 
 
 func _same_multiset(left: Array, right: Array) -> bool:

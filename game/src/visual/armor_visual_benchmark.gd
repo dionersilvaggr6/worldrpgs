@@ -2,8 +2,9 @@ extends Node
 ## Prova visual e benchmark reproduzível da armadura. Mede baseline e armadura
 ## com a mesma câmara, luz, actores e animação; a saída é JSON na consola.
 
-const ArmorCharacterVisual = preload("res://src/visual/armor_character_visual.gd")
-const ArmorEquipmentScreen = preload("res://src/equipment/armor_equipment_screen.gd")
+const ArmorVisualScript = preload("res://src/visual/armor_visual.gd")
+const EquipmentScreenScript = preload("res://src/ui/equipment_screen.gd")
+const EquipmentScreenSelfTestScript = preload("res://src/ui/equipment_screen_self_test.gd")
 
 const CLASS_IDS := ["warrior", "sorcerer", "tank", "assassin", "berserker", "paladin"]
 
@@ -22,6 +23,9 @@ var _captured := false
 
 func _ready() -> void:
 	_parse_arguments()
+	if _mode == "selftest":
+		_run_self_test.call_deferred()
+		return
 	Bench.set_overlay_visible(false)
 	DisplayServer.window_set_size(Vector2i(1920, 1080))
 	DisplayServer.window_set_vsync_mode(
@@ -90,7 +94,7 @@ func _build_stage() -> void:
 		var class_id := String(CLASS_IDS[index % CLASS_IDS.size()])
 		var visual: CharacterVisual
 		if _mode == "armored":
-			visual = ArmorCharacterVisual.new()
+			visual = ArmorVisualScript.new()
 		else:
 			visual = CharacterVisual.new()
 		visual.position = Vector3(
@@ -99,11 +103,11 @@ func _build_stage() -> void:
 		add_child(visual)
 		visual.setup(1.8, Color.WHITE, true, "body_male", class_id)
 		visual.play_animation("Walk")
-		if visual is ArmorCharacterVisual:
+		if visual.has_method("apply_equipment"):
 			var loadout: Dictionary = (GameData.weapons.get("loadouts", {}) as Dictionary).get(
 				class_id, {}) as Dictionary
-			(visual as ArmorCharacterVisual).apply_armor(loadout.get("pecas", []) as Array)
-			_visual_surfaces += (visual as ArmorCharacterVisual).draw_surface_count()
+			visual.call("apply_equipment", loadout.get("pecas", []) as Array)
+			_visual_surfaces += int(visual.call("draw_surface_count"))
 		else:
 			_visual_surfaces += _surface_count(visual)
 
@@ -112,11 +116,11 @@ func _build_chest_comparison() -> void:
 	var chest_ids := ["couro_peitoral", "ferro_peitoral"]
 	var labels := ["COURO", "FERRO"]
 	for index: int in chest_ids.size():
-		var visual := ArmorCharacterVisual.new()
+		var visual := ArmorVisualScript.new()
 		visual.position = Vector3((float(index) - 0.5) * 2.2, 0.0, 0.0)
 		add_child(visual)
 		visual.setup(1.8, Color.WHITE, false, "body_male", "warrior")
-		visual.apply_armor([chest_ids[index]])
+		visual.apply_equipment([chest_ids[index]])
 		_visual_surfaces += visual.draw_surface_count()
 		var label := Label3D.new()
 		label.text = labels[index]
@@ -132,9 +136,15 @@ func _build_ui_proof() -> void:
 	screen_state.character.inventory.items["armadura:couro_peitoral"] = 1
 	screen_state.character.inventory.equipment.main = ""
 	screen_state.character.inventory.equipment.offhand = ""
-	var screen := ArmorEquipmentScreen.new()
+	var screen := EquipmentScreenScript.new()
 	add_child(screen)
-	screen.open_for_state(screen_state, "tank", "peito", "couro_peitoral")
+	screen.open_for_state(screen_state, "tank", "armor:peito", "armadura:couro_peitoral")
+
+
+func _run_self_test() -> void:
+	var suite := EquipmentScreenSelfTestScript.new()
+	var result: Dictionary = await suite.run(self)
+	get_tree().quit(1 if int(result.get("failed", 0)) > 0 else 0)
 
 
 func _capture() -> void:

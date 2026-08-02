@@ -5,10 +5,14 @@ extends CanvasLayer
 ## labels actuais ao SettingsSystem, portanto remapear nao deixa texto obsoleto.
 
 const REFRESH_SECONDS := 0.10
+const EquipmentScreenScript = preload("res://src/ui/equipment_screen.gd")
+const EMPTY_ITEM_FEEDBACK := "Ranhura de item vazia."
+const UNAVAILABLE_ITEM_FEEDBACK := "Este consumível ainda não tem efeito ligado."
 
 
 class QuickSlotsSurface extends Control:
 	var slots: Array[Dictionary] = []
+	var feedback := ""
 
 
 	func _ready() -> void:
@@ -27,7 +31,8 @@ class QuickSlotsSurface extends Control:
 			"right_hand": origin + Vector2(164.0, 82.0),
 			"item": origin + Vector2(82.0, 164.0),
 		}
-		draw_rect(Rect2(origin - Vector2(8.0, 26.0), Vector2(258.0, 276.0)),
+		var panel_height := 304.0 if feedback != "" else 276.0
+		draw_rect(Rect2(origin - Vector2(8.0, 26.0), Vector2(258.0, panel_height)),
 			Color(0.012, 0.019, 0.022, 0.72))
 		_draw_text(origin + Vector2(0.0, -8.0), "ACESSO RAPIDO", 13,
 			Color("d4b36f"), 242.0, HORIZONTAL_ALIGNMENT_CENTER)
@@ -36,6 +41,9 @@ class QuickSlotsSurface extends Control:
 			if not positions.has(slot_name):
 				continue
 			_draw_slot(Rect2(positions[slot_name] as Vector2, cell_size), slot)
+		if feedback != "":
+			_draw_text(origin + Vector2(0.0, 270.0), feedback, 11,
+				Color("e6c77a"), 242.0, HORIZONTAL_ALIGNMENT_CENTER)
 
 
 	func _draw_slot(rect: Rect2, slot: Dictionary) -> void:
@@ -75,6 +83,8 @@ class QuickSlotsSurface extends Control:
 			_draw_shield(rect, tint)
 			return true
 		var family_id := String(data.get("familia", ""))
+		if family_id == "" and String(data.get("instrument_type", "")) != "":
+			family_id = "cajado"
 		if family_id == "":
 			return false
 		_draw_family_weapon(rect, family_id, tint)
@@ -169,12 +179,17 @@ class QuickSlotsSurface extends Control:
 
 
 	func _binding_hint(slot: Dictionary) -> String:
+		if String(slot.get("slot", "")) == "item":
+			var select_action := String(slot.get("select_action", ""))
+			var use_action := String(slot.get("use_action", ""))
+			var select_label := SettingsSystem.binding_label(select_action).to_upper() \
+				if select_action != "" else "—"
+			var use_label := SettingsSystem.binding_label(use_action).to_upper() \
+				if use_action != "" else "—"
+			return "%s → %s" % [select_label, use_label]
 		var action := String(slot.get("cycle_action", ""))
 		if action != "":
 			return SettingsSystem.binding_label(action).to_upper()
-		if String(slot.get("slot", "")) == "item" \
-				and InputMap.has_action("use_item"):
-			return SettingsSystem.binding_label("use_item").to_upper()
 		return "SEM DIRECCAO"
 
 
@@ -204,16 +219,27 @@ var _inventory: Node
 var _surface: QuickSlotsSurface
 var _player: Node
 var _refresh_elapsed := REFRESH_SECONDS
+var _selected_item_index := 0
+var _restore_input_after_frame := false
+var _input_was_enabled := false
+var _backpack_button: Button
+var _editor_menu: Node
+var _editor_screen: CanvasLayer
+var _pending_hand_slots: Array[String] = []
+var _after_input_scheduled := false
+var _last_item_feedback := ""
 
 
 func setup(inventory: Node) -> void:
 	_inventory = inventory
 	layer = 52
-	process_physics_priority = 100
+	# Precisa de observar a escolha do atalho antes de Player ler use_item.
+	process_physics_priority = -100
 	_surface = QuickSlotsSurface.new()
 	add_child(_surface)
 	if not _inventory.is_connected("inventory_changed", _on_inventory_changed):
 		_inventory.connect("inventory_changed", _on_inventory_changed)
+	call_deferred("_install_gameplay_proof")
 
 
 func _physics_process(_delta: float) -> void:
@@ -222,14 +248,13 @@ func _physics_process(_delta: float) -> void:
 		and not get_tree().paused
 	if not visible:
 		return
-	for slot_name: String in ["right_hand", "left_hand", "item"]:
+	_before_player_input()
+	for slot_name: String in ["right_hand", "left_hand"]:
 		var action := String(_inventory.call("quick_slot_action", slot_name))
 		if action != "" and Input.is_action_just_pressed(action):
-			var result: Dictionary = _inventory.call(
-				"cycle_quick_slot", slot_name, 1) as Dictionary
-			if bool(result.get("ok", false)):
-				_sync_player_from_inventory()
-				_refresh()
+			_pending_hand_slots.append(slot_name)
+	if _restore_input_after_frame or not _pending_hand_slots.is_empty():
+		_schedule_after_player_input()
 
 
 func _process(delta: float) -> void:
@@ -258,18 +283,237 @@ func _sync_player_from_inventory() -> void:
 	var state := GameData.save_state_snapshot()
 	var character: Dictionary = state.get("character", {}) as Dictionary
 	var inventory: Dictionary = character.get("inventory", {}) as Dictionary
-	_player.call("apply_inventory_state", inventory.get("equipment", {}) as Dictionary,
-		_inventory.call("load_profile", state) as Dictionary)
+	var equipment := (inventory.get("equipment", {}) as Dictionary).duplicate(true)
+	for hand: String in ["main", "offhand"]:
+		if equipment.get(hand) == null:
+			equipment[hand] = ""
+	_player.call("apply_inventory_state", equipment,
+		EquipmentScreenScript.load_profile_for_state(state))
 
 
 func _refresh() -> void:
 	_refresh_elapsed = 0.0
 	if not is_instance_valid(_surface) or not is_instance_valid(_player):
 		return
+	var state := GameData.save_state_snapshot()
+	var readable_state := EquipmentScreenScript.state_for_inventory_read(state)
 	_surface.slots = _inventory.call(
-		"quick_slot_snapshot", {}, _player) as Array[Dictionary]
+		"quick_slot_snapshot", readable_state, _player) as Array[Dictionary]
+	for index: int in _surface.slots.size():
+		_surface.slots[index] = _with_instrument_presentation(_surface.slots[index])
+	var item_descriptor := _selected_item_descriptor(state)
+	for index: int in _surface.slots.size():
+		if String(_surface.slots[index].get("slot", "")) == "item":
+			_surface.slots[index] = item_descriptor
+			break
 	_surface.queue_redraw()
 
 
+func _with_instrument_presentation(slot: Dictionary) -> Dictionary:
+	if String(slot.get("kind", "")) != "arma" \
+			or not (slot.get("data", {}) as Dictionary).is_empty():
+		return slot
+	var weapon_id := String(slot.get("key", "")).trim_prefix("arma:")
+	var instruments := GameData.equipment.get("magic_instruments", {}) as Dictionary
+	var instrument := instruments.get(weapon_id, {}) as Dictionary
+	if instrument.is_empty():
+		return slot
+	var presented := slot.duplicate(true)
+	presented["data"] = instrument.duplicate(true)
+	presented["name"] = String(instrument.get("display_name", weapon_id))
+	return presented
+
+
 func _on_inventory_changed() -> void:
+	_resolve_player()
+	_sync_player_from_inventory()
 	_refresh_elapsed = REFRESH_SECONDS
+
+
+func _before_player_input() -> void:
+	_resolve_player()
+	if not is_instance_valid(_player) or get_tree().paused \
+			or not bool(_player.get("input_enabled")):
+		return
+	var hotbar_actions := EquipmentScreenScript.quick_slot_actions()
+	for index: int in hotbar_actions.size():
+		if Input.is_action_just_pressed(hotbar_actions[index]):
+			_selected_item_index = index
+			_clear_item_feedback()
+			_refresh()
+	var use_action := _configured_action("use_item")
+	if use_action == "" or not Input.is_action_just_pressed(use_action):
+		return
+	var item_key := selected_item_key()
+	if item_key == QuickSlotsModel.FLASK_ITEM_KEY:
+		_clear_item_feedback()
+		return
+	# Player ainda trata use_item como frasco. Suprimimos esse fallback quando
+	# a ranhura activa esta vazia ou aponta para outro consumivel: usar X nunca
+	# pode gastar Y. Os restantes efeitos ficam explicitamente na LACUNAS.md.
+	_input_was_enabled = bool(_player.get("input_enabled"))
+	_player.set("input_enabled", false)
+	_restore_input_after_frame = true
+	_show_item_feedback(EMPTY_ITEM_FEEDBACK if item_key == "" \
+		else UNAVAILABLE_ITEM_FEEDBACK)
+	_refresh()
+
+
+func _restore_player_input() -> void:
+	if not _restore_input_after_frame or not is_instance_valid(_player):
+		return
+	_player.set("input_enabled", _input_was_enabled)
+	_restore_input_after_frame = false
+
+
+func _schedule_after_player_input() -> void:
+	if _after_input_scheduled:
+		return
+	_after_input_scheduled = true
+	call_deferred("_after_player_input")
+
+
+func _after_player_input() -> void:
+	_after_input_scheduled = false
+	_restore_player_input()
+	for slot_name: String in _pending_hand_slots:
+		var result: Dictionary = _inventory.call(
+			"cycle_quick_slot", slot_name, 1) as Dictionary
+		if bool(result.get("ok", false)):
+			_sync_player_from_inventory()
+	_pending_hand_slots.clear()
+	_refresh()
+
+
+func selected_item_key() -> String:
+	var state := GameData.save_state_snapshot()
+	var character: Dictionary = state.get("character", {}) as Dictionary
+	var inventory: Dictionary = character.get("inventory", {}) as Dictionary
+	var quick_slots: Array = inventory.get("quick_slots", []) as Array
+	return String(quick_slots[_selected_item_index]) \
+		if _selected_item_index >= 0 and _selected_item_index < quick_slots.size() else ""
+
+
+func visible_item_snapshot() -> Dictionary:
+	if not is_instance_valid(_surface):
+		return {}
+	for slot: Dictionary in _surface.slots:
+		if String(slot.get("slot", "")) == "item":
+			return slot.duplicate(true)
+	return {}
+
+
+func visible_item_feedback() -> String:
+	return _surface.feedback if is_instance_valid(_surface) else ""
+
+
+func _selected_item_descriptor(state: Dictionary) -> Dictionary:
+	var item_key := selected_item_key()
+	var readable_state := EquipmentScreenScript.state_for_inventory_read(state)
+	var entry: Dictionary = _inventory.call(
+		"describe_item", item_key, 1, readable_state) as Dictionary
+	if entry.is_empty():
+		entry = {"key": item_key, "id": item_key.get_slice(":", 1),
+			"kind": "estado" if item_key == "" else item_key.get_slice(":", 0),
+			"name": "Ranhura vazia" if item_key == "" else item_key,
+			"count": 0, "data": {}}
+	entry["slot"] = "item"
+	entry["select_action"] = _selected_hotbar_action()
+	entry["use_action"] = _configured_action("use_item")
+	entry["show_count"] = String(entry.get("kind", "")) == "consumivel"
+	if item_key == QuickSlotsModel.FLASK_ITEM_KEY and is_instance_valid(_player):
+		entry["count"] = int(_player.get("flask_uses"))
+	return entry
+
+
+func _selected_hotbar_action() -> String:
+	var actions := EquipmentScreenScript.quick_slot_actions()
+	return actions[_selected_item_index] \
+		if _selected_item_index >= 0 and _selected_item_index < actions.size() else ""
+
+
+func _configured_action(action: String) -> String:
+	var actions: Dictionary = GameData.controls.get("actions", {}) as Dictionary
+	return action if actions.has(action) and InputMap.has_action(action) else ""
+
+
+func _show_item_feedback(message: String) -> void:
+	_last_item_feedback = message
+	if is_instance_valid(_surface):
+		_surface.feedback = message
+		_surface.queue_redraw()
+	var gameplay := _player.get_parent() if is_instance_valid(_player) else null
+	var hud: Node = gameplay.get("hud") as Node if gameplay != null else null
+	if is_instance_valid(hud) and hud.has_method("toast"):
+		hud.call("toast", message)
+
+
+func _clear_item_feedback() -> void:
+	_last_item_feedback = ""
+	if is_instance_valid(_surface) and _surface.feedback != "":
+		_surface.feedback = ""
+		_surface.queue_redraw()
+
+
+func _input(event: InputEvent) -> void:
+	var inventory_action := _configured_action("inventory_menu")
+	if inventory_action != "" and event.is_action_pressed(inventory_action):
+		# A mochila e criada por GameShell a partir do mesmo evento. O deferred
+		# corre depois, sem pesquisa permanente pela arvore do mundo.
+		call_deferred("_install_backpack_entry")
+
+
+func _install_backpack_entry() -> void:
+	if is_instance_valid(_backpack_button) or is_instance_valid(_editor_screen):
+		return
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	for candidate: Node in scene.find_children("*", "CanvasLayer", true, false):
+		var script := candidate.get_script() as Script
+		if script != null and script.resource_path == "res://src/ui/inventory_menu.gd":
+			_backpack_button = EquipmentScreenScript.install_backpack_button(
+				candidate, _open_editor_from_backpack.bind(candidate))
+			return
+
+
+func _open_editor_from_backpack(menu: Node) -> void:
+	if not is_instance_valid(menu) or is_instance_valid(_editor_screen):
+		return
+	_editor_menu = menu
+	menu.visible = false
+	menu.process_mode = Node.PROCESS_MODE_DISABLED
+	_editor_screen = EquipmentScreenScript.new()
+	_editor_screen.name = "EquipmentScreen"
+	menu.get_parent().add_child(_editor_screen)
+	_editor_screen.closed.connect(_close_editor_to_backpack)
+	_editor_screen.call("open", menu.get("_theme") as Theme,
+		menu.get("_gameplay") as Node, "quick:0")
+
+
+func _close_editor_to_backpack() -> void:
+	if is_instance_valid(_editor_screen):
+		_editor_screen.queue_free()
+	_editor_screen = null
+	if is_instance_valid(_editor_menu):
+		_editor_menu.visible = true
+		_editor_menu.process_mode = Node.PROCESS_MODE_ALWAYS
+	_editor_menu = null
+
+
+func _install_gameplay_proof() -> void:
+	var scene := get_tree().current_scene
+	var scene_script := scene.get_script() as Script if scene != null else null
+	if scene_script == null \
+			or scene_script.resource_path != "res://src/tests/repro_inicio.gd" \
+			or get_node_or_null("QuickSlotsGameplayProof") != null:
+		return
+	var proof_script := load("res://src/ui/quick_slots_gameplay_proof.gd") as Script
+	if proof_script == null:
+		push_error("Prova integrada do acesso rapido em falta.")
+		get_tree().quit(1)
+		return
+	var proof := proof_script.new() as Node
+	proof.name = "QuickSlotsGameplayProof"
+	add_child(proof)
+	proof.call("setup", self)

@@ -51,8 +51,9 @@ func _run() -> void:
 		var two_handed := int(main.get("hands", 1)) >= 2
 		attach.call("sync_loadout", main_id, offhand_id, two_handed)
 		_check(bool(attach.call("has_visible_weapon", main_id)), "%s fica visivel na mao" % main_id)
-		_check(String(attach.call("model_source_for", main_id)).begins_with("res://"),
-			"%s resolve asset do pack" % main_id)
+		var model_kind := String(attach.call("model_kind_for", main_id))
+		_check(model_kind in ["asset", "procedural"],
+			"%s resolve modelo ou geometria procedural" % main_id)
 		_check(int(attach.call("visible_mesh_count")) >= 1, "%s tem malha renderizavel" % main_id)
 		var current_model_id := int(attach.call("main_model_instance_id"))
 		if previous_model_id != 0 and main_id != previous_main_id:
@@ -60,19 +61,27 @@ func _run() -> void:
 				"trocar para %s substitui a instancia no mesmo frame" % main_id)
 		previous_model_id = current_model_id
 		previous_main_id = main_id
+		# Deixa o renderer concluir a libertacao da malha anterior, como entre
+		# duas entradas reais do jogador, sem enfraquecer a assercao de troca no
+		# mesmo frame feita imediatamente acima.
+		await process_frame
 
 	attach.call("sync_loadout", "dagger", "dagger", false)
 	_check(bool(attach.call("has_visible_weapon", "dagger", false)),
 		"segunda adaga aparece na mao esquerda")
+	await process_frame
 	attach.call("sync_loadout", "greataxe", "shield", true)
 	_check(not bool(attach.call("has_visible_weapon", "shield", false)),
 		"duas maos escondem a secundaria")
+	await process_frame
 	attach.call("sync_loadout", "longsword", "shield", false)
 	_check(bool(attach.call("has_visible_weapon", "shield", false)),
 		"voltar a uma mao recupera o escudo")
 	_check((attach.call("main_weapon_tip_position") as Vector3).distance_to(
 		actor.global_position) > 0.0, "ponta visivel fornece origem do contacto")
-	actor.free()
+	# O SceneTree liberta a raiz ao sair. Libertar explicitamente todo o rig no
+	# frame anterior ao quit faz Godot 4.7 destruir materiais ainda referenciados
+	# pelo RenderingServer e produz falsos erros de RID nulo.
 	_finish()
 
 

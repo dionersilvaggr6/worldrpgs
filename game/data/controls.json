@@ -1,8 +1,9 @@
 {
   "_fonte": "spec/01-combate.md + spec/45-controlos-configuraveis.md + spec/73-fecho-dos-buracos-de-integracao.md.",
   "_nota": "O mapa e construido em runtime pelo GameData a partir deste ficheiro - remapear nao exige recompilar. Teclado+rato continua primario porque nenhuma das duas maquinas tem comando; o esquema de comando e um default completo e sintetico a provar em hardware no M2.",
-  "_nota_cast": "O contrato corrente usa F/roda para percorrer os oito favoritos e C para conjurar; ambos sao remapeaveis.",
+  "_nota_cast": "[DECIDIDO] (Mateus, 01-08): com instrumento na secundaria, attack conjura o feitico activo; sem mana faz a pancada da arma principal; heavy_mod/duas maos mantem a pancada como alternativa. F/roda percorre os oito favoritos. [CODEX] cast conserva C/X como alternativa remapeavel ate o dono da UI retirar a instrucao antiga; razao: nao deixar a ajuda actual mentir nesta arvore; alternativa descartada: desligar C/X antes de actualizar GameShell e SpellHud.",
   "_nota_mapa": "[PROTO] G abre o mapa porque M ja pertence a meditar. E apenas o default: a interface le sempre a ligacao corrente de open_map.",
+  "_nota_levantar": "[CODEX] Levantar tem uma accao propria e remapeavel. B e apenas o valor de fabrica; jogador, opcoes, instrucoes e teste consultam sempre raise_dead.",
 
   "gamepad_required": [
     "move_forward", "move_back", "move_left", "move_right", "attack", "heavy_mod",
@@ -34,6 +35,7 @@
     "meditate":       [{ "type": "key", "key": "M" }, { "type": "joypad_button", "button": 12, "label": "d-pad baixo" }],
     "use_item":       [{ "type": "key", "key": "R" }, { "type": "joypad_button", "button": 1, "label": "B/circulo" }],
     "ability":        [{ "type": "key", "key": "V" }, { "type": "joypad_button", "button": 6, "label": "Start/Options" }],
+    "raise_dead":     [{ "type": "key", "key": "B" }],
     "toggle_grip":    [{ "type": "key", "key": "T" }, { "type": "joypad_button", "button": 3, "label": "Y/triangulo" }],
     "interact":       [{ "type": "key", "key": "E" }, { "type": "joypad_button", "button": 2, "label": "X/quadrado contextual" }],
     "inventory_menu": [{ "type": "key", "key": "I" }, { "type": "joypad_button", "button": 4, "label": "Select/View" }],

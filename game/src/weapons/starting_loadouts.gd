@@ -3,31 +3,27 @@ extends RefCounted
 ## Contrato dos kits iniciais. Mantem a escolha de origem separada do catalogo
 ## inteiro: a origem escolhe o arranque, nunca autoriza ou bloqueia uma arma.
 
-const ACTIVE_ORIGIN_IDS: Array[String] = [
-	"warrior", "sorcerer", "tank", "assassin", "berserker", "paladin",
-]
 const KATANA_ID := "katana_brumal_sabre_de_vigilia"
-const PENDING_EVIL_MAGE_ID := "_pending_mago_do_mal"
 
 
 static func contract_errors(weapons_catalog: Dictionary,
-		equipment_catalog: Dictionary) -> Array[String]:
+		equipment_catalog: Dictionary, attributes_catalog := {}) -> Array[String]:
 	var errors: Array[String] = []
 	var loadouts := weapons_catalog.get("loadouts", {}) as Dictionary
-	var active_loadout_ids: Array[String] = []
-	for raw_id: Variant in loadouts.keys():
-		var loadout_id := String(raw_id)
-		if not loadout_id.begins_with("_"):
-			active_loadout_ids.append(loadout_id)
-	active_loadout_ids.sort()
-	var expected_ids := ACTIVE_ORIGIN_IDS.duplicate()
-	expected_ids.sort()
-	if active_loadout_ids != expected_ids:
-		errors.append("os kits activos devem corresponder exactamente as seis origens correntes")
+	var active_loadout_ids := active_origin_ids(weapons_catalog)
+	var classes := _classes_from(attributes_catalog as Dictionary)
+	if not classes.is_empty():
+		var expected_ids: Array[String] = []
+		for raw_id: Variant in classes:
+			var class_id := String(raw_id)
+			if not class_id.begins_with("_"):
+				expected_ids.append(class_id)
+		expected_ids.sort()
+		if active_loadout_ids != expected_ids:
+			errors.append("os kits activos nao correspondem as origens de attributes.json")
 
-	var main_owners := {}
 	var combat_signature_owners := {}
-	for origin_id: String in ACTIVE_ORIGIN_IDS:
+	for origin_id: String in active_loadout_ids:
 		var loadout := loadouts.get(origin_id, {}) as Dictionary
 		if loadout.is_empty():
 			errors.append("%s nao tem kit inicial" % origin_id)
@@ -36,12 +32,6 @@ static func contract_errors(weapons_catalog: Dictionary,
 		if main_id.is_empty():
 			errors.append("%s nao tem arma principal" % origin_id)
 			continue
-		if main_owners.has(main_id):
-			errors.append("%s e %s repetem a arma inicial %s" % [
-				String(main_owners[main_id]), origin_id, main_id,
-			])
-		else:
-			main_owners[main_id] = origin_id
 
 		var weapon := weapons_catalog.get(main_id, {}) as Dictionary
 		if weapon.is_empty():
@@ -53,9 +43,22 @@ static func contract_errors(weapons_catalog: Dictionary,
 					main_id, forbidden_field,
 				])
 		_validate_weapon_contract(main_id, weapon, weapons_catalog, errors)
-		var signature := _combat_signature(weapon, weapons_catalog)
+		_validate_starting_requirements(origin_id, main_id, weapon, classes, errors)
+		var offhand_value: Variant = loadout.get("offhand")
+		var offhand_id := "" if offhand_value == null else String(offhand_value)
+		if not offhand_id.is_empty():
+			var offhand := weapons_catalog.get(offhand_id, {}) as Dictionary
+			if offhand.is_empty():
+				errors.append("%s aponta para a secundaria inexistente %s" % [
+					origin_id, offhand_id])
+			else:
+				_validate_starting_requirements(
+					origin_id, offhand_id, offhand, classes, errors)
+		var signature := JSON.stringify([
+			_combat_signature(weapon, weapons_catalog), offhand_id,
+		])
 		if combat_signature_owners.has(signature):
-			errors.append("%s e %s batem com a mesma assinatura de combate" % [
+			errors.append("%s e %s arrancam com a mesma assinatura de combate" % [
 				String(combat_signature_owners[signature]), origin_id,
 			])
 		else:
@@ -74,15 +77,46 @@ static func contract_errors(weapons_catalog: Dictionary,
 				longsword, weapons_catalog):
 			errors.append("katana e espada longa batem da mesma maneira")
 
-	var pending := loadouts.get(PENDING_EVIL_MAGE_ID, {}) as Dictionary
-	if pending.is_empty():
-		errors.append("falta o lugar reservado para a setima origem Mago do Mal")
-	elif String(pending.get("status", "")) != "blocked_missing_relicario_catalogue":
-		errors.append("o lugar do Mago do Mal nao declara o bloqueio de catalogo")
-	elif pending.has("main") or pending.has("offhand"):
-		errors.append("o kit do Mago do Mal foi inventado antes de o catalogo o cobrir")
-
 	return errors
+
+
+static func active_origin_ids(weapons_catalog: Dictionary) -> Array[String]:
+	var result: Array[String] = []
+	var loadouts := weapons_catalog.get("loadouts", {}) as Dictionary
+	for raw_id: Variant in loadouts:
+		var origin_id := String(raw_id)
+		if not origin_id.begins_with("_"):
+			result.append(origin_id)
+	result.sort()
+	return result
+
+
+static func _classes_from(attributes_catalog: Dictionary) -> Dictionary:
+	var classes := attributes_catalog.get("classes", attributes_catalog) as Dictionary
+	if not classes.is_empty():
+		return classes
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var game_data := (loop as SceneTree).root.get_node_or_null("GameData")
+		if game_data != null:
+			var runtime_attributes := game_data.get("attributes") as Dictionary
+			return runtime_attributes.get("classes", {}) as Dictionary
+	return {}
+
+
+static func _validate_starting_requirements(origin_id: String, weapon_id: String,
+		weapon: Dictionary, classes: Dictionary, errors: Array[String]) -> void:
+	if classes.is_empty():
+		return
+	var attrs := classes.get(origin_id, {}) as Dictionary
+	if attrs.is_empty():
+		errors.append("%s nao tem atributos iniciais para validar o kit" % origin_id)
+		return
+	var requirements := weapon.get("requirements", {}) as Dictionary
+	for attribute_id: String in requirements:
+		if float(attrs.get(attribute_id, 0.0)) < float(requirements[attribute_id]):
+			errors.append("%s arranca com %s abaixo do requisito de %s" % [
+				origin_id, weapon_id, attribute_id])
 
 
 static func _validate_katana_against_catalogue(katana: Dictionary,

@@ -34,11 +34,11 @@ const ref = (collection, id, label) => check(
 const slug = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
   .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 
-// 01-08: 17 -> 18 (settings.json, da casca) -> 19 (status_effects.json, dos
-// estados alterados).
+// 01-08: 17 -> 18 (settings.json) -> 19 (status_effects.json) -> 20
+// (audio_catalog.json) -> 21 (animations.json, do mapa estado->animacao).
 // Este numero e proposital: obriga a que um JSON novo em game/data seja um acto
 // deliberado, nao um ficheiro que alguem largou la sem ninguem reparar.
-check(files.length === 19, `game/data devia conter 19 JSON; contém ${files.length}`);
+check(files.length === 21, `game/data devia conter 21 JSON; contém ${files.length}`);
 
 const abilities = data.abilities;
 const attributes = data.attributes;
@@ -152,7 +152,15 @@ for (const [biomeId, profiles] of Object.entries(economy.class_bias.by_zone)) {
 for (const [classId, loadout] of publicEntries(weapons.loadouts)) {
   check(classIds.includes(classId), `weapons.loadouts.${classId}: classe inexistente`);
   ref(weapons, loadout.main, `weapons.loadouts.${classId}.main`);
-  if (loadout.offhand !== null) ref(weapons, loadout.offhand, `weapons.loadouts.${classId}.offhand`);
+  // 02-08: a mão secundária deixou de ser só arma ou escudo. [DECIDIDO] (Mateus,
+  // 01-08) o instrumento mágico vive lá — "o cajado numa e o talismã na outra".
+  // Continua a ter de existir num catálogo real; só passou a haver dois.
+  if (loadout.offhand !== null) {
+    const naArma = Object.hasOwn(weapons, loadout.offhand);
+    const noInstrumento = Object.hasOwn(equipment.magic_instruments ?? {}, loadout.offhand);
+    check(naArma || noInstrumento,
+      `weapons.loadouts.${classId}.offhand: '${loadout.offhand}' não existe nem em weapons nem em equipment.magic_instruments`);
+  }
   for (const pieceId of loadout.pecas ?? []) ref(armor.pieces, pieceId, `weapons.loadouts.${classId}.pecas`);
 }
 for (const loadout of weapons.test_loadouts.order ?? []) {

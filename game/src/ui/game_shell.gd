@@ -5,23 +5,34 @@ extends Node
 ## jogador no greybox e os menus nao pagam o custo do mundo em segundo plano.
 
 const GAMEPLAY_SCENE: PackedScene = preload("res://scenes/gameplay.tscn")
-const CLASS_IDS: Array[String] = [
-	"warrior", "sorcerer", "tank", "assassin", "berserker", "paladin",
-]
+## ⚠️ NAO voltar a escrever as origens a mao aqui.
+## 02-08: o Mago do Mal foi decidido, entrou em attributes.json, e NAO APARECIA
+## no ecra de criacao — porque esta lista era uma constante de seis, escrita a
+## mao. O jogador via seis origens e os dados tinham sete. E exactamente o que a
+## regra de ouro do game/CLAUDE.md existe para impedir: os catalogos mandam, o
+## codigo le. Agora le.
+static var CLASS_IDS: Array[String]:
+	get:
+		var ids: Array[String] = []
+		for id: String in (GameData.attributes.get("classes", {}) as Dictionary):
+			if not id.begins_with("_"):
+				ids.append(id)
+		return ids
+
+static func _catalogue_strings(values: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if not values is Array:
+		return result
+	for value: Variant in values as Array:
+		result.append(String(value))
+	return result
+
 const STEP_TITLES: Array[String] = ["1  Classe", "2  Aspecto", "3  Nome", "4  Rever"]
 const SKIN_TINTS := {
 	"skin_01": Color("9a6048"),
 	"skin_02": Color("c88768"),
 	"skin_03": Color("e1ad86"),
 	"skin_04": Color("f0c9aa"),
-}
-const CLASS_ROLES := {
-	"warrior": ["Equilibrado — a régua dos outros.", "Adapta-se a qualquer abertura.", "Nunca é o especialista da situação."],
-	"sorcerer": ["Precisão azul, controlo e maior reserva de mana.", "Lê a distância e escolhe a forma certa.", "Sofre quando fica encostado."],
-	"tank": ["Absorve, controla espaço e protege a dupla.", "Segura a atenção e mede o bloqueio.", "Mata devagar e sente o peso."],
-	"assassin": ["Rápido, posicional e de parry arriscado.", "Conquista costas e encadeia golpes curtos.", "Sofre de frente contra armadura."],
-	"berserker": ["Pressão bruta sem escudo.", "Troca segurança por avanço.", "Cada erro deixa uma recuperação longa."],
-	"paladin": ["Ferro e magia de raio.", "Muda o tipo de resposta sem ganhar dano grátis.", "Divide os atributos no arranque."],
 }
 const ACTION_LABELS := {
 	"move_forward": "Mover para a frente", "move_back": "Mover para trás",
@@ -33,6 +44,7 @@ const ACTION_LABELS := {
 	"dodge_sprint": "Esquivar (tocar) / correr (manter)", "lock_on": "Fixar alvo",
 	"next_spell": "Magia seguinte / roda", "cast": "Conjurar", "meditate": "Meditar",
 	"use_item": "Usar item", "ability": "Habilidade de origem",
+	"raise_dead": "Levantar corpo",
 	"toggle_grip": "Uma / duas mãos", "interact": "Interagir / descansar",
 	"hotbar_1": "Atalho 1", "hotbar_2": "Atalho 2", "hotbar_3": "Atalho 3",
 	"hotbar_4": "Atalho 4", "hotbar_5": "Atalho 5",
@@ -51,21 +63,17 @@ const INSTRUCTION_GROUPS := [
 		"attack", "heavy_mod", "block", "parry", "dodge_sprint",
 		"lock_on", "toggle_grip", "ability"]},
 	{"title": "MAGIA E ITENS", "actions": [
-		"next_spell", "cast", "meditate", "use_item", "hotbar_1",
+		"next_spell", "cast", "raise_dead", "meditate", "use_item", "hotbar_1",
 		"hotbar_2", "hotbar_3", "hotbar_4", "hotbar_5"]},
 	{"title": "MUNDO E SISTEMA", "actions": [
 		"interact", "loadout_next", "loadout_prev", "toggle_perf",
 		"toggle_help", "toggle_mouse", "reset_arena", "debug_class_next",
 		"pause_menu", "inventory_menu", "open_map"]},
 ]
-const LEARNING_TIP_IDS := ["movement", "attack", "dodge", "parry", "flask"]
-const OPENING_LINES := [
-	"Brumal não foi sempre assim.",
-	"A bruma chegou. Com ela, vieram os orcs.",
-	"A Toca é uma passagem antiga que eles tomaram.",
-	"No fundo, Vorgar guarda o portão.",
-	"És um forasteiro. Entras onde ninguém entra.",
-]
+static var LEARNING_TIP_IDS: Array[String]:
+	get:
+		return _catalogue_strings((GameData.ui_strings.get("intro", {}) as Dictionary).get(
+			"tip_ids", []))
 
 var _layer: CanvasLayer
 var _screen: Control
@@ -325,7 +333,8 @@ func show_opening() -> void:
 	story.add_theme_font_size_override("normal_font_size", 25)
 	story.add_theme_font_size_override("bold_font_size", 25)
 	story.add_theme_color_override("default_color", Color("aeb7b5"))
-	story.text = "%s\n\n%s\n\n%s\n%s\n\n[color=#eadbb9]%s[/color]" % OPENING_LINES
+	story.text = String((GameData.ui_strings.get("opening", {}) as Dictionary)[
+		"story_bbcode"])
 	_screen.add_child(story)
 	var enter := Button.new()
 	enter.text = "ENTRAR EM BRUMAL"
@@ -565,7 +574,8 @@ func _update_class_detail() -> void:
 	var attrs := GameData.class_attributes(class_id)
 	var loadout: Dictionary = (GameData.weapons.get("loadouts", {}) as Dictionary).get(class_id, {})
 	var ability := GameData.ability(class_id)
-	var role: Array = CLASS_ROLES.get(class_id, ["", "", ""])
+	var roles := GameData.ui_strings.get("class_roles", {}) as Dictionary
+	var role := roles[class_id] as Array
 	_detail.text = "[b]%s[/b]\n%s\n\n[b]Começa com[/b]\n%s\n\n[b]É forte quando[/b]\n%s\n\n[b]Sofre quando[/b]\n%s\n\n[b]Verbo de assinatura[/b]\n%s\n\n[b]Atributos[/b]\n%s\n\n[color=#d4b36f]Podes mudar de arma e subir qualquer atributo.[/color]" % [
 		String(attrs.get("display_name", class_id)), String(role[0]),
 		_loadout_line(loadout), String(role[1]), String(role[2]),
@@ -1537,12 +1547,28 @@ func _update_preview() -> void:
 	if is_instance_valid(_preview_visual):
 		_fechar_no(_preview_visual)
 	var appearance: Dictionary = _draft.get("appearance", {}) as Dictionary
-	_preview_visual = CharacterVisual.new()
+	# ⚠️ 02-08: isto criava um CharacterVisual — o corpo base, que nao sabe
+	# vestir. Resultado: o ecra de criacao mostrava caixas onde o jogo ja
+	# mostrava roupa modular, e o Mateus via "o quadrado feio" exactamente aqui.
+	# ⭐ Quem sabe vestir e o ArmorVisual, e e ele que o mundo usa. O ecra de
+	# escolha tem de mostrar O MESMO boneco que se vai jogar, senao a escolha e
+	# feita as cegas.
+	var armadura := ArmorVisual.new()
+	_preview_visual = armadura
 	_preview_pivot.add_child(_preview_visual)
 	var tint: Color = SKIN_TINTS.get(String(appearance.get("skin_tone_id", "skin_02")), Color.WHITE)
 	# O tint da pre-visualizacao distingue os quatro tons sem duplicar texturas;
 	# a fisica e o material do mundo continuam independentes desta escolha.
-	_preview_visual.setup(2.2, tint, false, String(appearance.get("body_id", "body_male")))
+	var origem := String(_draft.get("class_id", "warrior"))
+	_preview_visual.setup(2.2, tint, false,
+		String(appearance.get("body_id", "body_male")), origem)
+	# Veste o kit inicial da origem escolhida — as mesmas pecas com que se vai
+	# comecar a jogar, lidas do catalogo e nunca escritas a mao aqui.
+	var kit: Dictionary = (GameData.weapons.get("loadouts", {}) as Dictionary).get(
+		origem, {}) as Dictionary
+	var pecas: Array = kit.get("pecas", []) as Array
+	if not pecas.is_empty():
+		armadura.apply_equipment(pecas)
 	_preview_visual.position = Vector3(0, -0.15, 0)
 
 

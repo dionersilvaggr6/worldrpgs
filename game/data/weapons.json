@@ -9,50 +9,103 @@
     "reason": "a postura torna cada kit inicial reconhecivel antes de comparar dano e fecha o contrato pedido pelo Mateus",
     "discarded_alternative": "reutilizar uma pose generica; deixava IDs e frames diferentes com a mesma leitura visual"
   },
-
   "_movesets": {
     "_fonte": "spec/75 + spec/41 + spec/68 + spec/70",
     "_decisao": "[CODEX] moveset por familia e empunhadura; cada arma recebe a sua arte por regra de familia, com poucas excepcoes. Razao: conserva verbos diferentes sem multiplicar 120 conjuntos. Alternativa descartada nesta proposta: um conjunto de animacoes integralmente unico por arma.",
     "movimentos_base": [
-      "leve", "pesado", "cadeia", "leve_para_pesado", "em_corrida",
-      "a_rolar", "a_saltar", "de_cima", "empurrao"
+      "leve",
+      "pesado",
+      "cadeia",
+      "leve_para_pesado",
+      "em_corrida",
+      "a_rolar",
+      "a_saltar",
+      "de_cima",
+      "empurrao"
     ],
     "familias": {
       "espada_recta": {
-        "one_hand": {"animation_set": "moveset/espada_recta/one_hand", "posture": "guarda_central"},
-        "two_hands": {"animation_set": "moveset/espada_recta/two_hands", "posture": "guarda_alta"}
+        "one_hand": {
+          "animation_set": "moveset/espada_recta/one_hand",
+          "posture": "guarda_central"
+        },
+        "two_hands": {
+          "animation_set": "moveset/espada_recta/two_hands",
+          "posture": "guarda_alta"
+        }
       },
       "adaga": {
-        "one_hand": {"animation_set": "moveset/adaga/one_hand", "posture": "ponta_oculta"},
-        "two_hands": {"animation_set": "moveset/adaga/two_hands", "posture": "laminas_cruzadas"}
+        "one_hand": {
+          "animation_set": "moveset/adaga/one_hand",
+          "posture": "ponta_oculta"
+        },
+        "two_hands": {
+          "animation_set": "moveset/adaga/two_hands",
+          "posture": "laminas_cruzadas"
+        }
       },
       "pesada_corte": {
-        "one_hand": {"animation_set": "moveset/pesada_corte/one_hand", "posture": "peso_ao_ombro"},
-        "two_hands": {"animation_set": "moveset/pesada_corte/two_hands", "posture": "peso_atras"}
+        "one_hand": {
+          "animation_set": "moveset/pesada_corte/one_hand",
+          "posture": "peso_ao_ombro"
+        },
+        "two_hands": {
+          "animation_set": "moveset/pesada_corte/two_hands",
+          "posture": "peso_atras"
+        }
       },
       "katana": {
-        "one_hand": {"animation_set": "moveset/katana/one_hand", "posture": "bainha_lateral"},
-        "two_hands": {"animation_set": "moveset/katana/two_hands", "posture": "guarda_de_tecto"}
+        "one_hand": {
+          "animation_set": "moveset/katana/one_hand",
+          "posture": "bainha_lateral"
+        },
+        "two_hands": {
+          "animation_set": "moveset/katana/two_hands",
+          "posture": "guarda_de_tecto"
+        }
       },
       "haste": {
-        "one_hand": {"animation_set": "moveset/haste/one_hand", "posture": "ponta_baixa"},
-        "two_hands": {"animation_set": "moveset/haste/two_hands", "posture": "ponta_em_linha"}
+        "one_hand": {
+          "animation_set": "moveset/haste/one_hand",
+          "posture": "ponta_baixa"
+        },
+        "two_hands": {
+          "animation_set": "moveset/haste/two_hands",
+          "posture": "ponta_em_linha"
+        }
       },
       "cajado": {
-        "one_hand": {"animation_set": "moveset/cajado/one_hand", "posture": "foco_aberto"},
-        "two_hands": {"animation_set": "moveset/cajado/two_hands", "posture": "foco_ancorado"}
+        "one_hand": {
+          "animation_set": "moveset/cajado/one_hand",
+          "posture": "foco_aberto"
+        },
+        "two_hands": {
+          "animation_set": "moveset/cajado/two_hands",
+          "posture": "foco_ancorado"
+        }
       },
       "arco": {
-        "one_hand": {"animation_set": "moveset/arco/one_hand", "posture": "arco_baixo"},
-        "two_hands": {"animation_set": "moveset/arco/two_hands", "posture": "corda_firmada"}
+        "one_hand": {
+          "animation_set": "moveset/arco/one_hand",
+          "posture": "arco_baixo"
+        },
+        "two_hands": {
+          "animation_set": "moveset/arco/two_hands",
+          "posture": "corda_firmada"
+        }
       },
       "besta": {
-        "one_hand": {"animation_set": "moveset/besta/one_hand", "posture": "coronha_baixa"},
-        "two_hands": {"animation_set": "moveset/besta/two_hands", "posture": "coronha_ao_ombro"}
+        "one_hand": {
+          "animation_set": "moveset/besta/one_hand",
+          "posture": "coronha_baixa"
+        },
+        "two_hands": {
+          "animation_set": "moveset/besta/two_hands",
+          "posture": "coronha_ao_ombro"
+        }
       }
     }
   },
-
   "_artes": {
     "_fonte": "spec/75 + spec/38; papeis editoriais e custos herdados de _weapon_arts",
     "_decisao": "[CODEX] perfis temporais iniciais partilhados por peso e empunhadura. Razao: o compromisso fica testavel antes das animacoes finais. Alternativa descartada: copiar frames de outra obra ou fingir timings medidos; estes valores exigem afinacao em jogo.",
@@ -61,13 +114,25 @@
     "free_state": "LIVRE",
     "one_handed_grip": "one_hand",
     "two_handed_grip": "two_hands",
-    "empunhaduras": ["one_hand", "two_hands"],
-    "base_roles": {"one_hand": "base_one_hand", "two_hands": "base_two_hands"},
+    "empunhaduras": [
+      "one_hand",
+      "two_hands"
+    ],
+    "base_roles": {
+      "one_hand": "base_one_hand",
+      "two_hands": "base_two_hands"
+    },
     "interrupt_life_restore_percent": 100,
     "upgrade_level_count": 7,
     "vectores_fuga_permitidos": [
-      "sair_da_linha", "rolar_para_dentro", "rolar_para_fora", "afastar_se",
-      "aproximar_se", "quebrar_visao", "sair_da_area", "aparar",
+      "sair_da_linha",
+      "rolar_para_dentro",
+      "rolar_para_fora",
+      "afastar_se",
+      "aproximar_se",
+      "quebrar_visao",
+      "sair_da_area",
+      "aparar",
       "bloquear_e_aguentar"
     ],
     "orcamento_runtime": {
@@ -77,74 +142,159 @@
     },
     "perfis_temporais": {
       "agil_1m": {
-        "momento_compromisso_frame": 16, "active_start_frame": 16,
-        "active_end_frame": 19, "recovery_end_frame": 34,
+        "momento_compromisso_frame": 16,
+        "active_start_frame": 16,
+        "active_end_frame": 19,
+        "recovery_end_frame": 34,
         "curva_seguimento": [
-          {"ate_frame": 8, "graus_por_segundo": 180.0},
-          {"ate_frame": 16, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 8,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 16,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "agil_2m": {
-        "momento_compromisso_frame": 22, "active_start_frame": 22,
-        "active_end_frame": 28, "recovery_end_frame": 46,
+        "momento_compromisso_frame": 22,
+        "active_start_frame": 22,
+        "active_end_frame": 28,
+        "recovery_end_frame": 46,
         "curva_seguimento": [
-          {"ate_frame": 10, "graus_por_segundo": 180.0},
-          {"ate_frame": 18, "graus_por_segundo": 30.0},
-          {"ate_frame": 22, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 10,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 18,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 22,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "medio_1m": {
-        "momento_compromisso_frame": 22, "active_start_frame": 22,
-        "active_end_frame": 27, "recovery_end_frame": 48,
+        "momento_compromisso_frame": 22,
+        "active_start_frame": 22,
+        "active_end_frame": 27,
+        "recovery_end_frame": 48,
         "curva_seguimento": [
-          {"ate_frame": 10, "graus_por_segundo": 180.0},
-          {"ate_frame": 18, "graus_por_segundo": 30.0},
-          {"ate_frame": 22, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 10,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 18,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 22,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "medio_2m": {
-        "momento_compromisso_frame": 30, "active_start_frame": 30,
-        "active_end_frame": 36, "recovery_end_frame": 64,
+        "momento_compromisso_frame": 30,
+        "active_start_frame": 30,
+        "active_end_frame": 36,
+        "recovery_end_frame": 64,
         "curva_seguimento": [
-          {"ate_frame": 14, "graus_por_segundo": 180.0},
-          {"ate_frame": 24, "graus_por_segundo": 30.0},
-          {"ate_frame": 30, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 14,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 24,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 30,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "pesado_1m": {
-        "momento_compromisso_frame": 34, "active_start_frame": 34,
-        "active_end_frame": 41, "recovery_end_frame": 76,
+        "momento_compromisso_frame": 34,
+        "active_start_frame": 34,
+        "active_end_frame": 41,
+        "recovery_end_frame": 76,
         "curva_seguimento": [
-          {"ate_frame": 16, "graus_por_segundo": 180.0},
-          {"ate_frame": 28, "graus_por_segundo": 30.0},
-          {"ate_frame": 34, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 16,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 28,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 34,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "pesado_2m": {
-        "momento_compromisso_frame": 40, "active_start_frame": 40,
-        "active_end_frame": 48, "recovery_end_frame": 86,
+        "momento_compromisso_frame": 40,
+        "active_start_frame": 40,
+        "active_end_frame": 48,
+        "recovery_end_frame": 86,
         "curva_seguimento": [
-          {"ate_frame": 18, "graus_por_segundo": 180.0},
-          {"ate_frame": 32, "graus_por_segundo": 30.0},
-          {"ate_frame": 40, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 18,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 32,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 40,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "preparado_1m": {
-        "momento_compromisso_frame": 30, "active_start_frame": 30,
-        "active_end_frame": 34, "recovery_end_frame": 58,
+        "momento_compromisso_frame": 30,
+        "active_start_frame": 30,
+        "active_end_frame": 34,
+        "recovery_end_frame": 58,
         "curva_seguimento": [
-          {"ate_frame": 14, "graus_por_segundo": 180.0},
-          {"ate_frame": 24, "graus_por_segundo": 30.0},
-          {"ate_frame": 30, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 14,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 24,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 30,
+            "graus_por_segundo": 0.0
+          }
         ]
       },
       "preparado_2m": {
-        "momento_compromisso_frame": 44, "active_start_frame": 44,
-        "active_end_frame": 56, "recovery_end_frame": 84,
+        "momento_compromisso_frame": 44,
+        "active_start_frame": 44,
+        "active_end_frame": 56,
+        "recovery_end_frame": 84,
         "curva_seguimento": [
-          {"ate_frame": 20, "graus_por_segundo": 180.0},
-          {"ate_frame": 36, "graus_por_segundo": 30.0},
-          {"ate_frame": 44, "graus_por_segundo": 0.0}
+          {
+            "ate_frame": 20,
+            "graus_por_segundo": 180.0
+          },
+          {
+            "ate_frame": 36,
+            "graus_por_segundo": 30.0
+          },
+          {
+            "ate_frame": 44,
+            "graus_por_segundo": 0.0
+          }
         ]
       }
     },
@@ -153,435 +303,1529 @@
         "one_hand": {
           "perfil_temporal": "medio_1m",
           "pergunta": "vais atravessar uma abertura estreita ou guardar a mana para controlar o grupo?",
-          "vector_fuga": "sair_da_linha", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.espada_recta.one_hand", "descricao": "metal curto a alinhar a ponta", "perfil": "attack_parry", "alcance_m": 10.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "ponta_da_lamina", "forma": "linha_fina_frontal", "inicio": "brilho corre ate a ponta", "compromisso": "a linha fecha e deixa de seguir", "fim": "o brilho parte para a frente", "fora_ecra": "seta curta na direccao da ponta"}
+          "vector_fuga": "sair_da_linha",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.espada_recta.one_hand",
+            "descricao": "metal curto a alinhar a ponta",
+            "perfil": "attack_parry",
+            "alcance_m": 10.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "ponta_da_lamina",
+            "forma": "linha_fina_frontal",
+            "inicio": "brilho corre ate a ponta",
+            "compromisso": "a linha fecha e deixa de seguir",
+            "fim": "o brilho parte para a frente",
+            "fora_ecra": "seta curta na direccao da ponta"
+          }
         },
         "two_hands": {
           "perfil_temporal": "medio_2m",
           "pergunta": "vais fechar os flancos com um arco largo ou manter a resposta precisa de uma mao?",
-          "vector_fuga": "rolar_para_dentro", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.espada_recta.two_hands", "descricao": "lamina raspa e ganha arco", "perfil": "attack_area", "alcance_m": 13.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "lamina_inteira", "forma": "arco_largo_lateral", "inicio": "rasto nasce junto ao punho", "compromisso": "o arco fixa o lado de saida", "fim": "rasto varre e apaga atras", "fora_ecra": "cunha lateral aponta o varrimento"}
+          "vector_fuga": "rolar_para_dentro",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.espada_recta.two_hands",
+            "descricao": "lamina raspa e ganha arco",
+            "perfil": "attack_area",
+            "alcance_m": 13.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "lamina_inteira",
+            "forma": "arco_largo_lateral",
+            "inicio": "rasto nasce junto ao punho",
+            "compromisso": "o arco fixa o lado de saida",
+            "fim": "rasto varre e apaga atras",
+            "fora_ecra": "cunha lateral aponta o varrimento"
+          }
         }
       },
       "adaga": {
         "one_hand": {
           "perfil_temporal": "agil_1m",
           "pergunta": "vais entrar na guarda para procurar costas ou conservar distancia?",
-          "vector_fuga": "afastar_se", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.adaga.one_hand", "descricao": "clique seco do punho junto ao corpo", "perfil": "attack_hunter", "alcance_m": 7.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "mao_da_adaga", "forma": "agulha_curta", "inicio": "lamina recolhe e escurece", "compromisso": "agulha aponta sem corrigir", "fim": "risco curto atravessa o alvo", "fora_ecra": "piscar estreito junto ao atacante"}
+          "vector_fuga": "afastar_se",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.adaga.one_hand",
+            "descricao": "clique seco do punho junto ao corpo",
+            "perfil": "attack_hunter",
+            "alcance_m": 7.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "mao_da_adaga",
+            "forma": "agulha_curta",
+            "inicio": "lamina recolhe e escurece",
+            "compromisso": "agulha aponta sem corrigir",
+            "fim": "risco curto atravessa o alvo",
+            "fora_ecra": "piscar estreito junto ao atacante"
+          }
         },
         "two_hands": {
           "perfil_temporal": "agil_2m",
           "pergunta": "vais ocupar os dois lados e perder a saida segura por tras?",
-          "vector_fuga": "bloquear_e_aguentar", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.adaga.two_hands", "descricao": "dois cortes de ar em ritmos diferentes", "perfil": "attack_moving", "alcance_m": 9.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "duas_laminas", "forma": "duas_meias_luas", "inicio": "rastos alternam esquerda e direita", "compromisso": "as meias-luas cruzam", "fim": "o cruzamento avanca com o corpo", "fora_ecra": "duas marcas cruzadas na margem"}
+          "vector_fuga": "bloquear_e_aguentar",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.adaga.two_hands",
+            "descricao": "dois cortes de ar em ritmos diferentes",
+            "perfil": "attack_moving",
+            "alcance_m": 9.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "duas_laminas",
+            "forma": "duas_meias_luas",
+            "inicio": "rastos alternam esquerda e direita",
+            "compromisso": "as meias-luas cruzam",
+            "fim": "o cruzamento avanca com o corpo",
+            "fora_ecra": "duas marcas cruzadas na margem"
+          }
         }
       },
       "pesada_corte": {
         "one_hand": {
           "perfil_temporal": "pesado_1m",
           "pergunta": "vais saltar sobre a linha e aceitar uma aterragem exposta?",
-          "vector_fuga": "sair_da_linha", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.pesada_corte.one_hand", "descricao": "peso arranca do chao com sopro grave", "perfil": "attack_moving", "alcance_m": 15.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "cabeca_da_arma", "forma": "corredor_e_circulo_de_queda", "inicio": "po marca a linha de salto", "compromisso": "circulo fixa o ponto de queda", "fim": "onda curta nasce no impacto", "fora_ecra": "seta grossa acompanha a trajectoria"}
+          "vector_fuga": "sair_da_linha",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.pesada_corte.one_hand",
+            "descricao": "peso arranca do chao com sopro grave",
+            "perfil": "attack_moving",
+            "alcance_m": 15.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "cabeca_da_arma",
+            "forma": "corredor_e_circulo_de_queda",
+            "inicio": "po marca a linha de salto",
+            "compromisso": "circulo fixa o ponto de queda",
+            "fim": "onda curta nasce no impacto",
+            "fora_ecra": "seta grossa acompanha a trajectoria"
+          }
         },
         "two_hands": {
           "perfil_temporal": "pesado_2m",
           "pergunta": "vais dominar a area inteira e entregar as costas no fim do rodopio?",
-          "vector_fuga": "afastar_se", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.pesada_corte.two_hands", "descricao": "vento grave cresce antes do rodopio", "perfil": "attack_area", "alcance_m": 18.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "pe_do_atacante", "forma": "anel_com_abertura_traseira", "inicio": "anel desenha-se do lado da arma", "compromisso": "anel fecha sem seguir o alvo", "fim": "rasto completo revela as costas", "fora_ecra": "anel pulsante na margem"}
+          "vector_fuga": "afastar_se",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.pesada_corte.two_hands",
+            "descricao": "vento grave cresce antes do rodopio",
+            "perfil": "attack_area",
+            "alcance_m": 18.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "pe_do_atacante",
+            "forma": "anel_com_abertura_traseira",
+            "inicio": "anel desenha-se do lado da arma",
+            "compromisso": "anel fecha sem seguir o alvo",
+            "fim": "rasto completo revela as costas",
+            "fora_ecra": "anel pulsante na margem"
+          }
         }
       },
       "katana": {
         "one_hand": {
           "perfil_temporal": "medio_1m",
           "pergunta": "vais apostar no instante do golpe inimigo ou perder a janela sem premio?",
-          "vector_fuga": "aparar", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.katana.one_hand", "descricao": "bainha prende a lamina num clique agudo", "perfil": "attack_parry", "alcance_m": 9.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "boca_da_bainha", "forma": "fio_horizontal", "inicio": "fio acende dentro da bainha", "compromisso": "fio fecha no alvo actual", "fim": "corte aparece antes do rasto", "fora_ecra": "fio branco corta a margem"}
+          "vector_fuga": "aparar",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.katana.one_hand",
+            "descricao": "bainha prende a lamina num clique agudo",
+            "perfil": "attack_parry",
+            "alcance_m": 9.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "boca_da_bainha",
+            "forma": "fio_horizontal",
+            "inicio": "fio acende dentro da bainha",
+            "compromisso": "fio fecha no alvo actual",
+            "fim": "corte aparece antes do rasto",
+            "fora_ecra": "fio branco corta a margem"
+          }
         },
         "two_hands": {
           "perfil_temporal": "medio_2m",
           "pergunta": "vais encadear dois cortes e aceitar que o segundo denuncia a saida?",
-          "vector_fuga": "bloquear_e_aguentar", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.katana.two_hands", "descricao": "duas respiracoes separadas por um toque de bainha", "perfil": "attack_dodge", "alcance_m": 12.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "lamina_e_bainha", "forma": "xis_desfasado", "inicio": "primeira diagonal cresce", "compromisso": "segunda diagonal fixa o retorno", "fim": "o xis apaga pela primeira linha", "fora_ecra": "duas diagonais alternam na margem"}
+          "vector_fuga": "bloquear_e_aguentar",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.katana.two_hands",
+            "descricao": "duas respiracoes separadas por um toque de bainha",
+            "perfil": "attack_dodge",
+            "alcance_m": 12.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "lamina_e_bainha",
+            "forma": "xis_desfasado",
+            "inicio": "primeira diagonal cresce",
+            "compromisso": "segunda diagonal fixa o retorno",
+            "fim": "o xis apaga pela primeira linha",
+            "fora_ecra": "duas diagonais alternam na margem"
+          }
         }
       },
       "haste": {
         "one_hand": {
           "perfil_temporal": "medio_1m",
           "pergunta": "vais varrer os pes de quem entra ou ceder o centro da guarda?",
-          "vector_fuga": "rolar_para_fora", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.haste.one_hand", "descricao": "haste rola na palma junto ao chao", "perfil": "attack_dodge", "alcance_m": 11.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "ponta_da_haste", "forma": "arco_raso", "inicio": "linha nasce rente ao solo", "compromisso": "arco fixa o lado baixo", "fim": "po acompanha o varrimento", "fora_ecra": "meia-lua baixa na margem"}
+          "vector_fuga": "rolar_para_fora",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.haste.one_hand",
+            "descricao": "haste rola na palma junto ao chao",
+            "perfil": "attack_dodge",
+            "alcance_m": 11.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "ponta_da_haste",
+            "forma": "arco_raso",
+            "inicio": "linha nasce rente ao solo",
+            "compromisso": "arco fixa o lado baixo",
+            "fim": "po acompanha o varrimento",
+            "fora_ecra": "meia-lua baixa na margem"
+          }
         },
         "two_hands": {
           "perfil_temporal": "pesado_2m",
           "pergunta": "vais consumir o corredor numa carga que nao vira depois de firmada?",
-          "vector_fuga": "sair_da_linha", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.haste.two_hands", "descricao": "passo pesado e assobio continuo da ponta", "perfil": "attack_moving", "alcance_m": 17.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "ponta_da_haste", "forma": "corredor_longo", "inicio": "corredor segue lentamente o alvo", "compromisso": "bordas ficam rigidas", "fim": "linha avanca ate ao limite", "fora_ecra": "seta longa fixa a direccao"}
+          "vector_fuga": "sair_da_linha",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.haste.two_hands",
+            "descricao": "passo pesado e assobio continuo da ponta",
+            "perfil": "attack_moving",
+            "alcance_m": 17.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "ponta_da_haste",
+            "forma": "corredor_longo",
+            "inicio": "corredor segue lentamente o alvo",
+            "compromisso": "bordas ficam rigidas",
+            "fim": "linha avanca ate ao limite",
+            "fora_ecra": "seta longa fixa a direccao"
+          }
         }
       },
       "cajado": {
         "one_hand": {
           "perfil_temporal": "medio_1m",
           "pergunta": "vais empurrar para ganhar espaco ou guardar mana para a proxima magia?",
-          "vector_fuga": "aproximar_se", "tipo_contacto": "volume_movel",
-          "som_anuncio": {"cue_id": "weapon_art.cajado.one_hand", "descricao": "bruma inspira para o foco e estala para fora", "perfil": "attack_moving", "alcance_m": 12.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "foco_do_cajado", "forma": "cone_curto", "inicio": "bruma recolhe contra o fluxo", "compromisso": "cone fixa a abertura", "fim": "nuvem empurra e dissolve", "fora_ecra": "nevoa aponta para dentro da margem"}
+          "vector_fuga": "aproximar_se",
+          "tipo_contacto": "volume_movel",
+          "som_anuncio": {
+            "cue_id": "weapon_art.cajado.one_hand",
+            "descricao": "bruma inspira para o foco e estala para fora",
+            "perfil": "attack_moving",
+            "alcance_m": 12.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "foco_do_cajado",
+            "forma": "cone_curto",
+            "inicio": "bruma recolhe contra o fluxo",
+            "compromisso": "cone fixa a abertura",
+            "fim": "nuvem empurra e dissolve",
+            "fora_ecra": "nevoa aponta para dentro da margem"
+          }
         },
         "two_hands": {
           "perfil_temporal": "pesado_1m",
           "pergunta": "vais firmar a proxima conjuracao e ficar parado durante a preparacao?",
-          "vector_fuga": "afastar_se", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.cajado.two_hands", "descricao": "dois tons sustentados convergem no foco", "perfil": "attack_parry", "alcance_m": 16.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "duas_maos_no_cajado", "forma": "circulo_de_foco", "inicio": "dois arcos aproximam-se", "compromisso": "circulo sela junto ao foco", "fim": "selo passa para a proxima magia", "fora_ecra": "circulo incompleto pulsa na margem"}
+          "vector_fuga": "afastar_se",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.cajado.two_hands",
+            "descricao": "dois tons sustentados convergem no foco",
+            "perfil": "attack_parry",
+            "alcance_m": 16.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "duas_maos_no_cajado",
+            "forma": "circulo_de_foco",
+            "inicio": "dois arcos aproximam-se",
+            "compromisso": "circulo sela junto ao foco",
+            "fim": "selo passa para a proxima magia",
+            "fora_ecra": "circulo incompleto pulsa na margem"
+          }
         }
       },
       "arco": {
         "one_hand": {
           "perfil_temporal": "preparado_1m",
           "pergunta": "vais fixar um alvo por um disparo limpo e perder a leitura dos flancos?",
-          "vector_fuga": "sair_da_linha", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.arco.one_hand", "descricao": "corda tensiona com um unico rangido longo", "perfil": "attack_hunter", "alcance_m": 15.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "ponta_da_flecha", "forma": "linha_de_mira", "inicio": "linha estreita enquanto segue", "compromisso": "linha fica rigida", "fim": "pulso viaja pela linha", "fora_ecra": "reticulo direccional na margem"}
+          "vector_fuga": "sair_da_linha",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.arco.one_hand",
+            "descricao": "corda tensiona com um unico rangido longo",
+            "perfil": "attack_hunter",
+            "alcance_m": 15.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "ponta_da_flecha",
+            "forma": "linha_de_mira",
+            "inicio": "linha estreita enquanto segue",
+            "compromisso": "linha fica rigida",
+            "fim": "pulso viaja pela linha",
+            "fora_ecra": "reticulo direccional na margem"
+          }
         },
         "two_hands": {
           "perfil_temporal": "preparado_2m",
           "pergunta": "vais negar uma zona distante e abandonar quem entrar debaixo do arco?",
-          "vector_fuga": "sair_da_area", "tipo_contacto": "persistente",
-          "som_anuncio": {"cue_id": "weapon_art.arco.two_hands", "descricao": "corda multiplica-se num coro ascendente", "perfil": "attack_area", "alcance_m": 20.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "zona_de_queda", "forma": "circulo_pontilhado", "inicio": "pontos fecham do exterior", "compromisso": "circulo deixa de seguir", "fim": "pontos caem em vagas", "fora_ecra": "chuva inclinada marca a margem"}
+          "vector_fuga": "sair_da_area",
+          "tipo_contacto": "persistente",
+          "som_anuncio": {
+            "cue_id": "weapon_art.arco.two_hands",
+            "descricao": "corda multiplica-se num coro ascendente",
+            "perfil": "attack_area",
+            "alcance_m": 20.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "zona_de_queda",
+            "forma": "circulo_pontilhado",
+            "inicio": "pontos fecham do exterior",
+            "compromisso": "circulo deixa de seguir",
+            "fim": "pontos caem em vagas",
+            "fora_ecra": "chuva inclinada marca a margem"
+          }
         }
       },
       "besta": {
         "one_hand": {
           "perfil_temporal": "agil_1m",
           "pergunta": "vais soltar o virote ja carregado ou guardar a resposta instantanea?",
-          "vector_fuga": "sair_da_linha", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.besta.one_hand", "descricao": "trava solta com estalo metalico", "perfil": "attack_hunter", "alcance_m": 14.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "canal_do_virote", "forma": "linha_curta_rigida", "inicio": "trava pisca e a linha alinha", "compromisso": "linha deixa de corrigir", "fim": "clarão percorre o canal", "fora_ecra": "pino luminoso aponta a linha"}
+          "vector_fuga": "sair_da_linha",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.besta.one_hand",
+            "descricao": "trava solta com estalo metalico",
+            "perfil": "attack_hunter",
+            "alcance_m": 14.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "canal_do_virote",
+            "forma": "linha_curta_rigida",
+            "inicio": "trava pisca e a linha alinha",
+            "compromisso": "linha deixa de corrigir",
+            "fim": "clarão percorre o canal",
+            "fora_ecra": "pino luminoso aponta a linha"
+          }
         },
         "two_hands": {
           "perfil_temporal": "preparado_2m",
           "pergunta": "vais preparar um disparo de emboscada e denunciar a recarga longa?",
-          "vector_fuga": "quebrar_visao", "tipo_contacto": "instantaneo",
-          "som_anuncio": {"cue_id": "weapon_art.besta.two_hands", "descricao": "cremalheira sobe dente a dente antes de travar", "perfil": "attack_hunter", "alcance_m": 18.0, "inicio_frame": 0},
-          "sinal_visual_equivalente": {"ancora": "cremalheira_da_besta", "forma": "segmentos_de_mira", "inicio": "segmentos acendem a cada dente", "compromisso": "segmentos formam uma linha", "fim": "linha colapsa no disparo", "fora_ecra": "tres segmentos fecham na margem"}
+          "vector_fuga": "quebrar_visao",
+          "tipo_contacto": "instantaneo",
+          "som_anuncio": {
+            "cue_id": "weapon_art.besta.two_hands",
+            "descricao": "cremalheira sobe dente a dente antes de travar",
+            "perfil": "attack_hunter",
+            "alcance_m": 18.0,
+            "inicio_frame": 0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "cremalheira_da_besta",
+            "forma": "segmentos_de_mira",
+            "inicio": "segmentos acendem a cada dente",
+            "compromisso": "segmentos formam uma linha",
+            "fim": "linha colapsa no disparo",
+            "fora_ecra": "tres segmentos fecham na margem"
+          }
         }
       }
     },
     "excepcoes_por_arma": {
       "espada_prata_santuario": {
-        "base_two_hands": {"definition_id": "espada_prata_santuario/voto_de_luz", "nome": "Voto de luz", "verbo": "firmar uma linha segura para um aliado atravessar", "pergunta": "vais abrir passagem ao aliado e anunciar onde a defesa fica vazia?", "tradeoff": "a linha e publica e prende-te ao seu eixo", "vector_fuga": "sair_da_linha"}
+        "base_two_hands": {
+          "definition_id": "espada_prata_santuario/voto_de_luz",
+          "nome": "Voto de luz",
+          "verbo": "firmar uma linha segura para um aliado atravessar",
+          "pergunta": "vais abrir passagem ao aliado e anunciar onde a defesa fica vazia?",
+          "tradeoff": "a linha e publica e prende-te ao seu eixo",
+          "vector_fuga": "sair_da_linha"
+        }
       },
       "faca_goblin_bruma": {
-        "base_one_hand": {"definition_id": "faca_goblin_bruma/passo_de_bruma", "nome": "Passo de bruma", "verbo": "trocar de lado dentro de uma nuvem curta", "pergunta": "vais esconder a travessia e aceitar que o som denuncia a saida?", "tradeoff": "a bruma nao protege onde termina", "vector_fuga": "afastar_se"}
+        "base_one_hand": {
+          "definition_id": "faca_goblin_bruma/passo_de_bruma",
+          "nome": "Passo de bruma",
+          "verbo": "trocar de lado dentro de uma nuvem curta",
+          "pergunta": "vais esconder a travessia e aceitar que o som denuncia a saida?",
+          "tradeoff": "a bruma nao protege onde termina",
+          "vector_fuga": "afastar_se"
+        }
       },
       "clava_cogumelo_goblin": {
-        "base_two_hands": {"definition_id": "clava_cogumelo_goblin/esporos_no_chao", "nome": "Esporos no chao", "verbo": "selar o espaco aos pes durante a recuperacao", "pergunta": "vais prender a aproximacao e ficar no centro do proprio aviso?", "tradeoff": "o centro e legivel e nao acompanha o atacante", "vector_fuga": "sair_da_area"}
+        "base_two_hands": {
+          "definition_id": "clava_cogumelo_goblin/esporos_no_chao",
+          "nome": "Esporos no chao",
+          "verbo": "selar o espaco aos pes durante a recuperacao",
+          "pergunta": "vais prender a aproximacao e ficar no centro do proprio aviso?",
+          "tradeoff": "o centro e legivel e nao acompanha o atacante",
+          "vector_fuga": "sair_da_area"
+        }
       },
       "katana_brumal_sabre_de_vigilia": {
-        "base_one_hand": {"definition_id": "katana_brumal_sabre_de_vigilia/linha_de_vigilia", "nome": "Linha de vigilia", "verbo": "esperar o cruzamento exacto e responder sem perseguir", "pergunta": "vais fechar a linha agora ou deixar o inimigo mudar de angulo?", "tradeoff": "falhar o cruzamento entrega a recuperacao", "vector_fuga": "aparar"}
+        "base_one_hand": {
+          "definition_id": "katana_brumal_sabre_de_vigilia/linha_de_vigilia",
+          "nome": "Linha de vigilia",
+          "verbo": "esperar o cruzamento exacto e responder sem perseguir",
+          "pergunta": "vais fechar a linha agora ou deixar o inimigo mudar de angulo?",
+          "tradeoff": "falhar o cruzamento entrega a recuperacao",
+          "vector_fuga": "aparar"
+        }
       },
       "lanca_aco_frio": {
-        "base_two_hands": {"definition_id": "lanca_aco_frio/trilho_de_geada", "nome": "Trilho de geada", "verbo": "desenhar um corredor frio que obriga a escolher um lado", "pergunta": "vais comprometer o corredor antes de saber por que lado ele foge?", "tradeoff": "depois do compromisso a carga nao vira", "vector_fuga": "sair_da_linha"}
+        "base_two_hands": {
+          "definition_id": "lanca_aco_frio/trilho_de_geada",
+          "nome": "Trilho de geada",
+          "verbo": "desenhar um corredor frio que obriga a escolher um lado",
+          "pergunta": "vais comprometer o corredor antes de saber por que lado ele foge?",
+          "tradeoff": "depois do compromisso a carga nao vira",
+          "vector_fuga": "sair_da_linha"
+        }
       },
       "diapasao_penitente": {
-        "base_two_hands": {"definition_id": "diapasao_penitente/acorde_partido", "nome": "Acorde partido", "verbo": "separar duas zonas por uma onda audivel", "pergunta": "vais dividir o campo e oferecer o intervalo silencioso entre as ondas?", "tradeoff": "o intervalo permite aproximacao", "vector_fuga": "aproximar_se"}
+        "base_two_hands": {
+          "definition_id": "diapasao_penitente/acorde_partido",
+          "nome": "Acorde partido",
+          "verbo": "separar duas zonas por uma onda audivel",
+          "pergunta": "vais dividir o campo e oferecer o intervalo silencioso entre as ondas?",
+          "tradeoff": "o intervalo permite aproximacao",
+          "vector_fuga": "aproximar_se"
+        }
       },
       "arco_encharcado_campas": {
-        "base_two_hands": {"definition_id": "arco_encharcado_campas/chuva_de_campas", "nome": "Chuva das campas", "verbo": "marcar uma zona lenta antes de a saturar", "pergunta": "vais negar a zona e aceitar que o primeiro aviso mostra o centro?", "tradeoff": "quem sai antes do compromisso conserva a iniciativa", "vector_fuga": "sair_da_area"}
+        "base_two_hands": {
+          "definition_id": "arco_encharcado_campas/chuva_de_campas",
+          "nome": "Chuva das campas",
+          "verbo": "marcar uma zona lenta antes de a saturar",
+          "pergunta": "vais negar a zona e aceitar que o primeiro aviso mostra o centro?",
+          "tradeoff": "quem sai antes do compromisso conserva a iniciativa",
+          "vector_fuga": "sair_da_area"
+        }
       },
       "besta_fornalha_besta_de_fornalha": {
-        "base_two_hands": {"definition_id": "besta_fornalha_besta_de_fornalha/ferrolho_de_fornalha", "nome": "Ferrolho de fornalha", "verbo": "fechar uma linha com um virote anunciado pelo calor", "pergunta": "vais carregar a linha e revelar o alvo pelo brilho?", "tradeoff": "o brilho entrega a emboscada antes do disparo", "vector_fuga": "quebrar_visao"}
+        "base_two_hands": {
+          "definition_id": "besta_fornalha_besta_de_fornalha/ferrolho_de_fornalha",
+          "nome": "Ferrolho de fornalha",
+          "verbo": "fechar uma linha com um virote anunciado pelo calor",
+          "pergunta": "vais carregar a linha e revelar o alvo pelo brilho?",
+          "tradeoff": "o brilho entrega a emboscada antes do disparo",
+          "vector_fuga": "quebrar_visao"
+        }
       }
     }
   },
-
   "golpes_universais": {
     "_fonte": "spec/51 §1 + spec/68 §2 — constantes universais; equipment.json materializa os 11 golpes nas 8 familias.",
     "_estado": "catalogo fechado; no prototipo so leve, pesado, cadeia e bash executam. Os outros entram no M2.",
-    "leve_para_pesado": { "corte_arranque_pct": 0.25 },
-    "em_corrida":       { "avanco_m": 2.5, "postura_mult": 1.5, "_nota": "e o que torna a distancia jogavel" },
-    "a_rolar":          { "arranque_delta_frames": -4, "mv_mult": 0.85, "_nota": "faz a esquiva ser ofensiva" },
-    "a_saltar":         { "hyper_armor_nos_activos": true },
-    "de_cima":          { "_fonte": "spec/39 §5 — um dos quatro criticos" },
-    "empurrao":         { "startup": 12, "active": 4, "recovery": 14, "stamina": 20, "mv": 0.05, "quebra_guarda": true },
-    "arte_da_arma":     { "custo": "mana", "repoe_interrupcao_pct": 100 }
+    "leve_para_pesado": {
+      "corte_arranque_pct": 0.25
+    },
+    "em_corrida": {
+      "avanco_m": 2.5,
+      "postura_mult": 1.5,
+      "_nota": "e o que torna a distancia jogavel"
+    },
+    "a_rolar": {
+      "arranque_delta_frames": -4,
+      "mv_mult": 0.85,
+      "_nota": "faz a esquiva ser ofensiva"
+    },
+    "a_saltar": {
+      "hyper_armor_nos_activos": true
+    },
+    "de_cima": {
+      "_fonte": "spec/39 §5 — um dos quatro criticos"
+    },
+    "empurrao": {
+      "startup": 12,
+      "active": 4,
+      "recovery": 14,
+      "stamina": 20,
+      "mv": 0.05,
+      "quebra_guarda": true
+    },
+    "arte_da_arma": {
+      "custo": "mana",
+      "repoe_interrupcao_pct": 100
+    }
   },
-
   "modificadores_de_combate": {
-    "contra_perfurante": { "tipo_dano": "perfuracao", "multiplicador_base": 1.30, "haste": 1.40, "katana_estocada": 1.45 },
-    "instavel": { "multiplicador": 1.25, "estados": ["guarda_quebrada", "parry_falhado", "aterragem_pesada", "recuperacao_declarada"] },
-    "ressalto": { "recoil_frames": [12, 18], "parede_antes_do_alvo_cancela": true }
+    "contra_perfurante": {
+      "tipo_dano": "perfuracao",
+      "multiplicador_base": 1.3,
+      "haste": 1.4,
+      "katana_estocada": 1.45
+    },
+    "instavel": {
+      "multiplicador": 1.25,
+      "estados": [
+        "guarda_quebrada",
+        "parry_falhado",
+        "aterragem_pesada",
+        "recuperacao_declarada"
+      ]
+    },
+    "ressalto": {
+      "recoil_frames": [
+        12,
+        18
+      ],
+      "parede_antes_do_alvo_cancela": true
+    }
   },
-
   "familias": {
     "_fonte": "spec/51 §2 e §3. 'onde_ma' e obrigatorio — o game_data recusa arrancar sem ele.",
     "espada_recta": {
-      "nome": "Espadas rectas", "onde_boa": "em todo o lado — e a regua contra a qual tudo se mede",
+      "nome": "Espadas rectas",
+      "onde_boa": "em todo o lado — e a regua contra a qual tudo se mede",
       "onde_ma": "nunca e a melhor arma numa situacao lida: quem domina uma leitura ganha mais com outra familia",
-      "interrupcao": 14, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.30,"golpes":["estocada"]}, "critico": "normal",
-      "arte_1mao": "estocada perfurante", "arte_2maos": "golpe circular", "fatia_1": true
+      "interrupcao": 14,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": [
+          "estocada"
+        ]
+      },
+      "critico": "normal",
+      "arte_1mao": "estocada perfurante",
+      "arte_2maos": "golpe circular",
+      "fatia_1": true
     },
     "adaga": {
-      "nome": "Adagas", "onde_boa": "criticos nas costas e depois do parry — o multiplicador mais alto do jogo",
+      "nome": "Adagas",
+      "onde_boa": "criticos nas costas e depois do parry — o multiplicador mais alto do jogo",
       "onde_ma": "de frente contra armadura pesada: interrupcao 10, dez golpes para o que o espadao faz em tres",
-      "interrupcao": 10, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.30,"golpes":["estocada"]}, "critico": "alto",
-      "arte_1mao": "apunhalar", "arte_2maos": "danca de laminas", "fatia_1": true
+      "interrupcao": 10,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": [
+          "estocada"
+        ]
+      },
+      "critico": "alto",
+      "arte_1mao": "apunhalar",
+      "arte_2maos": "danca de laminas",
+      "fatia_1": true
     },
     "pesada_corte": {
-      "nome": "Pesadas de corte", "onde_boa": "interromper, varrer grupos e trocar no meio do golpe dele",
+      "nome": "Pesadas de corte",
+      "onde_boa": "interromper, varrer grupos e trocar no meio do golpe dele",
       "onde_ma": "contra quem nao falha: 34 f de recuperacao sao meio segundo de janela aberta a cada erro",
-      "interrupcao": 31, "hiper_armadura": true, "contra_perfurante": {"multiplicador":1.30,"golpes":[]}, "critico": "normal",
-      "arte_1mao": "salto esmagador", "arte_2maos": "rodopio", "fatia_1": true
+      "interrupcao": 31,
+      "hiper_armadura": true,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": []
+      },
+      "critico": "normal",
+      "arte_1mao": "salto esmagador",
+      "arte_2maos": "rodopio",
+      "fatia_1": true
     },
     "katana": {
-      "nome": "Katanas", "onde_boa": "a bater enquanto ele bate: contra-ataque +45% e o golpe em corrida mais forte",
+      "nome": "Katanas",
+      "onde_boa": "a bater enquanto ele bate: contra-ataque +45% e o golpe em corrida mais forte",
       "onde_ma": "nas maos de quem nao le: sem contra-ataques e uma espada recta pior (MV 0,9)",
-      "interrupcao": 13, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.45,"golpes":["estocada"]}, "critico": "normal",
-      "arte_1mao": "iai", "arte_2maos": "corte duplo", "fatia_1": false
+      "interrupcao": 13,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.45,
+        "golpes": [
+          "estocada"
+        ]
+      },
+      "critico": "normal",
+      "arte_1mao": "iai",
+      "arte_2maos": "corte duplo",
+      "fatia_1": false
     },
     "haste": {
-      "nome": "Hastes", "onde_boa": "estocar a 2,8 m com o escudo levantado — ataca sem baixar a guarda",
+      "nome": "Hastes",
+      "onde_boa": "estocar a 2,8 m com o escudo levantado — ataca sem baixar a guarda",
       "onde_ma": "colada ao corpo: dentro de 1,2 m os golpes falham por dentro",
-      "interrupcao": 14, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.40,"golpes":["estocada"]}, "critico": "normal",
-      "arte_1mao": "varrimento baixo", "arte_2maos": "carga de lanca", "fatia_1": false
+      "interrupcao": 14,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.4,
+        "golpes": [
+          "estocada"
+        ]
+      },
+      "critico": "normal",
+      "arte_1mao": "varrimento baixo",
+      "arte_2maos": "carga de lanca",
+      "fatia_1": false
     },
     "cajado": {
-      "nome": "Cajados", "onde_boa": "e o que conjura; a pancada e o plano B sem custo de mana",
+      "nome": "Cajados",
+      "onde_boa": "e o que conjura; a pancada e o plano B sem custo de mana",
       "onde_ma": "como arma: MV 0,7, sem critico e sem contra-bonus — um mago encostado a parede tem um pau",
-      "interrupcao": 8, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.30,"golpes":[]}, "critico": "normal",
-      "arte_1mao": "rajada de bruma", "arte_2maos": "conjuracao firmada", "fatia_1": true
+      "interrupcao": 8,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": []
+      },
+      "critico": "normal",
+      "arte_1mao": "rajada de bruma",
+      "arte_2maos": "conjuracao firmada",
+      "fatia_1": true
     },
     "arco": {
-      "nome": "Arcos", "onde_boa": "abrir o combate, cabecas (critico automatico) e marcar para o parceiro",
+      "nome": "Arcos",
+      "onde_boa": "abrir o combate, cabecas (critico automatico) e marcar para o parceiro",
       "onde_ma": "ao perto: a mirar anda-se devagar e nao se dispara em movimento; e cada flecha custa",
-      "interrupcao": 8, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.30,"golpes":[]}, "critico": "alto",
-      "municao": ["comum", "pesada", "farpada", "fogo", "gelo", "sinalizadora"],
-      "arte_1mao": "disparo firmado", "arte_2maos": "chuva de flechas", "fatia_1": false,
+      "interrupcao": 8,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": []
+      },
+      "critico": "alto",
+      "municao": [
+        "comum",
+        "pesada",
+        "farpada",
+        "fogo",
+        "gelo",
+        "sinalizadora"
+      ],
+      "arte_1mao": "disparo firmado",
+      "arte_2maos": "chuva de flechas",
+      "fatia_1": false,
       "_fora_da_fatia": "ataque a distancia seguro mata a esquiva e o parry (WP0)"
     },
     "besta": {
-      "nome": "Bestas", "onde_boa": "nas maos de toda a gente: requisitos baixos e ZERO escala — a Lei 3 em objecto",
+      "nome": "Bestas",
+      "onde_boa": "nas maos de toda a gente: requisitos baixos e ZERO escala — a Lei 3 em objecto",
       "onde_ma": "na cadencia: dois tempos, e a recarga a meio do combate e um convite ao golpe",
-      "interrupcao": 16, "hiper_armadura": false, "contra_perfurante": {"multiplicador":1.30,"golpes":[]}, "critico": "normal",
-      "escala": "nenhuma", "arte_1mao": "tiro rapido", "arte_2maos": "mira ampliada", "fatia_1": false
+      "interrupcao": 16,
+      "hiper_armadura": false,
+      "contra_perfurante": {
+        "multiplicador": 1.3,
+        "golpes": []
+      },
+      "critico": "normal",
+      "escala": "nenhuma",
+      "arte_1mao": "tiro rapido",
+      "arte_2maos": "mira ampliada",
+      "fatia_1": false
     }
   },
-
   "familias_escudo": {
     "_fonte": "spec/51 §3 + spec/70 §3. Tecto de estabilidade 85; o piso corporal nao se aplica a bloqueio.",
     "estabilidade_maxima": 85,
     "defesa_fisica_maxima_pct": 100,
     "penalidade_espreitar": true,
-    "broquel":       { "estabilidade": 50, "peso": 1.5, "defesa_fisica_pct": 85, "deflexao": "leve", "parry_delta_frames": 2,  "onde_ma": "aguenta mal um pesado — a guarda parte depressa", "fatia_1": false },
-    "escudo_medio":  { "estabilidade": 70, "peso": 5.0, "defesa_fisica_pct": 100, "deflexao": "media", "parry_delta_frames": 0,  "onde_ma": "nao brilha em nada — e o padrao", "fatia_1": true },
-    "escudo_grande": { "estabilidade": 85, "peso": 14.0, "defesa_fisica_pct": 100, "deflexao": "pesada", "parry_delta_frames": null, "onde_ma": "tira a carga leve E nao apara — a escolha doi dos dois lados", "fatia_1": false }
+    "broquel": {
+      "estabilidade": 50,
+      "peso": 1.5,
+      "defesa_fisica_pct": 85,
+      "deflexao": "leve",
+      "parry_delta_frames": 2,
+      "onde_ma": "aguenta mal um pesado — a guarda parte depressa",
+      "fatia_1": false
+    },
+    "escudo_medio": {
+      "estabilidade": 70,
+      "peso": 5.0,
+      "defesa_fisica_pct": 100,
+      "deflexao": "media",
+      "parry_delta_frames": 0,
+      "onde_ma": "nao brilha em nada — e o padrao",
+      "fatia_1": true
+    },
+    "escudo_grande": {
+      "estabilidade": 85,
+      "peso": 14.0,
+      "defesa_fisica_pct": 100,
+      "deflexao": "pesada",
+      "parry_delta_frames": null,
+      "onde_ma": "tira a carga leve E nao apara — a escolha doi dos dois lados",
+      "fatia_1": false
+    }
   },
-
   "_catalogo_runtime": {
     "_fonte": "spec/40 §9 + spec/68 §1; os ids e descricoes editoriais continuam em equipment.json",
     "_decisao": "[CODEX] pesos fisicos baseline por silhueta e material; razao: a carga tem de contar o kit inteiro. Alternativa descartada: um peso por familia, porque esconderia diferencas visiveis entre armas da mesma familia. Validar a jogar antes de confirmar.",
     "_unidade_peso": "kg_de_jogo",
     "_lei_3": "qualquer_classe_equipa; requisitos alteram rendimento, nunca bloqueiam",
     "weapons": {
-      "longsword": { "peso": 1.5, "variante": "assinatura_01" },
-      "espada_curta_campas": { "peso": 1.35, "variante": "assinatura_02" },
-      "espada_prata_santuario": { "peso": 1.5, "variante": "assinatura_03" },
-      "espada_recta_brumal_espada_de_vigilia": { "peso": 1.65, "variante": "assinatura_04" },
-      "espada_recta_selva_funda_lamina_de_romeiro": { "peso": 1.8, "variante": "assinatura_05" },
-      "espada_recta_campas_cinzentas_espada_de_muralha": { "peso": 1.3, "variante": "assinatura_06" },
-      "espada_recta_fojo_ferro_de_juramento": { "peso": 1.45, "variante": "assinatura_07" },
-      "espada_recta_costa_quebrada_lamina_de_ponte": { "peso": 1.6, "variante": "assinatura_08" },
-      "espada_recta_cimeira_espada_do_sineiro": { "peso": 1.75, "variante": "assinatura_09" },
-      "espada_recta_fornalha_guarda_de_peregrino": { "peso": 1.9, "variante": "assinatura_10" },
-      "espada_recta_fulgor_lamina_de_fronteira": { "peso": 1.4, "variante": "assinatura_11" },
-      "espada_recta_raizama_espada_de_procissao": { "peso": 1.55, "variante": "assinatura_12" },
-      "espada_recta_cidade_afogada_ferro_de_sentinela": { "peso": 1.7, "variante": "assinatura_13" },
-      "espada_recta_santuario_branco_espada_de_cripta": { "peso": 1.85, "variante": "assinatura_14" },
-      "dagger": { "peso": 0.7, "variante": "assinatura_01" },
-      "faca_goblin_bruma": { "peso": 0.7, "variante": "assinatura_02" },
-      "dente_mimico_costa": { "peso": 0.8, "variante": "assinatura_03" },
-      "dente_mimico_fojo": { "peso": 0.9, "variante": "assinatura_04" },
-      "adaga_brumal_punhal_de_nevoeiro": { "peso": 1.0, "variante": "assinatura_05" },
-      "adaga_selva_funda_dente_de_vigia": { "peso": 0.65, "variante": "assinatura_06" },
-      "adaga_campas_cinzentas_faca_de_ritual": { "peso": 0.75, "variante": "assinatura_07" },
-      "adaga_fojo_agulha_de_sal": { "peso": 0.85, "variante": "assinatura_08" },
-      "adaga_costa_quebrada_punhal_de_copa": { "peso": 0.95, "variante": "assinatura_09" },
-      "adaga_cimeira_dente_de_ossario": { "peso": 1.05, "variante": "assinatura_10" },
-      "adaga_fornalha_faca_de_fundidor": { "peso": 0.7, "variante": "assinatura_11" },
-      "adaga_fulgor_agulha_de_trovao": { "peso": 0.8, "variante": "assinatura_12" },
-      "adaga_raizama_punhal_de_esporo": { "peso": 0.9, "variante": "assinatura_13" },
-      "adaga_cidade_afogada_dente_afogado": { "peso": 1.0, "variante": "assinatura_14" },
-      "adaga_santuario_branco_faca_penitente": { "peso": 1.1, "variante": "assinatura_15" },
-      "greataxe": { "peso": 8.0, "variante": "assinatura_01" },
-      "clava_cogumelo_goblin": { "peso": 6.8, "variante": "assinatura_02" },
-      "coluna_marmore_zumbi": { "peso": 7.6, "variante": "assinatura_03" },
-      "enxada_lodo": { "peso": 8.4, "variante": "assinatura_04" },
-      "maca_fulgurite_minotauro": { "peso": 9.2, "variante": "assinatura_05" },
-      "maca_orc_pesada": { "peso": 6.4, "variante": "assinatura_06" },
-      "machado_labirinto": { "peso": 7.2, "variante": "assinatura_07" },
-      "martelo_aco_frio": { "peso": 8.0, "variante": "assinatura_08" },
-      "martelo_lamina_obsidiana": { "peso": 8.8, "variante": "assinatura_09" },
-      "picareta_kobold_fojo": { "peso": 9.6, "variante": "assinatura_10" },
-      "tenaz_orc_fornalha": { "peso": 6.8, "variante": "assinatura_11" },
-      "pesada_corte_brumal_machado_de_quebra": { "peso": 7.6, "variante": "assinatura_12" },
-      "pesada_corte_selva_funda_malho_de_pedreira": { "peso": 8.4, "variante": "assinatura_13" },
-      "pesada_corte_campas_cinzentas_cutelo_de_forja": { "peso": 9.2, "variante": "assinatura_14" },
-      "pesada_corte_fojo_machado_de_carrasco": { "peso": 10.0, "variante": "assinatura_15" },
-      "espada_curva_raiz": { "peso": 0.9, "variante": "assinatura_01" },
-      "sabre_osso_goblin": { "peso": 1.05, "variante": "assinatura_02" },
-      "katana_brumal_lua_de_nevoeiro": { "peso": 1.2, "variante": "assinatura_03" },
-      "katana_selva_funda_corte_de_bambu": { "peso": 1.35, "variante": "assinatura_04" },
-      "katana_campas_cinzentas_sabre_tumular": { "peso": 1.5, "variante": "assinatura_05" },
-      "katana_fojo_lamina_de_escoria": { "peso": 1.0, "variante": "assinatura_06" },
-      "katana_costa_quebrada_curva_de_mare": { "peso": 1.15, "variante": "assinatura_07" },
-      "katana_cimeira_lua_de_gelo": { "peso": 1.3, "variante": "assinatura_08" },
-      "katana_fornalha_corte_de_obsidiana": { "peso": 1.45, "variante": "assinatura_09" },
-      "katana_fulgor_sabre_de_raio": { "peso": 1.6, "variante": "assinatura_10" },
-      "katana_raizama_lamina_de_micelio": { "peso": 1.1, "variante": "assinatura_11" },
-      "katana_cidade_afogada_curva_afogada": { "peso": 1.25, "variante": "assinatura_12" },
-      "katana_santuario_branco_lua_penitente": { "peso": 1.4, "variante": "assinatura_13" },
-      "katana_raiz_corte_da_raiz": { "peso": 1.55, "variante": "assinatura_14" },
-      "katana_brumal_sabre_de_vigilia": { "peso": 1.7, "variante": "assinatura_15" },
-      "alabarda_raiz_petrificada": { "peso": 2.3, "variante": "assinatura_01" },
-      "arpao_submerso_costa": { "peso": 2.6, "variante": "assinatura_02" },
-      "gancho_orc_mar": { "peso": 2.9, "variante": "assinatura_03" },
-      "lanca_aco_frio": { "peso": 3.2, "variante": "assinatura_04" },
-      "lanca_bambu_kobold": { "peso": 3.5, "variante": "assinatura_05" },
-      "lanca_espinho_ventaneira": { "peso": 2.45, "variante": "assinatura_06" },
-      "lanca_orc_bruma": { "peso": 2.75, "variante": "assinatura_07" },
-      "tridente_prata_afogada": { "peso": 3.05, "variante": "assinatura_08" },
-      "haste_brumal_lanca_de_vigia": { "peso": 3.35, "variante": "assinatura_09" },
-      "haste_selva_funda_pique_de_copa": { "peso": 3.65, "variante": "assinatura_10" },
-      "haste_campas_cinzentas_alabarda_tumular": { "peso": 2.6, "variante": "assinatura_11" },
-      "haste_fojo_arpao_de_falesia": { "peso": 2.9, "variante": "assinatura_12" },
-      "haste_costa_quebrada_lanca_de_gelo": { "peso": 3.2, "variante": "assinatura_13" },
-      "haste_cimeira_pique_de_escoria": { "peso": 3.5, "variante": "assinatura_14" },
-      "haste_fornalha_alabarda_de_fulgor": { "peso": 3.8, "variante": "assinatura_15" },
-      "staff": { "peso": 2.5, "variante": "assinatura_01" },
-      "diapasao_penitente": { "peso": 1.7, "variante": "assinatura_02" },
-      "fuso_esporos_teciao": { "peso": 1.9, "variante": "assinatura_03" },
-      "fuso_teciao_selva": { "peso": 2.1, "variante": "assinatura_04" },
-      "turibulo_penitente": { "peso": 2.3, "variante": "assinatura_05" },
-      "cajado_brumal_cajado_de_bruma": { "peso": 1.6, "variante": "assinatura_06" },
-      "cajado_selva_funda_fuso_de_seda": { "peso": 1.8, "variante": "assinatura_07" },
-      "cajado_campas_cinzentas_vara_de_ossario": { "peso": 2.0, "variante": "assinatura_08" },
-      "cajado_fojo_diapasao_de_mina": { "peso": 2.2, "variante": "assinatura_09" },
-      "cajado_costa_quebrada_bordao_de_mare": { "peso": 2.4, "variante": "assinatura_10" },
-      "cajado_cimeira_cajado_de_gelo": { "peso": 1.7, "variante": "assinatura_11" },
-      "cajado_fornalha_vara_de_cinza": { "peso": 1.9, "variante": "assinatura_12" },
-      "cajado_fulgor_diapasao_de_fulgor": { "peso": 2.1, "variante": "assinatura_13" },
-      "cajado_raizama_fuso_de_esporo": { "peso": 2.3, "variante": "assinatura_14" },
-      "cajado_cidade_afogada_bordao_afogado": { "peso": 2.5, "variante": "assinatura_15" },
-      "arco_encharcado_campas": { "peso": 0.7, "variante": "assinatura_01" },
-      "funda_couro_fulgor": { "peso": 0.82, "variante": "assinatura_02" },
-      "funda_seda_selva": { "peso": 0.94, "variante": "assinatura_03" },
-      "arco_brumal_arco_de_batedor": { "peso": 1.06, "variante": "assinatura_04" },
-      "arco_selva_funda_funda_de_copa": { "peso": 1.18, "variante": "assinatura_05" },
-      "arco_campas_cinzentas_arco_tumular": { "peso": 0.76, "variante": "assinatura_06" },
-      "arco_fojo_arco_de_mineiro": { "peso": 0.88, "variante": "assinatura_07" },
-      "arco_costa_quebrada_funda_de_mare": { "peso": 1.0, "variante": "assinatura_08" },
-      "arco_cimeira_arco_de_gelo": { "peso": 1.12, "variante": "assinatura_09" },
-      "arco_fornalha_arco_de_carvao": { "peso": 1.24, "variante": "assinatura_10" },
-      "arco_fulgor_funda_de_fulgor": { "peso": 0.82, "variante": "assinatura_11" },
-      "arco_raizama_arco_de_esporo": { "peso": 0.94, "variante": "assinatura_12" },
-      "arco_cidade_afogada_arco_afogado": { "peso": 1.06, "variante": "assinatura_13" },
-      "arco_santuario_branco_funda_penitente": { "peso": 1.18, "variante": "assinatura_14" },
-      "arco_raiz_arco_da_raiz": { "peso": 1.3, "variante": "assinatura_15" },
-      "besta_brumal_besta_de_muralha": { "peso": 2.5, "variante": "assinatura_01" },
-      "besta_selva_funda_besta_de_copa": { "peso": 2.9, "variante": "assinatura_02" },
-      "besta_campas_cinzentas_besta_de_cripta": { "peso": 3.3, "variante": "assinatura_03" },
-      "besta_fojo_besta_de_veio": { "peso": 3.7, "variante": "assinatura_04" },
-      "besta_costa_quebrada_besta_de_conves": { "peso": 4.1, "variante": "assinatura_05" },
-      "besta_cimeira_besta_de_gelo": { "peso": 2.7, "variante": "assinatura_06" },
-      "besta_fornalha_besta_de_fornalha": { "peso": 3.1, "variante": "assinatura_07" },
-      "besta_fulgor_besta_de_fulgor": { "peso": 3.5, "variante": "assinatura_08" },
-      "besta_raizama_besta_de_esporo": { "peso": 3.9, "variante": "assinatura_09" },
-      "besta_cidade_afogada_besta_afogada": { "peso": 4.3, "variante": "assinatura_10" },
-      "besta_santuario_branco_besta_penitente": { "peso": 2.9, "variante": "assinatura_11" },
-      "besta_raiz_besta_da_raiz": { "peso": 3.3, "variante": "assinatura_12" },
-      "besta_brumal_besta_de_peregrino": { "peso": 3.7, "variante": "assinatura_13" },
-      "besta_selva_funda_besta_de_cerco": { "peso": 4.1, "variante": "assinatura_14" },
-      "besta_campas_cinzentas_besta_sem_brasao": { "peso": 4.5, "variante": "assinatura_15" },
-      "shield": { "peso": 5.0, "variante": "escudo_bash" }
+      "longsword": {
+        "peso": 1.5,
+        "variante": "assinatura_01"
+      },
+      "espada_curta_campas": {
+        "peso": 1.35,
+        "variante": "assinatura_02"
+      },
+      "espada_prata_santuario": {
+        "peso": 1.5,
+        "variante": "assinatura_03"
+      },
+      "espada_recta_brumal_espada_de_vigilia": {
+        "peso": 1.65,
+        "variante": "assinatura_04"
+      },
+      "espada_recta_selva_funda_lamina_de_romeiro": {
+        "peso": 1.8,
+        "variante": "assinatura_05"
+      },
+      "espada_recta_campas_cinzentas_espada_de_muralha": {
+        "peso": 1.3,
+        "variante": "assinatura_06"
+      },
+      "espada_recta_fojo_ferro_de_juramento": {
+        "peso": 1.45,
+        "variante": "assinatura_07"
+      },
+      "espada_recta_costa_quebrada_lamina_de_ponte": {
+        "peso": 1.6,
+        "variante": "assinatura_08"
+      },
+      "espada_recta_cimeira_espada_do_sineiro": {
+        "peso": 1.75,
+        "variante": "assinatura_09"
+      },
+      "espada_recta_fornalha_guarda_de_peregrino": {
+        "peso": 1.9,
+        "variante": "assinatura_10"
+      },
+      "espada_recta_fulgor_lamina_de_fronteira": {
+        "peso": 1.4,
+        "variante": "assinatura_11"
+      },
+      "espada_recta_raizama_espada_de_procissao": {
+        "peso": 1.55,
+        "variante": "assinatura_12"
+      },
+      "espada_recta_cidade_afogada_ferro_de_sentinela": {
+        "peso": 1.7,
+        "variante": "assinatura_13"
+      },
+      "espada_recta_santuario_branco_espada_de_cripta": {
+        "peso": 1.85,
+        "variante": "assinatura_14"
+      },
+      "dagger": {
+        "peso": 0.7,
+        "variante": "assinatura_01"
+      },
+      "faca_goblin_bruma": {
+        "peso": 0.7,
+        "variante": "assinatura_02"
+      },
+      "dente_mimico_costa": {
+        "peso": 0.8,
+        "variante": "assinatura_03"
+      },
+      "dente_mimico_fojo": {
+        "peso": 0.9,
+        "variante": "assinatura_04"
+      },
+      "adaga_brumal_punhal_de_nevoeiro": {
+        "peso": 1.0,
+        "variante": "assinatura_05"
+      },
+      "adaga_selva_funda_dente_de_vigia": {
+        "peso": 0.65,
+        "variante": "assinatura_06"
+      },
+      "adaga_campas_cinzentas_faca_de_ritual": {
+        "peso": 0.75,
+        "variante": "assinatura_07"
+      },
+      "adaga_fojo_agulha_de_sal": {
+        "peso": 0.85,
+        "variante": "assinatura_08"
+      },
+      "adaga_costa_quebrada_punhal_de_copa": {
+        "peso": 0.95,
+        "variante": "assinatura_09"
+      },
+      "adaga_cimeira_dente_de_ossario": {
+        "peso": 1.05,
+        "variante": "assinatura_10"
+      },
+      "adaga_fornalha_faca_de_fundidor": {
+        "peso": 0.7,
+        "variante": "assinatura_11"
+      },
+      "adaga_fulgor_agulha_de_trovao": {
+        "peso": 0.8,
+        "variante": "assinatura_12"
+      },
+      "adaga_raizama_punhal_de_esporo": {
+        "peso": 0.9,
+        "variante": "assinatura_13"
+      },
+      "adaga_cidade_afogada_dente_afogado": {
+        "peso": 1.0,
+        "variante": "assinatura_14"
+      },
+      "adaga_santuario_branco_faca_penitente": {
+        "peso": 1.1,
+        "variante": "assinatura_15"
+      },
+      "greataxe": {
+        "peso": 8.0,
+        "variante": "assinatura_01"
+      },
+      "clava_cogumelo_goblin": {
+        "peso": 6.8,
+        "variante": "assinatura_02"
+      },
+      "coluna_marmore_zumbi": {
+        "peso": 7.6,
+        "variante": "assinatura_03"
+      },
+      "enxada_lodo": {
+        "peso": 8.4,
+        "variante": "assinatura_04"
+      },
+      "maca_fulgurite_minotauro": {
+        "peso": 9.2,
+        "variante": "assinatura_05"
+      },
+      "maca_orc_pesada": {
+        "peso": 6.4,
+        "variante": "assinatura_06"
+      },
+      "machado_labirinto": {
+        "peso": 7.2,
+        "variante": "assinatura_07"
+      },
+      "martelo_aco_frio": {
+        "peso": 8.0,
+        "variante": "assinatura_08"
+      },
+      "martelo_lamina_obsidiana": {
+        "peso": 8.8,
+        "variante": "assinatura_09"
+      },
+      "picareta_kobold_fojo": {
+        "peso": 9.6,
+        "variante": "assinatura_10"
+      },
+      "tenaz_orc_fornalha": {
+        "peso": 6.8,
+        "variante": "assinatura_11"
+      },
+      "pesada_corte_brumal_machado_de_quebra": {
+        "peso": 7.6,
+        "variante": "assinatura_12"
+      },
+      "pesada_corte_selva_funda_malho_de_pedreira": {
+        "peso": 8.4,
+        "variante": "assinatura_13"
+      },
+      "pesada_corte_campas_cinzentas_cutelo_de_forja": {
+        "peso": 9.2,
+        "variante": "assinatura_14"
+      },
+      "pesada_corte_fojo_machado_de_carrasco": {
+        "peso": 10.0,
+        "variante": "assinatura_15"
+      },
+      "espada_curva_raiz": {
+        "peso": 0.9,
+        "variante": "assinatura_01"
+      },
+      "sabre_osso_goblin": {
+        "peso": 1.05,
+        "variante": "assinatura_02"
+      },
+      "katana_brumal_lua_de_nevoeiro": {
+        "peso": 1.2,
+        "variante": "assinatura_03"
+      },
+      "katana_selva_funda_corte_de_bambu": {
+        "peso": 1.35,
+        "variante": "assinatura_04"
+      },
+      "katana_campas_cinzentas_sabre_tumular": {
+        "peso": 1.5,
+        "variante": "assinatura_05"
+      },
+      "katana_fojo_lamina_de_escoria": {
+        "peso": 1.0,
+        "variante": "assinatura_06"
+      },
+      "katana_costa_quebrada_curva_de_mare": {
+        "peso": 1.15,
+        "variante": "assinatura_07"
+      },
+      "katana_cimeira_lua_de_gelo": {
+        "peso": 1.3,
+        "variante": "assinatura_08"
+      },
+      "katana_fornalha_corte_de_obsidiana": {
+        "peso": 1.45,
+        "variante": "assinatura_09"
+      },
+      "katana_fulgor_sabre_de_raio": {
+        "peso": 1.6,
+        "variante": "assinatura_10"
+      },
+      "katana_raizama_lamina_de_micelio": {
+        "peso": 1.1,
+        "variante": "assinatura_11"
+      },
+      "katana_cidade_afogada_curva_afogada": {
+        "peso": 1.25,
+        "variante": "assinatura_12"
+      },
+      "katana_santuario_branco_lua_penitente": {
+        "peso": 1.4,
+        "variante": "assinatura_13"
+      },
+      "katana_raiz_corte_da_raiz": {
+        "peso": 1.55,
+        "variante": "assinatura_14"
+      },
+      "katana_brumal_sabre_de_vigilia": {
+        "peso": 1.7,
+        "variante": "assinatura_15"
+      },
+      "alabarda_raiz_petrificada": {
+        "peso": 2.3,
+        "variante": "assinatura_01"
+      },
+      "arpao_submerso_costa": {
+        "peso": 2.6,
+        "variante": "assinatura_02"
+      },
+      "gancho_orc_mar": {
+        "peso": 2.9,
+        "variante": "assinatura_03"
+      },
+      "lanca_aco_frio": {
+        "peso": 3.2,
+        "variante": "assinatura_04"
+      },
+      "lanca_bambu_kobold": {
+        "peso": 3.5,
+        "variante": "assinatura_05"
+      },
+      "lanca_espinho_ventaneira": {
+        "peso": 2.45,
+        "variante": "assinatura_06"
+      },
+      "lanca_orc_bruma": {
+        "peso": 2.75,
+        "variante": "assinatura_07"
+      },
+      "tridente_prata_afogada": {
+        "peso": 3.05,
+        "variante": "assinatura_08"
+      },
+      "haste_brumal_lanca_de_vigia": {
+        "peso": 3.35,
+        "variante": "assinatura_09"
+      },
+      "haste_selva_funda_pique_de_copa": {
+        "peso": 3.65,
+        "variante": "assinatura_10"
+      },
+      "haste_campas_cinzentas_alabarda_tumular": {
+        "peso": 2.6,
+        "variante": "assinatura_11"
+      },
+      "haste_fojo_arpao_de_falesia": {
+        "peso": 2.9,
+        "variante": "assinatura_12"
+      },
+      "haste_costa_quebrada_lanca_de_gelo": {
+        "peso": 3.2,
+        "variante": "assinatura_13"
+      },
+      "haste_cimeira_pique_de_escoria": {
+        "peso": 3.5,
+        "variante": "assinatura_14"
+      },
+      "haste_fornalha_alabarda_de_fulgor": {
+        "peso": 3.8,
+        "variante": "assinatura_15"
+      },
+      "staff": {
+        "peso": 2.5,
+        "variante": "assinatura_01"
+      },
+      "diapasao_penitente": {
+        "peso": 1.7,
+        "variante": "assinatura_02"
+      },
+      "fuso_esporos_teciao": {
+        "peso": 1.9,
+        "variante": "assinatura_03"
+      },
+      "fuso_teciao_selva": {
+        "peso": 2.1,
+        "variante": "assinatura_04"
+      },
+      "turibulo_penitente": {
+        "peso": 2.3,
+        "variante": "assinatura_05"
+      },
+      "cajado_brumal_cajado_de_bruma": {
+        "peso": 1.6,
+        "variante": "assinatura_06"
+      },
+      "cajado_selva_funda_fuso_de_seda": {
+        "peso": 1.8,
+        "variante": "assinatura_07"
+      },
+      "cajado_campas_cinzentas_vara_de_ossario": {
+        "peso": 2.0,
+        "variante": "assinatura_08"
+      },
+      "cajado_fojo_diapasao_de_mina": {
+        "peso": 2.2,
+        "variante": "assinatura_09"
+      },
+      "cajado_costa_quebrada_bordao_de_mare": {
+        "peso": 2.4,
+        "variante": "assinatura_10"
+      },
+      "cajado_cimeira_cajado_de_gelo": {
+        "peso": 1.7,
+        "variante": "assinatura_11"
+      },
+      "cajado_fornalha_vara_de_cinza": {
+        "peso": 1.9,
+        "variante": "assinatura_12"
+      },
+      "cajado_fulgor_diapasao_de_fulgor": {
+        "peso": 2.1,
+        "variante": "assinatura_13"
+      },
+      "cajado_raizama_fuso_de_esporo": {
+        "peso": 2.3,
+        "variante": "assinatura_14"
+      },
+      "cajado_cidade_afogada_bordao_afogado": {
+        "peso": 2.5,
+        "variante": "assinatura_15"
+      },
+      "arco_encharcado_campas": {
+        "peso": 0.7,
+        "variante": "assinatura_01"
+      },
+      "funda_couro_fulgor": {
+        "peso": 0.82,
+        "variante": "assinatura_02"
+      },
+      "funda_seda_selva": {
+        "peso": 0.94,
+        "variante": "assinatura_03"
+      },
+      "arco_brumal_arco_de_batedor": {
+        "peso": 1.06,
+        "variante": "assinatura_04"
+      },
+      "arco_selva_funda_funda_de_copa": {
+        "peso": 1.18,
+        "variante": "assinatura_05"
+      },
+      "arco_campas_cinzentas_arco_tumular": {
+        "peso": 0.76,
+        "variante": "assinatura_06"
+      },
+      "arco_fojo_arco_de_mineiro": {
+        "peso": 0.88,
+        "variante": "assinatura_07"
+      },
+      "arco_costa_quebrada_funda_de_mare": {
+        "peso": 1.0,
+        "variante": "assinatura_08"
+      },
+      "arco_cimeira_arco_de_gelo": {
+        "peso": 1.12,
+        "variante": "assinatura_09"
+      },
+      "arco_fornalha_arco_de_carvao": {
+        "peso": 1.24,
+        "variante": "assinatura_10"
+      },
+      "arco_fulgor_funda_de_fulgor": {
+        "peso": 0.82,
+        "variante": "assinatura_11"
+      },
+      "arco_raizama_arco_de_esporo": {
+        "peso": 0.94,
+        "variante": "assinatura_12"
+      },
+      "arco_cidade_afogada_arco_afogado": {
+        "peso": 1.06,
+        "variante": "assinatura_13"
+      },
+      "arco_santuario_branco_funda_penitente": {
+        "peso": 1.18,
+        "variante": "assinatura_14"
+      },
+      "arco_raiz_arco_da_raiz": {
+        "peso": 1.3,
+        "variante": "assinatura_15"
+      },
+      "besta_brumal_besta_de_muralha": {
+        "peso": 2.5,
+        "variante": "assinatura_01"
+      },
+      "besta_selva_funda_besta_de_copa": {
+        "peso": 2.9,
+        "variante": "assinatura_02"
+      },
+      "besta_campas_cinzentas_besta_de_cripta": {
+        "peso": 3.3,
+        "variante": "assinatura_03"
+      },
+      "besta_fojo_besta_de_veio": {
+        "peso": 3.7,
+        "variante": "assinatura_04"
+      },
+      "besta_costa_quebrada_besta_de_conves": {
+        "peso": 4.1,
+        "variante": "assinatura_05"
+      },
+      "besta_cimeira_besta_de_gelo": {
+        "peso": 2.7,
+        "variante": "assinatura_06"
+      },
+      "besta_fornalha_besta_de_fornalha": {
+        "peso": 3.1,
+        "variante": "assinatura_07"
+      },
+      "besta_fulgor_besta_de_fulgor": {
+        "peso": 3.5,
+        "variante": "assinatura_08"
+      },
+      "besta_raizama_besta_de_esporo": {
+        "peso": 3.9,
+        "variante": "assinatura_09"
+      },
+      "besta_cidade_afogada_besta_afogada": {
+        "peso": 4.3,
+        "variante": "assinatura_10"
+      },
+      "besta_santuario_branco_besta_penitente": {
+        "peso": 2.9,
+        "variante": "assinatura_11"
+      },
+      "besta_raiz_besta_da_raiz": {
+        "peso": 3.3,
+        "variante": "assinatura_12"
+      },
+      "besta_brumal_besta_de_peregrino": {
+        "peso": 3.7,
+        "variante": "assinatura_13"
+      },
+      "besta_selva_funda_besta_de_cerco": {
+        "peso": 4.1,
+        "variante": "assinatura_14"
+      },
+      "besta_campas_cinzentas_besta_sem_brasao": {
+        "peso": 4.5,
+        "variante": "assinatura_15"
+      },
+      "shield": {
+        "peso": 5.0,
+        "variante": "escudo_bash"
+      }
     }
   },
-
   "_weapon_signatures": {
     "_decisao": "[CODEX] quinze verbos combinados com o moveset da familia. Razao: duas armas da mesma familia precisam de mudar a pergunta espacial, nao so MV/frames. Alternativa descartada: variantes apenas numericas, porque repetiriam a mesma arma.",
-    "assinatura_01": { "nome": "entrada comprometida", "golpe_assinatura": "em_corrida", "verbo": "entrar até à linha do alvo e terminar do outro lado", "compromisso": "depois do compromisso já não vira para corrigir a leitura" },
-    "assinatura_02": { "nome": "saída cortante", "golpe_assinatura": "a_rolar", "verbo": "transformar a saída da esquiva num ataque de afastamento", "compromisso": "o golpe fecha a cadeia e não permite outro ataque imediato" },
-    "assinatura_03": { "nome": "guarda ligada", "golpe_assinatura": "leve", "verbo": "atacar directamente da guarda sem baixar primeiro a arma", "compromisso": "não pode aparar até terminar a recuperação" },
-    "assinatura_04": { "nome": "varrimento tardio", "golpe_assinatura": "cadeia", "verbo": "trocar o último golpe da cadeia por um arco que apanha os flancos", "compromisso": "falhar o arco abre uma recuperação sem continuação" },
-    "assinatura_05": { "nome": "finta leve-pesada", "golpe_assinatura": "leve_para_pesado", "verbo": "mudar de linha entre o leve e o pesado para apanhar uma esquiva antecipada", "compromisso": "a finta substitui o seguimento pesado normal" },
-    "assinatura_06": { "nome": "recuo invertido", "golpe_assinatura": "pesado", "verbo": "converter um pesado falhado num recuo que recompõe distância", "compromisso": "recuar abdica do próximo leve da cadeia" },
-    "assinatura_07": { "nome": "carga partida", "golpe_assinatura": "em_corrida", "verbo": "parar a corrida antes do contacto e largar o golpe quando o alvo responde", "compromisso": "a paragem perde a hiper-armadura da entrada" },
-    "assinatura_08": { "nome": "queda ancorada", "golpe_assinatura": "de_cima", "verbo": "prender a arma ao chão para travar o alvo na aterragem", "compromisso": "a arma tem de ser libertada antes de voltar a esquivar" },
-    "assinatura_09": { "nome": "empurrão lateral", "golpe_assinatura": "empurrao", "verbo": "desviar a guarda para um lado e abrir uma rota ao parceiro", "compromisso": "não quebra uma guarda recebida de frente" },
-    "assinatura_10": { "nome": "ritmo duplo", "golpe_assinatura": "cadeia", "verbo": "alternar o lado de entrada para obrigar o alvo a reler a defesa", "compromisso": "a cadeia termina depois do segundo lado" },
-    "assinatura_11": { "nome": "contra-linha", "golpe_assinatura": "pesado", "verbo": "reservar a ponta para atravessar a linha activa do ataque inimigo", "compromisso": "fora da janela de contra-ataque perde a propriedade que a distingue" },
-    "assinatura_12": { "nome": "arco curto", "golpe_assinatura": "leve", "verbo": "encurtar a pega e lutar colado ao corpo", "compromisso": "abdica do alcance máximo enquanto conserva a pega curta" },
-    "assinatura_13": { "nome": "arco aberto", "golpe_assinatura": "pesado", "verbo": "varrer um semicírculo para controlar dois alvos", "compromisso": "o seguimento termina antes do activo e não corrige os flancos" },
-    "assinatura_14": { "nome": "ponta presa", "golpe_assinatura": "pesado", "verbo": "manter o contacto para arrastar a arma ou projéctil para fora da guarda", "compromisso": "quem usa fica preso à mesma linha até largar" },
-    "assinatura_15": { "nome": "passo cruzado", "golpe_assinatura": "a_saltar", "verbo": "cruzar lateralmente a linha como investida terrestre e atacar do ângulo morto", "compromisso": "o passo não oferece saída para trás" }
+    "assinatura_01": {
+      "nome": "entrada comprometida",
+      "golpe_assinatura": "em_corrida",
+      "verbo": "entrar até à linha do alvo e terminar do outro lado",
+      "compromisso": "depois do compromisso já não vira para corrigir a leitura"
+    },
+    "assinatura_02": {
+      "nome": "saída cortante",
+      "golpe_assinatura": "a_rolar",
+      "verbo": "transformar a saída da esquiva num ataque de afastamento",
+      "compromisso": "o golpe fecha a cadeia e não permite outro ataque imediato"
+    },
+    "assinatura_03": {
+      "nome": "guarda ligada",
+      "golpe_assinatura": "leve",
+      "verbo": "atacar directamente da guarda sem baixar primeiro a arma",
+      "compromisso": "não pode aparar até terminar a recuperação"
+    },
+    "assinatura_04": {
+      "nome": "varrimento tardio",
+      "golpe_assinatura": "cadeia",
+      "verbo": "trocar o último golpe da cadeia por um arco que apanha os flancos",
+      "compromisso": "falhar o arco abre uma recuperação sem continuação"
+    },
+    "assinatura_05": {
+      "nome": "finta leve-pesada",
+      "golpe_assinatura": "leve_para_pesado",
+      "verbo": "mudar de linha entre o leve e o pesado para apanhar uma esquiva antecipada",
+      "compromisso": "a finta substitui o seguimento pesado normal"
+    },
+    "assinatura_06": {
+      "nome": "recuo invertido",
+      "golpe_assinatura": "pesado",
+      "verbo": "converter um pesado falhado num recuo que recompõe distância",
+      "compromisso": "recuar abdica do próximo leve da cadeia"
+    },
+    "assinatura_07": {
+      "nome": "carga partida",
+      "golpe_assinatura": "em_corrida",
+      "verbo": "parar a corrida antes do contacto e largar o golpe quando o alvo responde",
+      "compromisso": "a paragem perde a hiper-armadura da entrada"
+    },
+    "assinatura_08": {
+      "nome": "queda ancorada",
+      "golpe_assinatura": "de_cima",
+      "verbo": "prender a arma ao chão para travar o alvo na aterragem",
+      "compromisso": "a arma tem de ser libertada antes de voltar a esquivar"
+    },
+    "assinatura_09": {
+      "nome": "empurrão lateral",
+      "golpe_assinatura": "empurrao",
+      "verbo": "desviar a guarda para um lado e abrir uma rota ao parceiro",
+      "compromisso": "não quebra uma guarda recebida de frente"
+    },
+    "assinatura_10": {
+      "nome": "ritmo duplo",
+      "golpe_assinatura": "cadeia",
+      "verbo": "alternar o lado de entrada para obrigar o alvo a reler a defesa",
+      "compromisso": "a cadeia termina depois do segundo lado"
+    },
+    "assinatura_11": {
+      "nome": "contra-linha",
+      "golpe_assinatura": "pesado",
+      "verbo": "reservar a ponta para atravessar a linha activa do ataque inimigo",
+      "compromisso": "fora da janela de contra-ataque perde a propriedade que a distingue"
+    },
+    "assinatura_12": {
+      "nome": "arco curto",
+      "golpe_assinatura": "leve",
+      "verbo": "encurtar a pega e lutar colado ao corpo",
+      "compromisso": "abdica do alcance máximo enquanto conserva a pega curta"
+    },
+    "assinatura_13": {
+      "nome": "arco aberto",
+      "golpe_assinatura": "pesado",
+      "verbo": "varrer um semicírculo para controlar dois alvos",
+      "compromisso": "o seguimento termina antes do activo e não corrige os flancos"
+    },
+    "assinatura_14": {
+      "nome": "ponta presa",
+      "golpe_assinatura": "pesado",
+      "verbo": "manter o contacto para arrastar a arma ou projéctil para fora da guarda",
+      "compromisso": "quem usa fica preso à mesma linha até largar"
+    },
+    "assinatura_15": {
+      "nome": "passo cruzado",
+      "golpe_assinatura": "a_saltar",
+      "verbo": "cruzar lateralmente a linha como investida terrestre e atacar do ângulo morto",
+      "compromisso": "o passo não oferece saída para trás"
+    }
   },
-
   "_weapon_improvements": {
     "_fonte": "spec/68 §3 — base + seis níveis; voto reversível no altar; zero aumento de dano base",
     "_decisao": "[CODEX] opções executáveis mínimas para cada eixo já decidido. Razão: a tabela fechava o eixo mas não dava ids que UI/save pudessem persistir. Alternativa descartada: guardar texto livre, porque não é validável nem migrável.",
-    "activation": { "world_context": "altar_de_armas", "input_action": "interact", "reversible": true },
+    "activation": {
+      "world_context": "altar_de_armas",
+      "input_action": "interact",
+      "reversible": true
+    },
     "materials": {
-      "low": { "item_id": "limalha_ferro", "display_name": "Limalha", "levels": [1, 2, 3] },
-      "high": { "item_id": "limalha_nobre", "display_name": "Limalha Nobre", "levels": [4, 5, 6], "integration_state": "missing_in_economy_catalogue" }
+      "low": {
+        "item_id": "limalha_ferro",
+        "display_name": "Limalha",
+        "levels": [
+          1,
+          2,
+          3
+        ]
+      },
+      "high": {
+        "item_id": "limalha_nobre",
+        "display_name": "Limalha Nobre",
+        "levels": [
+          4,
+          5,
+          6
+        ],
+        "integration_state": "missing_in_economy_catalogue"
+      }
     },
     "elemental_conversion_fraction": 0.35,
     "levels": [
-      { "level": 0, "axis": "base", "options": [], "increases_base_damage": false },
-      { "level": 1, "axis": "postura", "material_tier": "low", "increases_base_damage": false, "options": [
-        { "id": "postura_avancada", "label": "Postura avançada", "effect": { "postura": "avancada", "moveset_unlock": "em_corrida_avancado" }, "tradeoff": "não permite bloquear durante a entrada", "increases_base_damage": false },
-        { "id": "postura_guardada", "label": "Postura guardada", "effect": { "postura": "guardada", "moveset_unlock": "leve_da_guarda" }, "tradeoff": "abdica do golpe em corrida enquanto está activa", "increases_base_damage": false }
-      ] },
-      { "level": 2, "axis": "arte_nova", "material_tier": "low", "increases_base_damage": false, "options": [
-        { "id": "trocar_arte_1mao", "label": "Arte encontrada · uma mão", "effect": { "art_slot": "one_hand", "art_key": "found_one_hand" }, "tradeoff": "substitui a arte base a uma mão", "increases_base_damage": false },
-        { "id": "trocar_arte_2maos", "label": "Arte encontrada · duas mãos", "effect": { "art_slot": "two_hands", "art_key": "found_two_hands" }, "tradeoff": "substitui a arte base a duas mãos", "increases_base_damage": false }
-      ] },
-      { "level": 3, "axis": "troca_escala", "material_tier": "low", "increases_base_damage": false, "options": [
-        { "id": "escala_forca", "label": "Escala · Força", "effect": { "scaling_attribute": "forca" }, "tradeoff": "substitui a escala anterior; nunca soma dois atributos", "increases_base_damage": false },
-        { "id": "escala_destreza", "label": "Escala · Destreza", "effect": { "scaling_attribute": "destreza" }, "tradeoff": "substitui a escala anterior; nunca soma dois atributos", "increases_base_damage": false },
-        { "id": "escala_inteligencia", "label": "Escala · Inteligência", "effect": { "scaling_attribute": "inteligencia" }, "tradeoff": "substitui a escala anterior; nunca soma dois atributos", "increases_base_damage": false },
-        { "id": "escala_fe", "label": "Escala · Fé", "effect": { "scaling_attribute": "fe" }, "tradeoff": "substitui a escala anterior; nunca soma dois atributos", "increases_base_damage": false }
-      ] },
-      { "level": 4, "axis": "conversao_elemental", "material_tier": "high", "increases_base_damage": false, "options": [
-        { "id": "converter_corte", "label": "Conversão · Corte", "effect": { "damage_type": "corte" }, "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior", "increases_base_damage": false },
-        { "id": "converter_contundente", "label": "Conversão · Contundente", "effect": { "damage_type": "contundente" }, "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior", "increases_base_damage": false },
-        { "id": "converter_perfuracao", "label": "Conversão · Perfuração", "effect": { "damage_type": "perfuracao" }, "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior", "increases_base_damage": false },
-        { "id": "converter_fogo", "label": "Conversão · Fogo", "effect": { "damage_type": "fogo" }, "tradeoff": "ganha a resistência e a fraqueza do novo elemento", "increases_base_damage": false },
-        { "id": "converter_raio", "label": "Conversão · Raio", "effect": { "damage_type": "raio" }, "tradeoff": "ganha a resistência e a fraqueza do novo elemento", "increases_base_damage": false },
-        { "id": "converter_veneno", "label": "Conversão · Veneno", "effect": { "damage_type": "veneno" }, "tradeoff": "mortos-vivos legíveis continuam imunes ao estado", "increases_base_damage": false },
-        { "id": "converter_escuridao", "label": "Conversão · Escuridão", "effect": { "damage_type": "escuridao" }, "tradeoff": "ganha a resistência e a fraqueza do novo elemento", "increases_base_damage": false },
-        { "id": "converter_magico", "label": "Conversão · Mágico", "effect": { "damage_type": "magico" }, "tradeoff": "ganha a resistência e a fraqueza do novo elemento", "increases_base_damage": false }
-      ] },
-      { "level": 5, "axis": "postura", "material_tier": "high", "increases_base_damage": false, "options": [
-        { "id": "postura_estreita", "label": "Postura estreita", "effect": { "postura": "estreita", "moveset_unlock": "linha_de_corredor", "replaces_level": 1 }, "tradeoff": "não varre dois alvos nem protege os flancos", "increases_base_damage": false },
-        { "id": "postura_aberta", "label": "Postura aberta", "effect": { "postura": "aberta", "moveset_unlock": "arco_de_controlo", "replaces_level": 1 }, "tradeoff": "a geometria larga ressalta em corredores apertados", "increases_base_damage": false }
-      ] },
-      { "level": 6, "axis": "arte_nova", "material_tier": "high", "increases_base_damage": false, "options": [
-        { "id": "arte_mestra_precisa", "label": "Arte mestra · precisão", "effect": { "art_slot": "both", "art_key": "master_precise" }, "tradeoff": "ocupa as duas artes e abdica do controlo de área", "increases_base_damage": false },
-        { "id": "arte_mestra_ampla", "label": "Arte mestra · controlo", "effect": { "art_slot": "both", "art_key": "master_wide" }, "tradeoff": "ocupa as duas artes e abdica da resposta a um alvo isolado", "increases_base_damage": false }
-      ] }
+      {
+        "level": 0,
+        "axis": "base",
+        "options": [],
+        "increases_base_damage": false
+      },
+      {
+        "level": 1,
+        "axis": "postura",
+        "material_tier": "low",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "postura_avancada",
+            "label": "Postura avançada",
+            "effect": {
+              "postura": "avancada",
+              "moveset_unlock": "em_corrida_avancado"
+            },
+            "tradeoff": "não permite bloquear durante a entrada",
+            "increases_base_damage": false
+          },
+          {
+            "id": "postura_guardada",
+            "label": "Postura guardada",
+            "effect": {
+              "postura": "guardada",
+              "moveset_unlock": "leve_da_guarda"
+            },
+            "tradeoff": "abdica do golpe em corrida enquanto está activa",
+            "increases_base_damage": false
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "axis": "arte_nova",
+        "material_tier": "low",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "trocar_arte_1mao",
+            "label": "Arte encontrada · uma mão",
+            "effect": {
+              "art_slot": "one_hand",
+              "art_key": "found_one_hand"
+            },
+            "tradeoff": "substitui a arte base a uma mão",
+            "increases_base_damage": false
+          },
+          {
+            "id": "trocar_arte_2maos",
+            "label": "Arte encontrada · duas mãos",
+            "effect": {
+              "art_slot": "two_hands",
+              "art_key": "found_two_hands"
+            },
+            "tradeoff": "substitui a arte base a duas mãos",
+            "increases_base_damage": false
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "axis": "troca_escala",
+        "material_tier": "low",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "escala_forca",
+            "label": "Escala · Força",
+            "effect": {
+              "scaling_attribute": "forca"
+            },
+            "tradeoff": "substitui a escala anterior; nunca soma dois atributos",
+            "increases_base_damage": false
+          },
+          {
+            "id": "escala_destreza",
+            "label": "Escala · Destreza",
+            "effect": {
+              "scaling_attribute": "destreza"
+            },
+            "tradeoff": "substitui a escala anterior; nunca soma dois atributos",
+            "increases_base_damage": false
+          },
+          {
+            "id": "escala_inteligencia",
+            "label": "Escala · Inteligência",
+            "effect": {
+              "scaling_attribute": "inteligencia"
+            },
+            "tradeoff": "substitui a escala anterior; nunca soma dois atributos",
+            "increases_base_damage": false
+          },
+          {
+            "id": "escala_fe",
+            "label": "Escala · Fé",
+            "effect": {
+              "scaling_attribute": "fe"
+            },
+            "tradeoff": "substitui a escala anterior; nunca soma dois atributos",
+            "increases_base_damage": false
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "axis": "conversao_elemental",
+        "material_tier": "high",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "converter_corte",
+            "label": "Conversão · Corte",
+            "effect": {
+              "damage_type": "corte"
+            },
+            "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_contundente",
+            "label": "Conversão · Contundente",
+            "effect": {
+              "damage_type": "contundente"
+            },
+            "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_perfuracao",
+            "label": "Conversão · Perfuração",
+            "effect": {
+              "damage_type": "perfuracao"
+            },
+            "tradeoff": "a parcela convertida deixa de conservar o tipo físico anterior",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_fogo",
+            "label": "Conversão · Fogo",
+            "effect": {
+              "damage_type": "fogo"
+            },
+            "tradeoff": "ganha a resistência e a fraqueza do novo elemento",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_raio",
+            "label": "Conversão · Raio",
+            "effect": {
+              "damage_type": "raio"
+            },
+            "tradeoff": "ganha a resistência e a fraqueza do novo elemento",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_veneno",
+            "label": "Conversão · Veneno",
+            "effect": {
+              "damage_type": "veneno"
+            },
+            "tradeoff": "mortos-vivos legíveis continuam imunes ao estado",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_escuridao",
+            "label": "Conversão · Escuridão",
+            "effect": {
+              "damage_type": "escuridao"
+            },
+            "tradeoff": "ganha a resistência e a fraqueza do novo elemento",
+            "increases_base_damage": false
+          },
+          {
+            "id": "converter_magico",
+            "label": "Conversão · Mágico",
+            "effect": {
+              "damage_type": "magico"
+            },
+            "tradeoff": "ganha a resistência e a fraqueza do novo elemento",
+            "increases_base_damage": false
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "axis": "postura",
+        "material_tier": "high",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "postura_estreita",
+            "label": "Postura estreita",
+            "effect": {
+              "postura": "estreita",
+              "moveset_unlock": "linha_de_corredor",
+              "replaces_level": 1
+            },
+            "tradeoff": "não varre dois alvos nem protege os flancos",
+            "increases_base_damage": false
+          },
+          {
+            "id": "postura_aberta",
+            "label": "Postura aberta",
+            "effect": {
+              "postura": "aberta",
+              "moveset_unlock": "arco_de_controlo",
+              "replaces_level": 1
+            },
+            "tradeoff": "a geometria larga ressalta em corredores apertados",
+            "increases_base_damage": false
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "axis": "arte_nova",
+        "material_tier": "high",
+        "increases_base_damage": false,
+        "options": [
+          {
+            "id": "arte_mestra_precisa",
+            "label": "Arte mestra · precisão",
+            "effect": {
+              "art_slot": "both",
+              "art_key": "master_precise"
+            },
+            "tradeoff": "ocupa as duas artes e abdica do controlo de área",
+            "increases_base_damage": false
+          },
+          {
+            "id": "arte_mestra_ampla",
+            "label": "Arte mestra · controlo",
+            "effect": {
+              "art_slot": "both",
+              "art_key": "master_wide"
+            },
+            "tradeoff": "ocupa as duas artes e abdica da resposta a um alvo isolado",
+            "increases_base_damage": false
+          }
+        ]
+      }
     ]
   },
-
   "_weapon_arts": {
     "_fonte": "spec/34 §2b + spec/41 §8 + spec/68 §2-§3",
     "_decision": "[CODEX] os nomes base preservam o catálogo fechado; artes encontradas/mestras detalham os níveis +2/+6. Razão: custo e compromisso têm de viajar com o verbo. Alternativa descartada: uma arte genérica com MV diferente, porque quebraria a Lei 2.",
@@ -593,102 +1837,335 @@
       "integration_state": "weapon module ready; player, controls and GameplayCue owners still need to connect it"
     },
     "roles": {
-      "base_one_hand": { "mana_cost": 12, "grip": "one_hand" },
-      "base_two_hands": { "mana_cost": 18, "grip": "two_hands" },
-      "found_one_hand": { "mana_cost": 12, "grip": "one_hand" },
-      "found_two_hands": { "mana_cost": 18, "grip": "two_hands" },
-      "master_precise": { "mana_cost": 18, "grip": "both" },
-      "master_wide": { "mana_cost": 18, "grip": "both" }
+      "base_one_hand": {
+        "mana_cost": 12,
+        "grip": "one_hand"
+      },
+      "base_two_hands": {
+        "mana_cost": 18,
+        "grip": "two_hands"
+      },
+      "found_one_hand": {
+        "mana_cost": 12,
+        "grip": "one_hand"
+      },
+      "found_two_hands": {
+        "mana_cost": 18,
+        "grip": "two_hands"
+      },
+      "master_precise": {
+        "mana_cost": 18,
+        "grip": "both"
+      },
+      "master_wide": {
+        "mana_cost": 18,
+        "grip": "both"
+      }
     },
     "families": {
       "espada_recta": {
-        "base_one_hand": { "nome": "estocada perfurante", "verbo": "atravessar uma linha estreita sem largar a mão livre", "compromisso": "a linha estreita não apanha quem sai para o flanco" },
-        "base_two_hands": { "nome": "golpe circular", "verbo": "limpar o espaço à volta com um arco completo", "compromisso": "abdica da mão livre e termina exposto no centro" },
-        "found_one_hand": { "nome": "quebra-compasso", "verbo": "atrasar a segunda linha para apanhar uma esquiva antecipada", "compromisso": "não pode bloquear entre as duas linhas" },
-        "found_two_hands": { "nome": "corte de retorno", "verbo": "varrer primeiro à frente e regressar pelas costas", "compromisso": "não avança durante o retorno" },
-        "master_precise": { "nome": "linha sem retorno", "verbo": "passar pelo alvo numa única estocada comprometida", "compromisso": "ocupa as duas artes e não controla grupos" },
-        "master_wide": { "nome": "roda de ferro", "verbo": "conservar um círculo de corte enquanto muda de alvo", "compromisso": "ocupa as duas artes e não responde depressa a um alvo isolado" }
+        "base_one_hand": {
+          "nome": "estocada perfurante",
+          "verbo": "atravessar uma linha estreita sem largar a mão livre",
+          "compromisso": "a linha estreita não apanha quem sai para o flanco"
+        },
+        "base_two_hands": {
+          "nome": "golpe circular",
+          "verbo": "limpar o espaço à volta com um arco completo",
+          "compromisso": "abdica da mão livre e termina exposto no centro"
+        },
+        "found_one_hand": {
+          "nome": "quebra-compasso",
+          "verbo": "atrasar a segunda linha para apanhar uma esquiva antecipada",
+          "compromisso": "não pode bloquear entre as duas linhas"
+        },
+        "found_two_hands": {
+          "nome": "corte de retorno",
+          "verbo": "varrer primeiro à frente e regressar pelas costas",
+          "compromisso": "não avança durante o retorno"
+        },
+        "master_precise": {
+          "nome": "linha sem retorno",
+          "verbo": "passar pelo alvo numa única estocada comprometida",
+          "compromisso": "ocupa as duas artes e não controla grupos"
+        },
+        "master_wide": {
+          "nome": "roda de ferro",
+          "verbo": "conservar um círculo de corte enquanto muda de alvo",
+          "compromisso": "ocupa as duas artes e não responde depressa a um alvo isolado"
+        }
       },
       "adaga": {
-        "base_one_hand": { "nome": "apunhalar", "verbo": "entrar nas costas e fixar um crítico curto", "compromisso": "de frente contra armadura a entrada não resolve o encontro" },
-        "base_two_hands": { "nome": "dança de lâminas", "verbo": "alternar os dois lados sem sair da distância curta", "compromisso": "fica dentro da guarda durante toda a sequência" },
-        "found_one_hand": { "nome": "troca de mão", "verbo": "esconder a lâmina atrás do corpo e mudar o lado do leve", "compromisso": "abdica do aparo enquanto a lâmina está escondida" },
-        "found_two_hands": { "nome": "tesoura baixa", "verbo": "fechar as duas lâminas sobre a rota de fuga", "compromisso": "não alcança alvos altos nem afastados" },
-        "master_precise": { "nome": "agulha final", "verbo": "reservar uma ponta para o instante exacto das costas", "compromisso": "ocupa as duas artes e falha sem o ângulo crítico" },
-        "master_wide": { "nome": "cruz carmesim", "verbo": "cruzar duas linhas que cobrem saídas opostas", "compromisso": "ocupa as duas artes e prolonga a permanência ao perto" }
+        "base_one_hand": {
+          "nome": "apunhalar",
+          "verbo": "entrar nas costas e fixar um crítico curto",
+          "compromisso": "de frente contra armadura a entrada não resolve o encontro"
+        },
+        "base_two_hands": {
+          "nome": "dança de lâminas",
+          "verbo": "alternar os dois lados sem sair da distância curta",
+          "compromisso": "fica dentro da guarda durante toda a sequência"
+        },
+        "found_one_hand": {
+          "nome": "troca de mão",
+          "verbo": "esconder a lâmina atrás do corpo e mudar o lado do leve",
+          "compromisso": "abdica do aparo enquanto a lâmina está escondida"
+        },
+        "found_two_hands": {
+          "nome": "tesoura baixa",
+          "verbo": "fechar as duas lâminas sobre a rota de fuga",
+          "compromisso": "não alcança alvos altos nem afastados"
+        },
+        "master_precise": {
+          "nome": "agulha final",
+          "verbo": "reservar uma ponta para o instante exacto das costas",
+          "compromisso": "ocupa as duas artes e falha sem o ângulo crítico"
+        },
+        "master_wide": {
+          "nome": "cruz carmesim",
+          "verbo": "cruzar duas linhas que cobrem saídas opostas",
+          "compromisso": "ocupa as duas artes e prolonga a permanência ao perto"
+        }
       },
       "pesada_corte": {
-        "base_one_hand": { "nome": "salto esmagador", "verbo": "trocar chão seguro por uma queda que fecha distância", "compromisso": "a aterragem tem de acabar antes de voltar a esquivar" },
-        "base_two_hands": { "nome": "rodopio", "verbo": "varrer massa e guarda num arco contínuo", "compromisso": "as costas ficam abertas depois do compromisso" },
-        "found_one_hand": { "nome": "gancho de massa", "verbo": "puxar uma guarda para fora da linha em vez de a atravessar", "compromisso": "não derruba um alvo sem guarda" },
-        "found_two_hands": { "nome": "cunha no chão", "verbo": "prender a cabeça da arma e criar obstáculo curto", "compromisso": "a arma fica indisponível até ser libertada" },
-        "master_precise": { "nome": "queda do carrasco", "verbo": "concentrar toda a massa numa linha vertical", "compromisso": "ocupa as duas artes e falhar deixa a maior recuperação" },
-        "master_wide": { "nome": "moinho quebrado", "verbo": "mudar o eixo do rodopio a meio para cobrir dois planos", "compromisso": "ocupa as duas artes e não corrige a posição depois de começar" }
+        "base_one_hand": {
+          "nome": "salto esmagador",
+          "verbo": "trocar chão seguro por uma queda que fecha distância",
+          "compromisso": "a aterragem tem de acabar antes de voltar a esquivar"
+        },
+        "base_two_hands": {
+          "nome": "rodopio",
+          "verbo": "varrer massa e guarda num arco contínuo",
+          "compromisso": "as costas ficam abertas depois do compromisso"
+        },
+        "found_one_hand": {
+          "nome": "gancho de massa",
+          "verbo": "puxar uma guarda para fora da linha em vez de a atravessar",
+          "compromisso": "não derruba um alvo sem guarda"
+        },
+        "found_two_hands": {
+          "nome": "cunha no chão",
+          "verbo": "prender a cabeça da arma e criar obstáculo curto",
+          "compromisso": "a arma fica indisponível até ser libertada"
+        },
+        "master_precise": {
+          "nome": "queda do carrasco",
+          "verbo": "concentrar toda a massa numa linha vertical",
+          "compromisso": "ocupa as duas artes e falhar deixa a maior recuperação"
+        },
+        "master_wide": {
+          "nome": "moinho quebrado",
+          "verbo": "mudar o eixo do rodopio a meio para cobrir dois planos",
+          "compromisso": "ocupa as duas artes e não corrige a posição depois de começar"
+        }
       },
       "katana": {
-        "base_one_hand": { "nome": "iai", "verbo": "guardar o corte na bainha até ao compromisso inimigo", "compromisso": "largar cedo perde a leitura de contra-ataque" },
-        "base_two_hands": { "nome": "corte duplo", "verbo": "obrigar duas respostas em linhas sucessivas", "compromisso": "a segunda linha é obrigatória depois da primeira" },
-        "found_one_hand": { "nome": "bainha vazia", "verbo": "mostrar o arranque e responder sem sacar", "compromisso": "a finta não causa contacto nem interrompe" },
-        "found_two_hands": { "nome": "meia-lua tardia", "verbo": "atrasar um arco até depois da esquiva vista", "compromisso": "não pode mudar de alvo durante a espera" },
-        "master_precise": { "nome": "um só instante", "verbo": "apostar as duas artes num contra-corte único", "compromisso": "ocupa as duas artes e não tem valor fora do ataque inimigo" },
-        "master_wide": { "nome": "lua partida", "verbo": "separar um arco em duas metades com saídas diferentes", "compromisso": "ocupa as duas artes e exige terminar a segunda metade" }
+        "base_one_hand": {
+          "nome": "iai",
+          "verbo": "guardar o corte na bainha até ao compromisso inimigo",
+          "compromisso": "largar cedo perde a leitura de contra-ataque"
+        },
+        "base_two_hands": {
+          "nome": "corte duplo",
+          "verbo": "obrigar duas respostas em linhas sucessivas",
+          "compromisso": "a segunda linha é obrigatória depois da primeira"
+        },
+        "found_one_hand": {
+          "nome": "bainha vazia",
+          "verbo": "mostrar o arranque e responder sem sacar",
+          "compromisso": "a finta não causa contacto nem interrompe"
+        },
+        "found_two_hands": {
+          "nome": "meia-lua tardia",
+          "verbo": "atrasar um arco até depois da esquiva vista",
+          "compromisso": "não pode mudar de alvo durante a espera"
+        },
+        "master_precise": {
+          "nome": "um só instante",
+          "verbo": "apostar as duas artes num contra-corte único",
+          "compromisso": "ocupa as duas artes e não tem valor fora do ataque inimigo"
+        },
+        "master_wide": {
+          "nome": "lua partida",
+          "verbo": "separar um arco em duas metades com saídas diferentes",
+          "compromisso": "ocupa as duas artes e exige terminar a segunda metade"
+        }
       },
       "haste": {
-        "base_one_hand": { "nome": "varrimento baixo", "verbo": "tirar os pés ao alvo mantendo a mão livre", "compromisso": "não ameaça um alvo que salta a linha baixa" },
-        "base_two_hands": { "nome": "carga de lança", "verbo": "empurrar uma ponta por toda a distância escolhida", "compromisso": "abdica da mão livre e não vira depois do compromisso" },
-        "found_one_hand": { "nome": "gancho de tornozelo", "verbo": "trazer um alvo lateral para a linha do parceiro", "compromisso": "não atravessa guarda frontal" },
-        "found_two_hands": { "nome": "parede de pontas", "verbo": "parar e negar uma faixa de aproximação", "compromisso": "não persegue quem abandona a faixa" },
-        "master_precise": { "nome": "fio do horizonte", "verbo": "reservar todo o alcance para uma estocada de contra-linha", "compromisso": "ocupa as duas artes e falha dentro da distância mínima" },
-        "master_wide": { "nome": "círculo do vigia", "verbo": "rodar a ponta à volta do parceiro como cobertura", "compromisso": "ocupa as duas artes e prende quem usa ao centro" }
+        "base_one_hand": {
+          "nome": "varrimento baixo",
+          "verbo": "tirar os pés ao alvo mantendo a mão livre",
+          "compromisso": "não ameaça um alvo que salta a linha baixa"
+        },
+        "base_two_hands": {
+          "nome": "carga de lança",
+          "verbo": "empurrar uma ponta por toda a distância escolhida",
+          "compromisso": "abdica da mão livre e não vira depois do compromisso"
+        },
+        "found_one_hand": {
+          "nome": "gancho de tornozelo",
+          "verbo": "trazer um alvo lateral para a linha do parceiro",
+          "compromisso": "não atravessa guarda frontal"
+        },
+        "found_two_hands": {
+          "nome": "parede de pontas",
+          "verbo": "parar e negar uma faixa de aproximação",
+          "compromisso": "não persegue quem abandona a faixa"
+        },
+        "master_precise": {
+          "nome": "fio do horizonte",
+          "verbo": "reservar todo o alcance para uma estocada de contra-linha",
+          "compromisso": "ocupa as duas artes e falha dentro da distância mínima"
+        },
+        "master_wide": {
+          "nome": "círculo do vigia",
+          "verbo": "rodar a ponta à volta do parceiro como cobertura",
+          "compromisso": "ocupa as duas artes e prende quem usa ao centro"
+        }
       },
       "cajado": {
-        "base_one_hand": { "nome": "rajada de bruma", "verbo": "empurrar forma e direcção sem causar um segundo feitiço", "compromisso": "gasta a mesma mana que podia alimentar magia" },
-        "base_two_hands": { "nome": "conjuração firmada", "verbo": "ancorar a próxima forma contra interrupção", "compromisso": "abdica da mão livre e fica imóvel até ao compromisso" },
-        "found_one_hand": { "nome": "nó de cinza", "verbo": "atar uma cue visual ao chão para marcar a linha segura", "compromisso": "não desloca nem fere o alvo" },
-        "found_two_hands": { "nome": "pulso firmado", "verbo": "afastar volumes próximos antes de conjurar", "compromisso": "não alcança fora do espaço curto" },
-        "master_precise": { "nome": "agulha de bruma", "verbo": "canalizar a arte por uma única linha que atravessa cobertura leve", "compromisso": "ocupa as duas artes e não protege os flancos" },
-        "master_wide": { "nome": "coroa do conduto", "verbo": "abrir espaço circular para uma conjuração do parceiro", "compromisso": "ocupa as duas artes e consome mana sem lançar magia" }
+        "base_one_hand": {
+          "nome": "rajada de bruma",
+          "verbo": "empurrar forma e direcção sem causar um segundo feitiço",
+          "compromisso": "gasta a mesma mana que podia alimentar magia"
+        },
+        "base_two_hands": {
+          "nome": "conjuração firmada",
+          "verbo": "ancorar a próxima forma contra interrupção",
+          "compromisso": "abdica da mão livre e fica imóvel até ao compromisso"
+        },
+        "found_one_hand": {
+          "nome": "nó de cinza",
+          "verbo": "atar uma cue visual ao chão para marcar a linha segura",
+          "compromisso": "não desloca nem fere o alvo"
+        },
+        "found_two_hands": {
+          "nome": "pulso firmado",
+          "verbo": "afastar volumes próximos antes de conjurar",
+          "compromisso": "não alcança fora do espaço curto"
+        },
+        "master_precise": {
+          "nome": "agulha de bruma",
+          "verbo": "canalizar a arte por uma única linha que atravessa cobertura leve",
+          "compromisso": "ocupa as duas artes e não protege os flancos"
+        },
+        "master_wide": {
+          "nome": "coroa do conduto",
+          "verbo": "abrir espaço circular para uma conjuração do parceiro",
+          "compromisso": "ocupa as duas artes e consome mana sem lançar magia"
+        }
       },
       "arco": {
-        "base_one_hand": { "nome": "disparo firmado", "verbo": "fixar a direcção antes de soltar uma flecha sem correcção", "compromisso": "não anda nem muda de alvo depois do compromisso" },
-        "base_two_hands": { "nome": "chuva de flechas", "verbo": "trocar precisão por uma área anunciada", "compromisso": "abdica da mão livre e morre debaixo de tecto" },
-        "found_one_hand": { "nome": "flecha de corda", "verbo": "ligar visualmente o alvo atingido ao parceiro", "compromisso": "a marca substitui munição de dano" },
-        "found_two_hands": { "nome": "arco de cobertura", "verbo": "disparar duas rotas para separar perseguidores", "compromisso": "nenhuma rota segue um alvo" },
-        "master_precise": { "nome": "ponto imóvel", "verbo": "esperar uma cabeça entrar na linha já escolhida", "compromisso": "ocupa as duas artes e não corrige a mira" },
-        "master_wide": { "nome": "céu fechado", "verbo": "negar uma faixa inteira com queda balística visível", "compromisso": "ocupa as duas artes e continua inválida sob tecto" }
+        "base_one_hand": {
+          "nome": "disparo firmado",
+          "verbo": "fixar a direcção antes de soltar uma flecha sem correcção",
+          "compromisso": "não anda nem muda de alvo depois do compromisso"
+        },
+        "base_two_hands": {
+          "nome": "chuva de flechas",
+          "verbo": "trocar precisão por uma área anunciada",
+          "compromisso": "abdica da mão livre e morre debaixo de tecto"
+        },
+        "found_one_hand": {
+          "nome": "flecha de corda",
+          "verbo": "ligar visualmente o alvo atingido ao parceiro",
+          "compromisso": "a marca substitui munição de dano"
+        },
+        "found_two_hands": {
+          "nome": "arco de cobertura",
+          "verbo": "disparar duas rotas para separar perseguidores",
+          "compromisso": "nenhuma rota segue um alvo"
+        },
+        "master_precise": {
+          "nome": "ponto imóvel",
+          "verbo": "esperar uma cabeça entrar na linha já escolhida",
+          "compromisso": "ocupa as duas artes e não corrige a mira"
+        },
+        "master_wide": {
+          "nome": "céu fechado",
+          "verbo": "negar uma faixa inteira com queda balística visível",
+          "compromisso": "ocupa as duas artes e continua inválida sob tecto"
+        }
       },
       "besta": {
-        "base_one_hand": { "nome": "tiro rápido", "verbo": "gastar o ferrolho já armado sem entrar na mira", "compromisso": "depois do tiro ainda deve a recarga inteira" },
-        "base_two_hands": { "nome": "mira ampliada", "verbo": "trocar a mão livre por leitura de uma linha longa", "compromisso": "fica parado e exposto enquanto confirma a mira" },
-        "found_one_hand": { "nome": "ferrolho de travão", "verbo": "prender uma porta ou mecanismo em vez de ferir", "compromisso": "o ferrolho deixa de estar disponível para o alvo" },
-        "found_two_hands": { "nome": "recarga ajoelhada", "verbo": "usar cobertura baixa para pagar a recarga", "compromisso": "não se desloca até fechar o mecanismo" },
-        "master_precise": { "nome": "linha de cerco", "verbo": "furar uma única guarda preparada", "compromisso": "ocupa as duas artes e continua a dever recarga" },
-        "master_wide": { "nome": "forquilha de vigia", "verbo": "escolher duas linhas antes de soltar o único ferrolho", "compromisso": "ocupa as duas artes e nenhuma linha segue o alvo" }
+        "base_one_hand": {
+          "nome": "tiro rápido",
+          "verbo": "gastar o ferrolho já armado sem entrar na mira",
+          "compromisso": "depois do tiro ainda deve a recarga inteira"
+        },
+        "base_two_hands": {
+          "nome": "mira ampliada",
+          "verbo": "trocar a mão livre por leitura de uma linha longa",
+          "compromisso": "fica parado e exposto enquanto confirma a mira"
+        },
+        "found_one_hand": {
+          "nome": "ferrolho de travão",
+          "verbo": "prender uma porta ou mecanismo em vez de ferir",
+          "compromisso": "o ferrolho deixa de estar disponível para o alvo"
+        },
+        "found_two_hands": {
+          "nome": "recarga ajoelhada",
+          "verbo": "usar cobertura baixa para pagar a recarga",
+          "compromisso": "não se desloca até fechar o mecanismo"
+        },
+        "master_precise": {
+          "nome": "linha de cerco",
+          "verbo": "furar uma única guarda preparada",
+          "compromisso": "ocupa as duas artes e continua a dever recarga"
+        },
+        "master_wide": {
+          "nome": "forquilha de vigia",
+          "verbo": "escolher duas linhas antes de soltar o único ferrolho",
+          "compromisso": "ocupa as duas artes e nenhuma linha segue o alvo"
+        }
       }
     }
   },
-
   "dagger": {
     "display_name": "Adaga",
     "familia": "adaga",
     "slot": "main",
     "hands": 1,
     "range": 1.4,
+    "arc_degrees": 110,
     "can_parry": true,
     "can_block": true,
     "block_type": "onehand",
     "base_damage": 32,
-    "requirements": { "destreza": 10 },
+    "requirements": {
+      "destreza": 10
+    },
     "scaling_attribute": "destreza",
     "scale_weight": "forte",
-    "light": { "startup": 12, "active": 4, "recovery": 14, "stamina": 12, "mv": 0.55 },
-    "heavy": { "startup": 20, "active": 5, "recovery": 20, "stamina": 20, "mv": 0.85 },
-    "combo": { "max": 4, "final_mv": 0.7 },
+    "light": {
+      "startup": 12,
+      "active": 4,
+      "recovery": 14,
+      "stamina": 12,
+      "mv": 0.55
+    },
+    "heavy": {
+      "startup": 20,
+      "active": 5,
+      "recovery": 20,
+      "stamina": 20,
+      "mv": 0.85
+    },
+    "combo": {
+      "max": 4,
+      "final_mv": 0.7
+    },
     "presentation": {
       "visual_description": "lamina curta de um gume com 38 cm, ponta estreita, guarda minima e punho de couro escuro",
       "model_asset": null,
       "model_status": "missing_exact_hand_model",
-      "sound_source": "synthesized:Sfx.swing_light/swing_heavy + hit_flesh"
+      "sound_source": "synthesized:Sfx.swing_light/swing_heavy + hit_flesh",
+      "visual_kind": "dagger",
+      "grip_transform": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation_degrees": [0.0, 0.0, 180.0],
+        "scale": [1.0, 1.0, 1.0]
+      }
     },
     "combat_stance": {
       "id": "lamina_recolhida",
@@ -697,23 +2174,41 @@
       "spatial_weakness": "de frente contra armadura pesada"
     }
   },
-
   "longsword": {
     "display_name": "Espada longa",
     "familia": "espada_recta",
     "slot": "main",
     "hands": 1,
     "range": 2.0,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": true,
     "block_type": "onehand",
     "base_damage": 40,
-    "requirements": { "forca": 10, "destreza": 8 },
+    "requirements": {
+      "forca": 10,
+      "destreza": 8
+    },
     "scaling_attribute": "forca",
     "scale_weight": "medio",
-    "light": { "startup": 16, "active": 6, "recovery": 18, "stamina": 18, "mv": 1.0 },
-    "heavy": { "startup": 28, "active": 8, "recovery": 26, "stamina": 30, "mv": 1.6 },
-    "combo": { "max": 3, "final_mv": 1.2 },
+    "light": {
+      "startup": 16,
+      "active": 6,
+      "recovery": 18,
+      "stamina": 18,
+      "mv": 1.0
+    },
+    "heavy": {
+      "startup": 28,
+      "active": 8,
+      "recovery": 26,
+      "stamina": 30,
+      "mv": 1.6
+    },
+    "combo": {
+      "max": 3,
+      "final_mv": 1.2
+    },
     "presentation": {
       "visual_description": "espada de lamina recta de dois gumes em ferro polido, 90 cm, guarda cruciforme curta e punho de couro castanho",
       "model_asset": null,
@@ -727,30 +2222,45 @@
       "spatial_weakness": "nao domina nenhuma distancia lida"
     }
   },
-
   "greataxe": {
     "display_name": "Machadao",
     "familia": "pesada_corte",
     "slot": "main",
     "hands": 2,
     "range": 2.3,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": false,
     "block_type": "none",
     "base_damage": 52,
-    "requirements": { "forca": 14 },
+    "requirements": {
+      "forca": 14
+    },
     "scaling_attribute": "forca",
     "scale_weight": "forte",
-    "light": { "startup": 24, "active": 8, "recovery": 26, "stamina": 28, "mv": 1.5 },
+    "light": {
+      "startup": 24,
+      "active": 8,
+      "recovery": 26,
+      "stamina": 28,
+      "mv": 1.5
+    },
     "heavy": {
-      "startup": 38, "active": 10, "recovery": 34, "stamina": 45, "mv": 2.4,
+      "startup": 38,
+      "active": 10,
+      "recovery": 34,
+      "stamina": 45,
+      "mv": 2.4,
       "chargeable": true,
       "charge_max_frames": 20,
       "charge_max_mv": 3.0,
       "hyper_armor_start_frame": 30,
       "hyper_armor_end_frame": 48
     },
-    "combo": { "max": 2, "final_mv": null },
+    "combo": {
+      "max": 2,
+      "final_mv": null
+    },
     "presentation": {
       "visual_description": "machadao de lamina crescente em ferro martelado, cabeca de 42 cm e haste de freixo com 125 cm",
       "model_asset": null,
@@ -764,13 +2274,13 @@
       "spatial_weakness": "recuperacao aberta quando o alvo nao troca"
     }
   },
-
   "staff": {
     "display_name": "Cajado",
     "familia": "cajado",
     "slot": "main",
     "hands": 2,
     "range": 1.8,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": false,
     "block_type": "none",
@@ -779,9 +2289,24 @@
     "requirements": {},
     "scaling_attribute": "inteligencia",
     "scale_weight": "fraco",
-    "light": { "startup": 18, "active": 5, "recovery": 20, "stamina": 15, "mv": 0.7 },
-    "heavy": { "startup": 30, "active": 7, "recovery": 28, "stamina": 25, "mv": 1.1 },
-    "combo": { "max": 2, "final_mv": null },
+    "light": {
+      "startup": 18,
+      "active": 5,
+      "recovery": 20,
+      "stamina": 15,
+      "mv": 0.7
+    },
+    "heavy": {
+      "startup": 30,
+      "active": 7,
+      "recovery": 28,
+      "stamina": 25,
+      "mv": 1.1
+    },
+    "combo": {
+      "max": 2,
+      "final_mv": null
+    },
     "presentation": {
       "visual_description": "cajado de madeira negra com 180 cm, veio recto, aro simples de ferro e cristal azul preso por couro",
       "model_asset": null,
@@ -796,7 +2321,20 @@
     },
     "_nota": "Plano B do mago: pancada sem custo de mana (custa stamina). A Lei 1 nunca fica refem do reservatorio de mana."
   },
-
+  "sino": {
+    "runtime_alias_for": "equipment.magic_instruments.sino",
+    "familia": "cajado",
+    "slot": "offhand",
+    "hands": 1,
+    "requirements": {}
+  },
+  "talisma": {
+    "runtime_alias_for": "equipment.magic_instruments.talisma",
+    "familia": "cajado",
+    "slot": "offhand",
+    "hands": 1,
+    "requirements": {}
+  },
   "espada_recta_brumal_espada_de_vigilia": {
     "display_name": "Espada de vigilia",
     "catalogue_id": "espada_recta_brumal_espada_de_vigilia",
@@ -804,19 +2342,45 @@
     "slot": "main",
     "hands": 1,
     "range": 1.9,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": true,
     "block_type": "onehand",
     "base_damage": 40,
-    "requirements": { "forca": 10 },
+    "requirements": {
+      "forca": 10
+    },
     "scaling_attribute": "forca",
     "scale_weight": "medio",
-    "light": { "startup": 20, "active": 6, "recovery": 22, "stamina": 20, "mv": 1.10 },
-    "heavy": { "startup": 32, "active": 8, "recovery": 30, "stamina": 35, "mv": 1.75 },
-    "combo": { "max": 2, "final_mv": 1.35 },
+    "light": {
+      "startup": 20,
+      "active": 6,
+      "recovery": 22,
+      "stamina": 20,
+      "mv": 1.1
+    },
+    "heavy": {
+      "startup": 32,
+      "active": 8,
+      "recovery": 30,
+      "stamina": 35,
+      "mv": 1.75
+    },
+    "combo": {
+      "max": 2,
+      "final_mv": 1.35
+    },
     "weapon_art": {
-      "one_hand": { "name": "guarda ancorada", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" },
-      "two_hands": { "name": "ruptura de muralha", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" }
+      "one_hand": {
+        "name": "guarda ancorada",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      },
+      "two_hands": {
+        "name": "ruptura de muralha",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      }
     },
     "presentation": {
       "visual_description": "lamina recta de dois gumes com 90 cm, guarda cruciforme curta e pomo circular, em ferro rude e couro de javali de Brumal",
@@ -836,7 +2400,6 @@
       "discarded_alternative": "repetir longsword; tornava a escolha de origem invisivel na mao"
     }
   },
-
   "espada_prata_santuario": {
     "display_name": "Espada de prata do Santuario",
     "catalogue_id": "espada_prata_santuario",
@@ -844,19 +2407,45 @@
     "slot": "main",
     "hands": 1,
     "range": 2.1,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": true,
     "block_type": "onehand",
     "base_damage": 40,
-    "requirements": { "forca": 10 },
+    "requirements": {
+      "forca": 10
+    },
     "scaling_attribute": "forca",
     "scale_weight": "medio",
-    "light": { "startup": 15, "active": 6, "recovery": 19, "stamina": 17, "mv": 0.95 },
-    "heavy": { "startup": 26, "active": 7, "recovery": 25, "stamina": 28, "mv": 1.50 },
-    "combo": { "max": 3, "final_mv": 1.15 },
+    "light": {
+      "startup": 15,
+      "active": 6,
+      "recovery": 19,
+      "stamina": 17,
+      "mv": 0.95
+    },
+    "heavy": {
+      "startup": 26,
+      "active": 7,
+      "recovery": 25,
+      "stamina": 28,
+      "mv": 1.5
+    },
+    "combo": {
+      "max": 3,
+      "final_mv": 1.15
+    },
     "weapon_art": {
-      "one_hand": { "name": "estocada votiva", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" },
-      "two_hands": { "name": "arco de julgamento", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" }
+      "one_hand": {
+        "name": "estocada votiva",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      },
+      "two_hands": {
+        "name": "arco de julgamento",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      }
     },
     "presentation": {
       "visual_description": "espada recta de prata baca com lamina de dois gumes de 88 cm, guarda branca e pomo de ouro gasto do Santuario Branco",
@@ -876,7 +2465,6 @@
       "discarded_alternative": "dar a katana ao Paladino; resolvia unicidade, mas contrariava a identidade de destreza do Espadachim dita pelo Mateus"
     }
   },
-
   "katana_brumal_sabre_de_vigilia": {
     "display_name": "Sabre de vigilia",
     "catalogue_id": "katana_brumal_sabre_de_vigilia",
@@ -884,19 +2472,45 @@
     "slot": "main",
     "hands": 1,
     "range": 2.1,
+    "arc_degrees": 110,
     "can_parry": false,
     "can_block": true,
     "block_type": "onehand",
     "base_damage": 40,
-    "requirements": { "destreza": 10 },
+    "requirements": {
+      "destreza": 10
+    },
     "scaling_attribute": "destreza",
     "scale_weight": "forte",
-    "light": { "startup": 14, "active": 5, "recovery": 16, "stamina": 16, "mv": 0.90 },
-    "heavy": { "startup": 26, "active": 7, "recovery": 24, "stamina": 26, "mv": 1.44 },
-    "combo": { "max": 3, "final_mv": 1.05 },
+    "light": {
+      "startup": 14,
+      "active": 5,
+      "recovery": 16,
+      "stamina": 16,
+      "mv": 0.9
+    },
+    "heavy": {
+      "startup": 26,
+      "active": 7,
+      "recovery": 24,
+      "stamina": 26,
+      "mv": 1.44
+    },
+    "combo": {
+      "max": 3,
+      "final_mv": 1.05
+    },
     "weapon_art": {
-      "one_hand": { "name": "iai", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" },
-      "two_hands": { "name": "corte duplo", "input_action": "weapon_art", "runtime_state": "blocked_missing_input_action" }
+      "one_hand": {
+        "name": "iai",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      },
+      "two_hands": {
+        "name": "corte duplo",
+        "input_action": "weapon_art",
+        "runtime_state": "blocked_missing_input_action"
+      }
     },
     "presentation": {
       "visual_description": "lamina curva estreita de um gume com 90 cm, aco polido, guarda oval baixa e punho enfaixado em couro de Brumal",
@@ -913,55 +2527,141 @@
     "_starting_assignment": "unassigned_owner_decision",
     "_source_profile": "spec/51 familia katana + equipment.json/katana_brumal_sabre_de_vigilia; stamina/base_damage sao baseline runtime [CODEX] ate afinacao do agente armas-e-melhorias"
   },
-
   "shield": {
     "display_name": "Escudo de madeira",
     "familia_escudo": "escudo_medio",
     "slot": "offhand",
     "hands": 1,
     "range": 1.2,
+    "arc_degrees": 110,
     "can_parry": true,
     "can_block": true,
     "block_type": "shield",
     "base_damage": 25,
-    "requirements": { "forca": 8 },
+    "requirements": {
+      "forca": 8
+    },
     "scaling_attribute": "forca",
     "scale_weight": "fraco",
-    "bash": { "startup": 14, "active": 4, "recovery": 16, "stamina": 15, "mv": 0.4, "posture_multiplier": 2.0 },
+    "bash": {
+      "startup": 14,
+      "active": 4,
+      "recovery": 16,
+      "stamina": 15,
+      "mv": 0.4,
+      "posture_multiplier": 2.0
+    },
     "_nota": "Bash sai com ataque leve enquanto se bloqueia — ver DECISOES-PROTOTIPO.md D5."
   },
-
   "loadouts": {
     "_fonte": "Queixa directa do Mateus (01-08): cada origem com arma inicial propria; spec/51-familias.md §5 continua a fonte das pecas. Lei 3: qualquer classe pega em qualquer arma; isto e so o arranque.",
     "_pecas": "os ids de 'pecas' vivem em armor.json. Todos os kits em carga leve, excepto o tanque (medio — a identidade dele e sentir o peso).",
-    "_pending_mago_do_mal": {
-      "status": "blocked_missing_relicario_catalogue",
-      "decision": "[DECIDIDO] Mateus 01-08: setima origem propria",
-      "known_direction": "cajado negro + relicario, postura entre os mortos",
-      "missing_before_activation": ["relicario no catalogo", "atributos da origem", "arte/postura runtime", "teste de sete origens"],
-      "reason_not_invented": "o catalogo executavel so cobre cajado; preencher main/offhand agora fingia que o relicario existe"
+    "warrior": {
+      "main": "longsword",
+      "offhand": "shield",
+      "pecas": [
+        "couro_peitoral",
+        "couro_botas"
+      ],
+      "carga": "leve"
     },
-    "warrior":   { "main": "longsword", "offhand": "shield",  "pecas": ["couro_peitoral", "couro_botas"],        "carga": "leve" },
-    "sorcerer":  { "main": "staff",     "offhand": null,      "pecas": ["la_capa", "couro_cinto"],               "carga": "leve" },
-    "tank":      { "main": "espada_recta_brumal_espada_de_vigilia", "offhand": "shield", "pecas": ["ferro_elmo", "ferro_peitoral"], "carga": "medio" },
-    "assassin":  { "main": "dagger",    "offhand": "dagger",  "pecas": ["pano_mascara", "pano_botas"],           "carga": "leve",
-      "_duas_adagas": "instrucao do Rico (31-07): o assassino comeca com DUAS adagas. O Corte Alternado esta declarado no spec/68; o runtime do offhand continua para o M2." },
-    "berserker": { "main": "greataxe",  "offhand": null,      "pecas": ["couro_ombreiras"],                      "carga": "leve" },
-    "paladin":   { "main": "espada_prata_santuario", "offhand": "shield", "pecas": ["ferro_peitoral_polido", "la_capa_clara"], "carga": "leve" }
+    "sorcerer": {
+      "main": "staff",
+      "offhand": "sino",
+      "pecas": [
+        "la_capa",
+        "couro_cinto"
+      ],
+      "carga": "leve",
+      "_porque_offhand": "[CODEX] 02-08: sem instrumento na secundaria o Feiticeiro NAO CONJURA — era a causa medida de Vorgar parecer imatavel (201,1 s vs 85,8 s). O sino da-lhe controlo, que e a identidade declarada da origem."
+    },
+    "tank": {
+      "main": "espada_recta_brumal_espada_de_vigilia",
+      "offhand": "shield",
+      "pecas": [
+        "ferro_elmo",
+        "ferro_peitoral"
+      ],
+      "carga": "medio"
+    },
+    "assassin": {
+      "main": "dagger",
+      "offhand": "dagger",
+      "pecas": [
+        "pano_mascara",
+        "pano_botas"
+      ],
+      "carga": "leve",
+      "_duas_adagas": "instrucao do Rico (31-07): o assassino comeca com DUAS adagas. O Corte Alternado esta declarado no spec/68; o runtime do offhand continua para o M2."
+    },
+    "berserker": {
+      "main": "greataxe",
+      "offhand": null,
+      "pecas": [
+        "couro_ombreiras"
+      ],
+      "carga": "leve"
+    },
+    "paladin": {
+      "main": "espada_prata_santuario",
+      "offhand": "shield",
+      "pecas": [
+        "ferro_peitoral_polido",
+        "la_capa_clara"
+      ],
+      "carga": "leve"
+    },
+    "evil_mage": {
+      "main": "staff",
+      "offhand": "talisma",
+      "pecas": [
+        "couro_peitoral",
+        "couro_cinto"
+      ],
+      "carga": "leve",
+      "_porque_offhand": "[DECIDIDO] (Mateus, 01-08): \"quero um talisma\". O Talisma de Ferro Morto so faz rito de cadaver — ganha a necromancia inteira e perde as outras formas de lancar. Sem ele na secundaria o Mago do Mal nao conjurava nada.",
+      "_porque": "[CODEX] 01-08: couro no peito em vez de la porque o Mago do Mal luta perto (spec/52 §5); carga leve porque a mobilidade e o que o mantem vivo."
+    }
   },
-
   "test_loadouts": {
     "_nota": "Ciclo de armas em jogo ([ e ]) — demonstra a Lei 3 sem menu, e deixa provar que uma arma abaixo do requisito ainda funciona (dano x0,6).",
     "order": [
-      { "main": "longsword", "offhand": "shield" },
-      { "main": "dagger",    "offhand": "shield" },
-      { "main": "dagger",    "offhand": null },
-      { "main": "greataxe",  "offhand": null },
-      { "main": "staff",     "offhand": null },
-      { "main": "espada_recta_brumal_espada_de_vigilia", "offhand": "shield" },
-      { "main": "espada_prata_santuario", "offhand": "shield" },
-      { "main": "katana_brumal_sabre_de_vigilia", "offhand": null },
-      { "main": "longsword", "offhand": null }
+      {
+        "main": "longsword",
+        "offhand": "shield"
+      },
+      {
+        "main": "dagger",
+        "offhand": "shield"
+      },
+      {
+        "main": "dagger",
+        "offhand": null
+      },
+      {
+        "main": "greataxe",
+        "offhand": null
+      },
+      {
+        "main": "staff",
+        "offhand": null
+      },
+      {
+        "main": "espada_recta_brumal_espada_de_vigilia",
+        "offhand": "shield"
+      },
+      {
+        "main": "espada_prata_santuario",
+        "offhand": "shield"
+      },
+      {
+        "main": "katana_brumal_sabre_de_vigilia",
+        "offhand": null
+      },
+      {
+        "main": "longsword",
+        "offhand": null
+      }
     ]
   }
 }

@@ -121,6 +121,7 @@ func _refresh() -> void:
 
 func _on_host_pressed() -> void:
 	if _session == null:
+		_status.text = "A rede não arrancou. Fecha e volta a abrir o jogo; se continuar, envia esta frase ao Mateus."
 		return
 	_status.text = "A abrir a porta…"
 	_session.host()
@@ -128,6 +129,7 @@ func _on_host_pressed() -> void:
 
 func _on_join_pressed() -> void:
 	if _session == null:
+		_status.text = "A rede não arrancou. Fecha e volta a abrir o jogo; se continuar, envia esta frase ao Mateus."
 		return
 	_status.text = "A ligar…"
 	_session.join(_address.text)
@@ -142,14 +144,16 @@ func _on_hosting_started(port: int) -> void:
 	_status.text = "À espera do teu parceiro."
 	# ⭐ Mostrar o proprio endereco poupa metade do tempo dos "2 minutos":
 	# sem isto, o anfitriao tem de ir procurar o IP a algum lado.
-	_own_address.text = "Diz-lhe para escrever:  %s" % _local_hint(port)
+	_own_address.text = ("Na mesma rede, diz-lhe para escrever:  %s\n"
+		+ "Em casas diferentes, usem o endereço do Tailscale/ZeroTier; "
+		+ "ou abre a porta UDP %d e dita o teu endereço público.") % [_local_hint(port), port]
 	_own_address.visible = true
 	_refresh()
 
 
 ## Os enderecos desta maquina, para o anfitriao ler em voz alta ao telefone.
-## Na mesma casa serve o da rede local; entre casas serve o publico ou o da
-## VPN de amigos — e por isso se mostram todos em vez de adivinhar qual.
+## Na mesma casa serve o da rede local. O IP publico nao aparece nesta lista;
+## o texto acima diz isso em vez de fingir que o jogo consegue descobri-lo.
 func _local_hint(port: int) -> String:
 	var out: Array[String] = []
 	for ip: String in IP.get_local_addresses():

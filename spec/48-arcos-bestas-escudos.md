@@ -60,7 +60,7 @@ Com a balística que já temos ([`36-fisica.md`](36-fisica.md) §3 — a flecha 
 
 **É a Lei 3 em forma de objecto.** Um mago com 9 de Força faz **o mesmo dano** com uma besta que um guerreiro com 40 — porque o dano vem do mecanismo, não do braço.
 
-E resolve um problema concreto que a spec tem em aberto: **o mago é frágil ao perto** ([`42`](42-estudo-magia.md) §8, regra 3). A besta dá-lhe uma resposta **que não gasta cargas** — uma mão segura o cajado, a outra a besta. Sem lhe dar números, sem quebrar nada.
+E resolve um problema concreto que a spec tem em aberto: **o mago é frágil ao perto** ([`42`](42-estudo-magia.md) §8, regra 3). A besta dá-lhe uma resposta **que não gasta mana** — uma mão segura o cajado, a outra a besta. Sem lhe dar números, sem quebrar nada.
 
 ⚠️ **E o custo que a mantém honesta:** os dois tempos. Carregar **e** disparar são duas acções, e entre elas está-se exposto. Uma besta é um golpe forte **de vez em quando**, nunca uma torneira.
 
@@ -89,14 +89,14 @@ E resolve um problema concreto que a spec tem em aberto: **o mago é frágil ao 
 
 **Estabilidade 100 + defesa física 100% = defesa grátis.** Um jogador atrás desse escudo não perde stamina nem vida, e o combate acaba — não há decisão nenhuma a tomar.
 
-⭐ **E repara que a referência sabe disso, e a resposta dela é exactamente a nossa Lei 1:** o **piso de 30%** ([`39`](39-estudo-profundo.md) §1) e a **penalidade de espreitar** existem para o mesmo fim — **impedir que exista uma postura sem custo**.
+⭐ **O contrato posterior corrigiu a primeira leitura deste estudo:** o **piso de 30%** pertence à defesa corporal/armadura, não ao bloqueio. Escudos seleccionados podem absorver 100% físico; o que impede a postura sem custo é a estabilidade ≤ 85, stamina zero abrir sempre a guarda, defesa elemental nunca chegar a 100% e ataques próprios vencerem/contornarem a guarda ([`70`](70-fecho-dos-sistemas-de-combate.md) §3).
 
-**Proposta `[CLAUDE]` `→WP5`, e é uma correcção deliberada:**
+**Contrato corrente do [`70`](70-fecho-dos-sistemas-de-combate.md) §3, corrigindo a proposta `[CLAUDE]` inicial:**
 
 | | Referência | Nós |
 |---|---|---|
 | Estabilidade máxima | 90 | ⭐ **85 — tecto rígido.** Bloquear **custa sempre** |
-| Defesa física máxima | 100% | ⭐ **90%** — o piso de 30% vale para tudo |
+| Defesa física máxima | 100% | **100% em escudos seleccionados** — o custo continua na stamina/estabilidade; nunca chega a 100% elemental |
 | Penalidade de espreitar | sim | **sim** — não se pode ter as duas coisas |
 | Peso do escudo grande | impede carga leve | **igual** — é uma escolha, e tem de doer |
 
@@ -122,7 +122,7 @@ E resolve um problema concreto que a spec tem em aberto: **o mago é frágil ao 
 
 | # | Descoberta | Onde bate |
 |---|---|---|
-| 1 | ⭐ **A besta é a Lei 3 em objecto** — não escala com nada, e dá ao mago uma resposta ao perto sem gastar cargas | `→WP5` |
+| 1 | ⭐ **A besta é a Lei 3 em objecto** — não escala com nada, e dá ao mago uma resposta ao perto sem gastar mana | `→WP5` |
 | 2 | ⭐ **Tecto de estabilidade em 85** — sem ele, bloquear é grátis e o combate acaba | `→WP5` |
 | 3 | ⭐ **A munição é metade do arco** — 1 arco + 6 flechas em vez de 20 arcos. Zero animações novas | `→WP5` |
 | 4 | ⭐ **Flecha na cabeça = crítico** — Lei 1 pura, e precisa de som próprio | `→WP1` |
@@ -138,7 +138,7 @@ E resolve um problema concreto que a spec tem em aberto: **o mago é frágil ao 
 | ~~**Inimigos que lançam magia**~~ — mesma honestidade/contacto e interrupção; IA usa cooldown/usos, não mana/meditação invisível | ✅ [`73`](73-fecho-dos-buracos-de-integracao.md) §1 |
 | ~~**Desenho de arena de chefe**~~ — tamanho, obstáculos, refúgios, duas rotas e provas co-op | ✅ [`61`](61-arenas-de-chefe.md) |
 | **Lock-on em 1.ª pessoa** — o sistema e 18/25 m estão fechados; magnetizada vs assistência de alvo é ensaio de feel M2, com as duas opções do [`29`](29-perspectiva.md) | não bloqueia spec |
-| ~~**Sistema de saves**~~ ✅ formato, co-op, escrita atómica e recuperação no [`59`](59-saves.md) | `WP14` |
+| ~~**Sistema de saves**~~ ✅ formato, co-op, escrita atómica e recuperação no [`59`](59-saves.md) | `SaveSystem` em `save_system.gd` |
 
 ## Ligações
 

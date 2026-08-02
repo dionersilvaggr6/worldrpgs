@@ -10,6 +10,17 @@ Ordem inversa: **o mais recente primeiro.**
 
 ## 01-08-2026
 
+### ⭐ O Mago do Mal lança por **talismã** · e cada origem ganha o seu instrumento
+**[DECIDIDO] (Mateus, 01-08-2026)** — *"quero um talismã .. cria pras outras classes também"*
+
+- ⭐ **O instrumento do Mago do Mal é o talismã.** Fecha a linha que o [`52`](spec/52-mago-do-mal.md) §3 deixou em aberto — *"o Mateus perguntou"* — e substitui a proposta `[CLAUDE]` de **cajado negro + relicário**, que fica registada como alternativa descartada, não apagada
+- ⭐ **Cada origem passa a ter um instrumento próprio**, não só as que lançam magia. É a Lei 3 aplicada ao equipamento: o instrumento é uma **ficha de equipamento**, não um privilégio de classe — qualquer origem pode pegar em qualquer um
+- ⚠️ **O que isto obriga a resolver, e é o difícil:** hoje **só o cajado existe** com ficha 1,0. Os outros cinco estão declarados no `spells.json` e **não têm instância, slot, mão, escala nem animação**. É a pergunta **56** do [`99`](spec/99-perguntas-abertas.md), e esta decisão resolve *quais existem*, não *como funcionam*
+- ⭐ **Lei 2:** o instrumento tem de dar **opções, não números**. Se o talismã for só *"+X% de dano"* face ao cajado, não é um instrumento — é um upgrade. A pista está no próprio [`52`](spec/52-mago-do-mal.md) §3: *"pelo cajado tende a ser mais destrutiva; pelo sino tende a ser mais passiva"* — o instrumento muda **o que a magia faz**, não quanto dói
+- ⭐ **O instrumento vai na MÃO SECUNDÁRIA** — *"pode ser a segunda mão, o cajado em uma e o talismã na outra"* (Mateus, 01-08). Fecha a metade da pergunta 56 que era dos donos: **o cajado ocupa a mão principal, o instrumento a secundária**, e levar os dois é uma escolha real — quem leva os dois **fica sem escudo**
+- ⭐ **O esquema segue o do Dark Souls** — *"usa o mesmo modelo que o dark souls, ele é nossa referência"*. ⚠️ Isto é **o modelo de sistema**, não o conteúdo: lá, o catalisador vive numa mão e a magia escala por ele. Copia-se **o mecanismo**, nunca nomes, valores, animações ou assets ([`spec/31`](spec/31-referencias.md)) — e o protocolo obriga a escrever a tabela `eles · nós · diferença`
+- ⏳ **Continua dos donos:** se a fórmula do instrumento substitui o `base_damage` corrente do feitiço
+
 ### 🔴 ⭐ Os jogáveis são **humanos com proporções reais**, nunca bonecos
 **[DECIDIDO] (Mateus, 01-08-2026)** — *"cadê o personagem humano a sério? os personagens jogáveis são humanos sempre, não pequeninhos assim, igual o Dark Souls faz"*
 

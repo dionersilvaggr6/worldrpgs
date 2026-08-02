@@ -62,8 +62,13 @@
     "runtime": {
       "prototype_scope": "[PROTO] por_zona_ate_os_donos_responderem_a_pergunta_38",
       "zone_label": "BRUMAL",
-      "zone_bounds_m": { "min_x": -110.0, "min_z": -110.0, "size_x": 220.0, "size_z": 220.0 },
-      "cell_size_m": 4.0,
+      "zone_bounds_m": {
+        "min_x": -110.0,
+        "min_z": -110.0,
+        "size_x": 220.0,
+        "size_z": 220.0
+      },
+      "cell_size_m": 1.5,
       "reveal_radius_m": 7.0,
       "minimap_range_m": 40.0,
       "update_hz": 10.0,
@@ -71,7 +76,8 @@
       "projection_degrees": 40.0,
       "minimap_default": "roda_com_o_jogador",
       "minimap_can_disable": true,
-      "compass_equivalent": "cardinais_no_aro_do_minimapa_rodam_com_o_mundo"
+      "compass_equivalent": "cardinais_no_aro_do_minimapa_rodam_com_o_mundo",
+      "_porque_cell_size": "[CLAUDE] 02-08: era 4,0 m e o Mateus disse \"o mapa ta numa resolucao merda, nao se entende nem ve nada\". Com celulas de 4 m, Brumal (220 m) cabia em 55x55 quadrados — num minimapa de ~260 px isso da 4,7 px por celula, e le-se como um mosaico. A 1,5 m sao 147x147: o custo e um bitset de ~2,7 KB por zona, ou seja nada, e o desenho passa a ter forma."
     },
     "descricao_visual": "mapa inclinado a quarenta graus em pergaminho cinzento, percurso já pisado a tinta âmbar, andar actual nítido e alturas vizinhas esbatidas",
     "fatia_1": false
@@ -86,8 +92,15 @@
       "brutamontes_no_arco",
       "descanso_e_bivaque"
     ],
-    "path_promises": ["desvio_para_descanso", "desvio_para_bivaque"],
-    "distant_landmarks": ["fumo_do_descanso", "arvore_morta_da_toca", "coroa_da_arena"]
+    "path_promises": [
+      "desvio_para_descanso",
+      "desvio_para_bivaque"
+    ],
+    "distant_landmarks": [
+      "fumo_do_descanso",
+      "arvore_morta_da_toca",
+      "coroa_da_arena"
+    ]
   },
   "world_scale": {
     "target_endpoint_minutes": 30,
@@ -110,6 +123,129 @@
     "coop_rule": "manda_a_maquina_mais_lenta",
     "descricao_visual": "garganta estreita de material misto com cortina de bruma ao centro e silhuetas dos dois biomas nas extremidades",
     "fatia_1": false
+  },
+  "arenas": {
+    "_rules": {
+      "source": "spec/61-arenas-de-chefe.md",
+      "dedicated_layers": ["guardian", "ultra"],
+      "subboss_uses_open_world_pocket": true,
+      "catalogue_is_authoritative": true
+    },
+    "arena_vorgar": {
+      "arena_id": "arena_vorgar",
+      "layer": "guardian",
+      "biome_id": "brumal",
+      "fatia_1": true,
+      "arena_ready": {
+        "initial": false,
+        "becomes_true_when": "catalogue, geometry, collision, fog gate, markers and credited runtime assets are resident",
+        "solo_gate": "opens only after the local machine declares readiness",
+        "coop_gate": "opens only after every expected player is on the approach and each machine has declared readiness; the slowest machine decides",
+        "failure": "fog remains solid and names the missing dependency"
+      },
+      "usable_size_m": {
+        "width": 24.0,
+        "depth": 22.0,
+        "wall_height": 4.0,
+        "threshold_depth": 4.0,
+        "flank_clearance": 4.75
+      },
+      "entrance": {
+        "approach_center_m": [0.0, 1.5, 13.0],
+        "approach_size_m": [5.0, 3.0, 3.0],
+        "fog_center_m": [0.0, 1.85, 11.58],
+        "fog_size_m": [3.9, 3.7],
+        "collision_center_m": [0.0, 1.9, 11.15],
+        "collision_size_m": [4.0, 3.8, 0.35],
+        "status_height_m": 3.15,
+        "status_text": {
+          "preparing": "A preparar a arena…",
+          "waiting_machine": "A preparar a arena… máquina %s",
+          "waiting_partner": "À espera do parceiro",
+          "blocked": "Arena incompleta: %s"
+        },
+        "close_after": "all expected players leave the approach towards the arena",
+        "boss_activation": "after the gate closes behind the committed party"
+      },
+      "edge": {
+        "type": "safe",
+        "lethal_fall": false,
+        "empurrao_maximo_m": 0.0,
+        "_decision": "[CODEX] Vorgar's five current attacks declare no forced displacement, so the executable cap is zero instead of inventing a sixth combat effect. Alternative discarded: assume a 2 m push without a source; it would be hidden combat tuning and could change dodge outcomes.",
+        "enforcement": "all forced displacement requested through the arena controller is clamped to this cap; coincident visible walls and collision remain the physical fallback"
+      },
+      "markers": {
+        "entry": [0.0, 0.55, 7.0],
+        "partner_entry": [2.5, 0.55, 7.0],
+        "boss": [0.0, 0.55, -5.0],
+        "separate_left": [-8.0, 0.05, 1.0],
+        "separate_right": [8.0, 0.05, 1.0],
+        "join": [0.0, 0.05, 2.0],
+        "refuge_left": [-6.0, 0.05, 2.2],
+        "refuge_right": [6.0, 0.05, 2.2]
+      },
+      "coop_space": {
+        "player_separation_range_m": [6.0, 10.0],
+        "minimum_boss_clearance_m": 3.0,
+        "escape_route_count": 2,
+        "escape_route_min_width_m": 3.0,
+        "separate_markers": ["separate_left", "separate_right"],
+        "join_marker": "join",
+        "temporary_refuges": ["refuge_left", "refuge_right"]
+      },
+      "obstacles": [
+        {
+          "id": "left",
+          "marker_id": "refuge_left",
+          "primary_verb": "receive_boss",
+          "invalidated_by": "announced second charge",
+          "states": ["intact", "rubble"]
+        },
+        {
+          "id": "right",
+          "marker_id": "refuge_right",
+          "primary_verb": "receive_boss",
+          "invalidated_by": "announced second charge",
+          "states": ["intact", "rubble"]
+        }
+      ],
+      "art_and_sound": {
+        "CREDITS": "../CREDITS.md",
+        "architecture_source": "KayKit — Dungeon Pack 1.1, CC0",
+        "impact_source": "Kenney — Impact Sounds, CC0",
+        "object_source": "Kenney — RPG Audio, CC0",
+        "assets": {
+          "floor": "res://assets/models/dungeon/floor_tile_large.gltf",
+          "floor_rocks": "res://assets/models/dungeon/floor_tile_large_rocks.gltf",
+          "wall": "res://assets/models/dungeon/wall.gltf",
+          "wall_broken": "res://assets/models/dungeon/wall_broken.gltf",
+          "wall_cracked": "res://assets/models/dungeon/wall_cracked.gltf",
+          "wall_gated": "res://assets/models/dungeon/wall_gated.gltf",
+          "wall_pillar": "res://assets/models/dungeon/wall_pillar.gltf",
+          "pillar_decorated": "res://assets/models/dungeon/pillar_decorated.gltf",
+          "rubble_large": "res://assets/models/dungeon/rubble_large.gltf",
+          "rubble_half": "res://assets/models/dungeon/rubble_half.gltf",
+          "banner": "res://assets/models/dungeon/banner_patternC_brown.gltf",
+          "torch": "res://assets/models/dungeon/torch_mounted.gltf",
+          "broken_arms": "res://assets/models/dungeon/sword_shield_broken.gltf"
+        },
+        "fog_and_floor_reading": "synthesised by ArenaVorgar; no new binary",
+        "preview_ambience": "synthesised mono PCM stone wind"
+      },
+      "performance": {
+        "target_machine": "Intel Iris Xe, 8 GB, 1920x1080, Mobile renderer",
+        "hot_p99_max_ms": 16.7,
+        "post_open_spike_max_ms": 20.0,
+        "total_working_set_max_gb": 2.5,
+        "persistent_rigid_bodies": 0,
+        "functional_obstacle_range": [1, 4]
+      },
+      "proof": {
+        "coverage": "node tools/cobertura-spec.mjs",
+        "real_route": "godot --audio-driver Dummy --path game/ --rendering-method mobile scenes/percurso.tscn",
+        "full_selftest": "godot --headless --audio-driver Dummy --path game/ scenes/selftest.tscn"
+      }
+    }
   },
   "connections": [
     {

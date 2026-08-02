@@ -3,6 +3,11 @@ extends Node3D
 ## A geometria no mundo mostra origem/área/vector; o indicador de bordo mantém
 ## direcção e resposta quando a origem sai do ecrã. O áudio pode estar a zero e
 ## este nó continua a existir com exactamente o mesmo relógio.
+##
+## Esta pegada é também a única autoridade espacial do dano: Enemy pergunta a
+## este nó se o alvo está dentro da forma, em vez de reconstruir um cone oculto.
+
+const CURVE_SEGMENTS := 24
 
 var _attack: Dictionary = {}
 var _source: Node3D
@@ -13,6 +18,7 @@ var _world_mark: MeshInstance3D
 var _world_glyph: Label3D
 var _edge_glyph: Label
 var _material: StandardMaterial3D
+var _footprint := PackedVector2Array()
 
 
 func configure(source: Node3D, attack: Dictionary) -> void:
@@ -23,7 +29,8 @@ func configure(source: Node3D, attack: Dictionary) -> void:
 func _ready() -> void:
 	top_level = true
 	_sync_to_source()
-	_danger_end_frame = int(_attack.get("startup", 30)) + int(_attack.get("active", 5))
+	_danger_end_frame = int(_attack.get("startup")) + int(_attack.get("active"))
+	_danger_end_frame = int(_attack["startup"]) + int(_attack["active"])
 	_build_world_mark()
 	_build_edge_mark()
 	var sound: Dictionary = _attack.get("som_anuncio", {}) as Dictionary
@@ -51,6 +58,16 @@ func cancel() -> void:
 		_world_glyph.text = "×"
 
 
+## A pergunta pública de colisão usa o mesmo polígono que foi entregue ao mesh.
+## O eixo Y não entra: a marca no chão descreve a pegada horizontal do golpe.
+func covers_world_point(world_point: Vector3) -> bool:
+	if _footprint.size() < 3:
+		return false
+	var local_point := to_local(world_point)
+	return Geometry2D.is_point_in_polygon(
+		Vector2(local_point.x, local_point.z), _footprint)
+
+
 func _sync_to_source() -> void:
 	if not is_instance_valid(_source):
 		return
@@ -67,11 +84,15 @@ func _build_world_mark() -> void:
 	_material.emission_enabled = true
 	_material.emission = Color(0.92, 0.18, 0.16)
 	_material.emission_energy_multiplier = 0.7
+	_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_world_mark = MeshInstance3D.new()
+	_footprint = _build_footprint()
+	_world_mark.mesh = _mesh_from_footprint(_footprint)
+	_world_mark.position.y = 0.035
 	var contact := String(_attack.get("tipo_contacto", "instantaneo"))
 	if bool(_attack.get("is_aoe", false)) or contact == "volume_persistente":
 		var disc := CylinderMesh.new()
-		var radius := float(_attack.get("radius", 3.0))
+		var radius := float(_attack["radius"])
 		disc.top_radius = radius
 		disc.bottom_radius = radius
 		disc.height = 0.025
@@ -80,7 +101,7 @@ func _build_world_mark() -> void:
 		_world_mark.position.y = 0.035
 	else:
 		var lane := BoxMesh.new()
-		var reach := maxf(float(_attack.get("range", 2.0)), float(_attack.get("lunge_distance", 0.0)))
+		var reach := maxf(float(_attack["range"]), float(_attack.get("lunge_distance", 0.0)))
 		lane.size = Vector3(0.12 if contact == "instantaneo" else 0.34, 0.025, reach)
 		_world_mark.mesh = lane
 		_world_mark.position = Vector3(0.0, 0.035, -reach * 0.5)
@@ -98,6 +119,60 @@ func _build_world_mark() -> void:
 	add_child(_world_glyph)
 
 
+func _build_footprint() -> PackedVector2Array:
+	var contact := String(_attack.get("tipo_contacto"))
+	if bool(_attack.get("is_aoe", false)) or contact == "volume_persistente":
+		return _disc_footprint(float(_attack.get("radius")))
+
+	var reach := float(_attack.get("range"))
+	if _attack.has("lunge_distance"):
+		reach = maxf(reach, float(_attack.get("lunge_distance")))
+	if contact == "volume_movel":
+		var half_width := float(_attack.get("projectile_radius_m", 0.0))
+		if half_width <= 0.0 and is_instance_valid(_source) \
+				and _source.get("body_radius") != null:
+			half_width = float(_source.get("body_radius"))
+		return PackedVector2Array([
+			Vector2(-half_width, 0.0), Vector2(half_width, 0.0),
+			Vector2(half_width, -reach), Vector2(-half_width, -reach),
+		])
+	return _sector_footprint(reach, float(_attack.get("arc_degrees")))
+
+
+func _disc_footprint(radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for step: int in CURVE_SEGMENTS:
+		var angle := TAU * float(step) / float(CURVE_SEGMENTS)
+		points.append(Vector2(sin(angle), -cos(angle)) * radius)
+	return points
+
+
+func _sector_footprint(reach: float, arc_degrees: float) -> PackedVector2Array:
+	var points := PackedVector2Array([Vector2.ZERO])
+	var half_arc := deg_to_rad(arc_degrees) * 0.5
+	for step: int in CURVE_SEGMENTS + 1:
+		var progress := float(step) / float(CURVE_SEGMENTS)
+		var angle := lerpf(-half_arc, half_arc, progress)
+		points.append(Vector2(sin(angle), -cos(angle)) * reach)
+	return points
+
+
+func _mesh_from_footprint(points: PackedVector2Array) -> ArrayMesh:
+	var mesh := ArrayMesh.new()
+	var indices := Geometry2D.triangulate_polygon(points)
+	if indices.is_empty():
+		return mesh
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	var vertices := PackedVector3Array()
+	for point: Vector2 in points:
+		vertices.append(Vector3(point.x, 0.0, point.y))
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_INDEX] = indices
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+
 func _build_edge_mark() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 90
@@ -113,7 +188,7 @@ func _build_edge_mark() -> void:
 
 
 func _update_pulse() -> void:
-	var startup := maxi(int(_attack.get("startup", 30)), 1)
+	var startup := maxi(int(_attack["startup"]), 1)
 	var t := clampf(float(_frame) / float(startup), 0.0, 1.0)
 	var pulse := 0.35 + 0.65 * t
 	_material.albedo_color.a = pulse * 0.42
@@ -121,7 +196,7 @@ func _update_pulse() -> void:
 	var scale_value := 0.82 + 0.18 * t
 	_world_glyph.scale = Vector3.ONE * scale_value
 	if String(_attack.get("tipo_contacto", "")) == "volume_persistente" and _frame > startup:
-		var interval := maxi(int(_attack.get("damage_interval_frames", 30)), 1)
+		var interval := maxi(int(_attack["damage_interval_frames"]), 1)
 		var tick_t := float((_frame - startup) % interval) / float(interval)
 		_material.albedo_color.a = 0.20 + tick_t * 0.30
 

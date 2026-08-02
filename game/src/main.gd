@@ -9,13 +9,23 @@ extends Node3D
 ##   zone    a fatia: Brumal -> Toca -> Vorgar   (defeito)
 
 const NAVIGATION_HUD_SCRIPT = preload("res://src/ui/navigation_hud.gd")
+const NECROMANCY_RUNTIME_SCRIPT = preload("res://src/summons/necromancy_runtime.gd")
+const INTEGRATED_WORLD_SCRIPT = preload("res://scenes/integrated_world.gd")
+const LAIR_SCRIPT = preload("res://src/world/lair.gd")
+const ENVIRONMENT_ATMOSPHERE_SCRIPT = preload("res://src/visual/environment_atmosphere.gd")
 
 var world: Greybox
+var lair: Lair
 var player: Player
 var partner: Player
 var hud: Hud
 var boss: Enemy
 var navigation: CanvasLayer
+var necromancy_runtime: NecromancyRuntime
+var net_menu: NetMenu
+var net_hud: NetHud
+var pickup_manager: WorldPickupManager
+var starting_loadout_contract_errors: Array[String] = []
 
 var _preset: Dictionary = {}
 var _palette: Dictionary = {}
@@ -24,16 +34,21 @@ var _scene_kind := "zone"
 var _respawn_point := Vector3.ZERO
 var _respawning := false
 var _rest_points: Dictionary = {}
+var _bonfires: Dictionary = {}
 var _nearest_rest_id := ""
 var _learning_points: Dictionary = {}
 var _learning_elapsed := 0.0
 var _wake_layer: CanvasLayer
+var _net_launcher: Button
+var _net_close: Button
+var _net_menu_was_visible := false
 
 const REST_SPAWN_OFFSET := Vector3(1.8, 0.6, 0.8)
 
 
 func _ready() -> void:
 	_ensure_runtime_save()
+	_validate_starting_loadout_contract()
 	InventorySystem.normalise_current()
 	_graphics = _load_graphics()
 	_palette = _graphics.get("palette", {})
@@ -44,18 +59,27 @@ func _ready() -> void:
 	_build_rest_points()
 	_build_player()
 	_build_hud()
+	_build_network_ui()
+	_build_pickup_manager()
+	_build_necromancy_runtime()
 	_populate()
 	SettingsSystem.graphics_changed.connect(_apply_graphics_live)
 	_build_navigation()
 
 	if "--photos" in OS.get_cmdline_user_args():
+		# A primeira fotografia canonica olha do sul para o ponto de descanso.
+		# Virar o actor apenas neste modo torna peito e armas observaveis na prova.
+		player.rotation.y = PI
 		var tour: Node = load("res://src/tools/photo_tour.gd").new()
 		add_child(tour)
 		tour.run(self)
 		return
 
 	if not Bench.is_benchmarking():
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		# À entrada o jogador pode escolher co-op com o rato. Um clique no mundo
+		# captura-o; depois a tecla indicada no HUD abre directamente o mesmo menu.
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_sync_network_launcher()
 	else:
 		_run_benchmark_pilot()
 
@@ -108,10 +132,12 @@ func _apply_graphics_live(preset_name: String) -> void:
 
 
 func _build_world() -> void:
-	world = Greybox.new()
+	world = INTEGRATED_WORLD_SCRIPT.new() as Greybox
 	world.name = "World"
 	add_child(world)
+	world.call("configure_integrations", LAIR_SCRIPT, ENVIRONMENT_ATMOSPHERE_SCRIPT)
 	world.build(_preset, _palette, "arena" if _scene_kind == "combat" else "brumal")
+	lair = world.call("integrated_lair") as Lair
 
 	var scale := float(_preset.get("render_scale", 1.0))
 	if scale < 1.0:
@@ -127,6 +153,8 @@ func _build_player() -> void:
 	player.name = "Player"
 	add_child(player)
 	player.setup(class_id, _palette, String(appearance.get("body_id", "body_male")))
+	_attach_player_equipment_visual(
+		player, String(appearance.get("body_id", "body_male")), class_id)
 	refresh_inventory_state()
 	var checkpoint: Dictionary = ((GameData.save_state.get("character", {}) as Dictionary).get(
 		"checkpoint", {}) as Dictionary)
@@ -146,6 +174,36 @@ func _build_player() -> void:
 	player.died.connect(_on_player_died)
 
 
+func _attach_player_equipment_visual(actor: Player, body_id: String, class_id: String) -> void:
+	# Player conserva a capsula e toda a logica de combate. Aqui trocamos apenas
+	# o renderer-base pelo renderer modular que ja existe e prendemos os props ao
+	# mesmo Skeleton3D; nao ha uma segunda silhueta sobreposta.
+	var previous_visual := actor.get("_visual") as CharacterVisual
+	if is_instance_valid(previous_visual):
+		actor.remove_child(previous_visual)
+		previous_visual.queue_free()
+
+	var armor := ArmorVisual.new()
+	armor.name = "ArmorVisual"
+	actor.add_child(armor)
+	var height := float(GameData.section("player").get("capsule_height", 1.8))
+	armor.setup(height, Color.WHITE, true, body_id, class_id)
+	actor.set("_visual", armor)
+
+	var weapon := WeaponAttach.new()
+	actor.add_child(weapon)
+	if not weapon.setup(actor, armor):
+		weapon.queue_free()
+
+	# O controlador existente observa o ataque real do Player e move o mesmo
+	# esqueleto ao qual a arma ficou presa.
+	var attacks := AttackAnimationController.new()
+	attacks.name = "AttackAnimationController"
+	actor.add_child(attacks)
+	if not attacks.setup(actor, armor):
+		attacks.queue_free()
+
+
 func _build_hud() -> void:
 	hud = Hud.new()
 	hud.name = "Hud"
@@ -155,6 +213,156 @@ func _build_hud() -> void:
 	if not Bench.is_benchmarking():
 		hud.toast(GameData.ui_text("toast.start") % [
 			SettingsSystem.binding_label("toggle_help"), _preset.get("_name", "?")], 6.0)
+
+
+func _build_network_ui() -> void:
+	net_hud = NetHud.new()
+	net_hud.name = "NetHud"
+	add_child(net_hud)
+
+	net_menu = NetMenu.new()
+	net_menu.name = "NetMenu"
+	add_child(net_menu)
+
+	_net_launcher = Button.new()
+	_net_launcher.name = "JogarADois"
+	_net_launcher.text = "JOGAR A DOIS"
+	_net_launcher.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_net_launcher.offset_left = -188.0
+	_net_launcher.offset_top = 318.0
+	_net_launcher.offset_right = -24.0
+	_net_launcher.offset_bottom = 362.0
+	_net_launcher.pressed.connect(_toggle_network_menu)
+	hud.add_child(_net_launcher)
+
+	_net_close = Button.new()
+	_net_close.name = "Fechar"
+	_net_close.text = "Fechar"
+	_net_close.set_anchors_preset(Control.PRESET_CENTER)
+	_net_close.offset_left = -210.0
+	_net_close.offset_top = 166.0
+	_net_close.offset_right = 210.0
+	_net_close.offset_bottom = 208.0
+	_net_close.pressed.connect(_toggle_network_menu)
+	net_menu.add_child(_net_close)
+
+
+func _toggle_network_menu() -> void:
+	if not is_instance_valid(net_menu):
+		return
+	net_menu.toggle()
+	_sync_network_focus()
+
+
+func _sync_network_focus() -> void:
+	_net_menu_was_visible = is_instance_valid(net_menu) and net_menu.visible
+	set_local_input_enabled(not _net_menu_was_visible)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if _net_menu_was_visible \
+		else Input.MOUSE_MODE_CAPTURED
+	_sync_network_launcher()
+
+
+func _sync_network_launcher() -> void:
+	if not is_instance_valid(_net_launcher):
+		return
+	var menu_aberto := is_instance_valid(net_menu) and net_menu.visible
+	var rato_livre := Input.mouse_mode == Input.MOUSE_MODE_VISIBLE
+	_net_launcher.visible = rato_livre and not menu_aberto
+	if is_instance_valid(hud):
+		var dica := "" if rato_livre or menu_aberto else "%s — JOGAR A DOIS" % \
+			_binding_label("toggle_mouse")
+		hud.set_network_hint(dica)
+
+
+func _build_pickup_manager() -> void:
+	pickup_manager = WorldPickupManager.new()
+	pickup_manager.name = "WorldPickupManager"
+	add_child(pickup_manager)
+	if not pickup_manager.setup(world, player, hud, "brumal"):
+		push_error("[espólio] WorldPickupManager recusou a cena jogável")
+		pickup_manager.queue_free()
+		pickup_manager = null
+
+
+func _build_necromancy_runtime() -> void:
+	_clear_necromancy_runtime()
+	if not is_instance_valid(player) or player.class_id != "evil_mage":
+		return
+	necromancy_runtime = NECROMANCY_RUNTIME_SCRIPT.new() as NecromancyRuntime
+	necromancy_runtime.name = "NecromancyRuntime"
+	add_child(necromancy_runtime)
+	var presentation := GameData.enemies.get("_presentation", {}) as Dictionary
+	if not necromancy_runtime.setup(player, self, &"local-player", &"local-simulation",
+			GameData.attributes, GameData.abilities, GameData.spells, _palette,
+			presentation):
+		push_error("[necromancia] o runtime recusou os catalogos da partida")
+		remove_child(necromancy_runtime)
+		necromancy_runtime.queue_free()
+		necromancy_runtime = null
+		return
+	player.raise_requested.connect(_on_raise_requested)
+	for node: Node in get_tree().get_nodes_in_group("enemies"):
+		var enemy := node as Enemy
+		if enemy != null:
+			_watch_enemy_for_necromancy(enemy)
+
+
+func _clear_necromancy_runtime() -> void:
+	if is_instance_valid(player) and player.raise_requested.is_connected(
+			_on_raise_requested):
+		player.raise_requested.disconnect(_on_raise_requested)
+	if not is_instance_valid(necromancy_runtime):
+		necromancy_runtime = null
+		return
+	remove_child(necromancy_runtime)
+	necromancy_runtime.queue_free()
+	necromancy_runtime = null
+
+
+func _watch_enemy_for_necromancy(enemy: Enemy) -> void:
+	if not is_instance_valid(necromancy_runtime):
+		return
+	var ability := GameData.ability("evil_mage")
+	var sizes := ability.get("corpse_body_size_by_role", {}) as Dictionary
+	var body_size := String(sizes.get(String(enemy.data.get("role", "")), ""))
+	if not body_size.is_empty():
+		enemy.data = enemy.data.duplicate(true)
+		enemy.data["necromancy_body_size"] = body_size
+	necromancy_runtime.watch_enemy(enemy)
+
+
+func _on_raise_requested(spell_id: String) -> void:
+	if not is_instance_valid(necromancy_runtime) or not is_instance_valid(player):
+		return
+	var preview: Dictionary = necromancy_runtime.validate_raise_target(spell_id)
+	if not bool(preview.get("accepted", false)):
+		_show_raise_feedback(String(preview.get("reason", "rejected")))
+		return
+	var base_max_health := GameData.max_health_for(int(player.attrs.get("vida", 8)))
+	var health_cost := base_max_health * float(preview.get(
+		"health_cost_fraction", 0.0))
+	if player.health <= health_cost or is_equal_approx(player.health, health_cost):
+		_show_raise_feedback("insufficient_current_health")
+		return
+	var health_before := player.health
+	var result: Dictionary = necromancy_runtime.raise_nearest(spell_id)
+	if not bool(result.get("accepted", false)):
+		_show_raise_feedback(String(result.get("reason", "rejected")))
+		return
+	# O runtime reserva a mesma fraccao na barra maxima. Esta linha faz o custo
+	# sair tambem dos PV actuais sem cobrar duas vezes quando a barra estava cheia.
+	player.health = minf(player.max_health, health_before - health_cost)
+	_show_raise_feedback("accepted")
+
+
+func _show_raise_feedback(reason: String) -> void:
+	if not is_instance_valid(hud):
+		return
+	var feedback := GameData.ability("evil_mage").get(
+		"raise_feedback", {}) as Dictionary
+	var message := String(feedback.get(reason, feedback.get("rejected", "")))
+	if not message.is_empty():
+		hud.toast(message, 3.0)
 
 
 func _build_navigation() -> void:
@@ -168,15 +376,38 @@ func _build_navigation() -> void:
 
 # --- Povoamento ---------------------------------------------------------------
 
-func _spawn(enemy_id: String, at: Vector3) -> Enemy:
-	var e := Enemy.new()
+func _spawn(enemy_id: String, at: Vector3, actor: Enemy = null) -> Enemy:
+	var e := actor if actor != null else Enemy.new()
 	add_child(e)
 	e.global_position = at
+	e.set_meta("placement_id", _placement_id(enemy_id, at))
 	e.setup(enemy_id, _palette)
+	_attach_monster_visual(e)
 	e.target = player
 	e.home = at
 	e.died.connect(_on_enemy_died)
+	_watch_enemy_for_necromancy(e)
 	return e
+
+
+func _placement_id(enemy_id: String, at: Vector3) -> String:
+	# A posição de autoria é estável entre sessões e não depende da ordem em que
+	# o povoamento cria os corpos. É a mesma identidade usada por descanso/loot.
+	return "brumal:%s:%.3f:%.3f:%.3f" % [enemy_id, at.x, at.y, at.z]
+
+
+func _attach_monster_visual(enemy: Enemy) -> void:
+	if MonsterVisual.profile_for(enemy.enemy_id).is_empty():
+		return
+	var previous_visual := enemy.get("_visual") as Node3D
+	if is_instance_valid(previous_visual):
+		enemy.remove_child(previous_visual)
+		previous_visual.queue_free()
+	var visual := MonsterVisual.new()
+	enemy.add_child(visual)
+	visual.setup(enemy.enemy_id, enemy.data, enemy.get("_visual_profile"),
+		bool(_preset.get("shadows", true)), int(enemy.get_instance_id()))
+	enemy.set("_visual", visual)
 
 
 func _populate() -> void:
@@ -205,11 +436,10 @@ func _populate() -> void:
 		"vorgar":
 			# Prova repetível dentro da arena final, não numa arena cinzenta que
 			# omite as paredes, tochas e os detritos que o jogador vê.
-			var c := world.arena_center
+			var c := _vorgar_spawn_position()
 			player.global_position = c + Vector3(0.0, 0.6, 8.0)
 			_respawn_point = player.global_position
-			boss = _spawn("vorgar", c)
-			hud.boss = boss
+			_register_boss(_spawn("vorgar", c, BossVorgar.new()))
 			_spawn("orc_spearman", c + Vector3(6.0, 0.5, 1.5))
 			_spawn("orc_brute", c + Vector3(-6.0, 0.5, -2.0))
 			var partner := Player.new()
@@ -218,59 +448,69 @@ func _populate() -> void:
 			partner.setup("sorcerer", _palette)
 			partner.global_position = c + Vector3(2.5, 0.6, 6.5)
 		_:
-			_populate_zone()
+			# O catalogo descreve a zona inteira; o produtor materializa apenas
+			# as colocacoes proximas para respeitar o tecto global de actores.
+			var population_script := load("res://src/world/spawn_population.gd") as Script
+			var population := population_script.new() as Node
+			population.name = "SpawnPopulation"
+			add_child(population)
+			population.call("initialize", self, player, world, lair, _palette, "brumal")
+
+			# O tutorial continua ancorado no mesmo percurso, sem possuir uma
+			# segunda lista de inimigos que possa divergir do budget da zona.
+			var p := world.path_points
+			_learning_points = {
+				"attack": p[1],
+				"dodge": p[2],
+				"parry": p[3],
+				"flask": p[4],
+			}
 
 
-func _populate_zone() -> void:
-	var p := world.path_points
-	# spec/27, primeiros cinco minutos: vazio -> um de costas -> dois de frente
-	# -> brutamontes no arco -> descanso e bivaque ao longe.
-	var lone := _spawn("orc_spearman", p[1] + Vector3.UP * 0.5)
-	_face_enemy_towards(lone, p[2])
-	var approach := (p[2] - p[1]).normalized()
-	var right := Vector3(approach.z, 0.0, -approach.x)
-	var spear_left := _spawn("orc_spearman", p[2] - right * 2.6 + Vector3.UP * 0.5)
-	var spear_right := _spawn("orc_spearman", p[2] + right * 2.6 + Vector3.UP * 0.5)
-	_face_enemy_towards(spear_left, p[1])
-	_face_enemy_towards(spear_right, p[1])
-	var brute := _spawn("orc_brute", p[3] + Vector3.UP * 0.5)
-	_face_enemy_towards(brute, p[2])
+func _vorgar_spawn_position() -> Vector3:
+	if is_instance_valid(lair):
+		var marker := lair.get_node_or_null("Boss_Vorgar") as Marker3D
+		if marker != null:
+			return marker.global_position
+	return world.arena_center
 
-	for camp_offset: Vector3 in [Vector3(-3.2, 0.5, 1.5),
-			Vector3(3.0, 0.5, 1.2), Vector3(0.5, 0.5, -3.0)]:
-		var camper := _spawn("orc_spearman", world.camp_point + camp_offset)
-		_face_enemy_towards(camper, world.rest_point)
 
-	# Os pontos de aprendizagem sao as ancoras que o tutorial usa para ensinar no
-	# sitio certo. Vem do HEAD; apontam agora para a disposicao do spec/27.
-	_learning_points = {
-		"attack": p[1],
-		"dodge": p[2],
-		"parry": p[3],
-		"flask": p[4],
-	}
-
-	# A Toca: um em cada sala.
-	var e := world.lair_entrance
-	_spawn("orc_spearman", e + Vector3(0, 0.5, -10))
-	_spawn("orc_brute", e + Vector3(2, 0.5, -21))
-
-	var defeated: Array = ((GameData.save_state.get("world", {}) as Dictionary).get(
-		"bosses_defeated", []) as Array)
-	if not "vorgar" in defeated:
-		boss = _spawn("vorgar", world.arena_center)
-		hud.boss = boss
+func _register_boss(spawned: Enemy) -> void:
+	boss = spawned
+	hud.boss = boss
+	if not boss.died.is_connected(_on_boss_died):
 		boss.died.connect(_on_boss_died)
 
 
-func _face_enemy_towards(enemy: Enemy, point: Vector3) -> void:
-	var direction := point - enemy.global_position
-	direction.y = 0.0
-	if direction.length_squared() > 0.001:
-		enemy.rotation.y = atan2(-direction.x, -direction.z)
+func _enemy_id_for_lair_marker(marker: Marker3D) -> String:
+	var architecture_role := String(marker.get_meta("architecture_role", ""))
+	var archetype := architecture_role.get_slice("_", 0).to_lower()
+	if archetype.is_empty():
+		return ""
+	var enemy_ids: Array[String] = []
+	for value: Variant in GameData.enemies.keys():
+		var enemy_id := String(value)
+		if not enemy_id.begins_with("_"):
+			enemy_ids.append(enemy_id)
+	enemy_ids.sort()
+	for enemy_id: String in enemy_ids:
+		var display_name := String(GameData.enemy(enemy_id).get("display_name", "")).to_lower()
+		if display_name.contains(archetype):
+			return enemy_id
+	push_warning("A Toca nao encontrou no catalogo o papel '%s'" % architecture_role)
+	return ""
 
 
 # --- Morte e recomeco ---------------------------------------------------------
+
+func _validate_starting_loadout_contract() -> void:
+	# O contrato recebe os catalogos inteiros. Uma origem nova entra na mesma
+	# execucao sem precisar de ser repetida numa lista de compatibilidade.
+	starting_loadout_contract_errors = StartingLoadouts.contract_errors(
+		GameData.weapons, GameData.equipment, GameData.attributes)
+	for error: String in starting_loadout_contract_errors:
+		push_error("[starting-loadouts] %s" % error)
+
 
 func _ensure_runtime_save() -> void:
 	if not GameData.save_state.is_empty():
@@ -302,6 +542,9 @@ func _on_enemy_died(defeated: Enemy) -> void:
 	match String(receipt.get("status", "")):
 		"awarded":
 			var card := String(receipt.get("resolved_card", ""))
+			if is_instance_valid(pickup_manager):
+				pickup_manager.present_enemy_reward(
+					receipt, defeated.global_position, snapshot)
 			hud.toast(GameData.ui_text("toast.reward") % [int(receipt.get("souls_awarded", 0)), card], 3.0)
 		"exhausted":
 			hud.toast(GameData.ui_text("toast.loot_exhausted"), 2.5)
@@ -325,6 +568,8 @@ func _on_player_died() -> void:
 func _respawn() -> void:
 	player.respawn_at(_respawn_point)
 	player.flask_refill()
+	if is_instance_valid(pickup_manager):
+		pickup_manager.set_player(player)
 	for node in get_children():
 		var e := node as Enemy
 		if e != null:
@@ -353,6 +598,7 @@ func _build_rest_points() -> void:
 		"brumal_clareira": world.spawn_point,
 		"toca_entrada": world.lair_entrance + Vector3(0, 0.0, 7.0),
 	}
+	_bonfires.clear()
 	for rest_id: String in _rest_points:
 		_build_bonfire(rest_id, _rest_points[rest_id])
 
@@ -392,6 +638,13 @@ func _build_bonfire(rest_id: String, at: Vector3) -> void:
 	light.omni_range = 7.0
 	light.shadow_enabled = false
 	root.add_child(light)
+	var controller := Bonfire.new()
+	controller.name = "BonfireController"
+	root.add_child(controller)
+	controller.configure("brumal", rest_id)
+	controller.rest_completed.connect(_on_bonfire_rest_completed.bind(rest_id))
+	controller.operation_failed.connect(_on_bonfire_operation_failed)
+	_bonfires[rest_id] = controller
 
 
 func _tick_rest_points() -> void:
@@ -404,29 +657,51 @@ func _tick_rest_points() -> void:
 		if distance < nearest_distance:
 			nearest = rest_id
 			nearest_distance = distance
-	_nearest_rest_id = nearest if nearest_distance <= 2.5 else ""
+	# ⚠️ 02-08: eram 2,5 m medidos ao CENTRO da fogueira — e a fogueira e um monte
+	# de pedras com mais de um metro de raio, que impede o jogador de la chegar.
+	# Resultado: ficava-se encostado ao fogo e o jogo dizia "nao foi possivel
+	# descansar agora". O Mateus: "nao da pra senta nas outras fogueiras".
+	# 4,5 m e a distancia a que se ESTA na fogueira, nao a que se esta dentro dela.
+	_nearest_rest_id = nearest if nearest_distance <= 4.5 else ""
 	if _nearest_rest_id == "":
 		hud.set_prompt("")
 		return
-	hud.set_prompt("%s — descansar" % _binding_label("interact"))
-	if Input.is_action_just_pressed("interact"):
-		_rest_at(_nearest_rest_id)
-
-
-func _rest_at(rest_id: String) -> void:
-	if not SaveSystem.commit_checkpoint("brumal", rest_id):
-		hud.toast("Não foi possível guardar este descanso.", 3.0)
+	var controller := _bonfires.get(_nearest_rest_id) as Bonfire
+	if controller == null:
+		hud.set_prompt("")
 		return
+	var action := controller.input_action()
+	hud.set_prompt("%s — descansar" % _binding_label(action))
+	controller.process_input(player, _enemies_for_rest())
+
+
+func _enemies_for_rest() -> Array:
+	var enemies: Array = []
+	for child: Node in get_children():
+		var enemy := child as Enemy
+		if enemy != null:
+			enemies.append(enemy)
+	return enemies
+
+
+func _on_bonfire_rest_completed(_result: Dictionary, rest_id: String) -> void:
 	_respawn_point = (_rest_points[rest_id] as Vector3) + REST_SPAWN_OFFSET
-	player.health = player.max_health
-	player.stamina.current = player.stamina.maximum
-	player.mana = player.max_mana
-	player.flask_refill()
-	for node: Node in get_children():
-		var enemy := node as Enemy
-		if enemy != null and not enemy.is_boss:
-			enemy.full_reset()
-	hud.toast("Descansaste. Este é agora o teu ponto de regresso.", 3.0)
+	if is_instance_valid(necromancy_runtime):
+		necromancy_runtime.rest()
+	# ⭐ 02-08: A FOGUEIRA GRAVA. Antes so se gravava ao SAIR do jogo — o Mateus
+	# disse "nunca salva o jogo", e tinha razao: quem fechasse a janela a bruta
+	# perdia tudo. Num souls-like a fogueira e o ponto de gravacao, e e por isso
+	# que descansar tem peso: e o momento em que o progresso fica seguro.
+	if SaveSystem.save_current():
+		hud.toast("Descansaste. Progresso guardado neste ponto de regresso.", 3.0)
+	else:
+		# ⚠️ Nunca em silencio: se a gravacao falhar, o jogador TEM de saber,
+		# senao continua a jogar a pensar que esta seguro.
+		hud.toast("Descansaste, mas NAO foi possivel gravar: %s" % SaveSystem.last_error, 6.0)
+
+
+func _on_bonfire_operation_failed(_result: Dictionary) -> void:
+	hud.toast("Não foi possível descansar agora.", 3.0)
 
 
 func _binding_label(action_name: String) -> String:
@@ -511,16 +786,28 @@ func _end_wake_sequence() -> void:
 	if is_instance_valid(hud):
 		hud.visible = true
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_sync_network_launcher()
 
 
 func refresh_inventory_state() -> void:
 	if not is_instance_valid(player):
 		return
 	var state := GameData.save_state_snapshot()
-	var character: Dictionary = state.get("character", {}) as Dictionary
+	var readable_state := state.duplicate(true)
+	var character: Dictionary = readable_state.get("character", {}) as Dictionary
 	var inventory: Dictionary = character.get("inventory", {}) as Dictionary
-	player.apply_inventory_state(inventory.get("equipment", {}) as Dictionary,
-		InventorySystem.load_profile(state))
+	var equipment := (inventory.get("equipment", {}) as Dictionary).duplicate(true)
+	for hand: String in ["main", "offhand"]:
+		if equipment.get(hand) == null:
+			equipment[hand] = ""
+	inventory["equipment"] = equipment
+	character["inventory"] = inventory
+	readable_state["character"] = character
+	player.apply_inventory_state(equipment,
+		InventorySystem.load_profile(readable_state))
+	var armor := player.get("_visual") as ArmorVisual
+	if armor != null:
+		armor.apply_equipment(equipment.get("armor", []) as Array)
 
 
 func can_change_spell_favorites() -> bool:
@@ -591,12 +878,17 @@ func _show_learning_tip(tip_id: String) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_pressed():
 		return
+	if event is InputEventMouseButton and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE \
+			and (not is_instance_valid(net_menu) or not net_menu.visible):
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		_sync_network_launcher()
+		return
 	if InputMap.has_action("debug_class_next") and Input.is_action_just_pressed("debug_class_next"):
 		_cycle_class()
 		return
 	if InputMap.has_action("toggle_mouse") and Input.is_action_just_pressed("toggle_mouse"):
-		Input.mouse_mode = (Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-			else Input.MOUSE_MODE_CAPTURED)
+		_toggle_network_menu()
+		return
 	elif InputMap.has_action("reset_arena") and Input.is_action_just_pressed("reset_arena"):
 		_respawn()
 		hud.toast(GameData.ui_text("toast.arena_reset"), 2.0)
@@ -615,6 +907,10 @@ var _pilot_t := 0.0
 
 func _process(delta: float) -> void:
 	if not Bench.is_benchmarking():
+		if is_instance_valid(net_menu) and net_menu.visible != _net_menu_was_visible:
+			_sync_network_focus()
+		else:
+			_sync_network_launcher()
 		_tick_rest_points()
 		_tick_learning(delta)
 		return
@@ -626,7 +922,8 @@ func _process(delta: float) -> void:
 		return
 	_pilot_t += delta
 	var angle := _pilot_t * 0.35
-	var centre: Vector3 = world.path_points[2] if world.path_points.size() > 2 else Vector3.ZERO
+	var centre: Vector3 = world.arena_center if _scene_kind == "vorgar" \
+		else (world.path_points[2] if world.path_points.size() > 2 else Vector3.ZERO)
 	player.global_position = centre + Vector3(sin(angle) * 12.0, 0.6, cos(angle) * 12.0)
 	if player.camera != null:
 		player.camera.rotation.y = angle + PI
@@ -642,29 +939,38 @@ func _exit_tree() -> void:
 
 
 # --- Troca de classe (F6, ferramenta de teste) ---------------------------------
-# Para o Rico sentir as 6 classes sem menu (o menu de escolha vem com o WP11).
-
-const CLASSES: Array[String] = ["warrior", "tank", "berserker", "sorcerer", "assassin", "paladin"]
 var _class_index := 0
 
 
 func _cycle_class() -> void:
-	_class_index = (_class_index + 1) % CLASSES.size()
-	var class_id := CLASSES[_class_index]
+	var class_ids := _playable_class_ids()
+	if class_ids.is_empty():
+		return
+	_class_index = (_class_index + 1) % class_ids.size()
+	var class_id := class_ids[_class_index]
 	var pos := player.global_position
 	var cam := player.camera
+	_clear_necromancy_runtime()
 	player.died.disconnect(_on_player_died)
 	player.queue_free()
 
 	player = Player.new()
 	player.name = "Player"
 	add_child(player)
-	player.setup(class_id, _palette)
+	var appearance: Dictionary = (((GameData.save_state.get("character", {}) as Dictionary).get(
+		"identity", {}) as Dictionary).get("appearance", {}) as Dictionary)
+	var body_id := String(appearance.get("body_id", "body_male"))
+	player.setup(class_id, _palette, body_id)
+	_attach_player_equipment_visual(player, body_id, class_id)
+	refresh_inventory_state()
 	player.global_position = pos
 	player.camera = cam
 	cam.target = player
 	player.died.connect(_on_player_died)
 	hud.player = player
+	if is_instance_valid(pickup_manager):
+		pickup_manager.set_player(player)
+	_build_necromancy_runtime()
 	if is_instance_valid(navigation):
 		navigation.set("player", player)
 		var surface: Control = navigation.get("_minimap_surface")
@@ -676,3 +982,14 @@ func _cycle_class() -> void:
 			e.target = player
 	var display: String = GameData.class_attributes(class_id).get("display_name", class_id)
 	hud.toast(GameData.ui_text("toast.class_changed") % display, 2.5)
+
+
+func _playable_class_ids() -> Array[String]:
+	var result: Array[String] = []
+	var loadouts: Dictionary = GameData.weapons.get("loadouts", {}) as Dictionary
+	for value: Variant in loadouts.keys():
+		var class_id := String(value)
+		if not class_id.begins_with("_"):
+			result.append(class_id)
+	result.sort()
+	return result

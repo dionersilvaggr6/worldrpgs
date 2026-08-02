@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://src/tests/self_test.gd" id="1_test"]
+[ext_resource type="Script" path="res://scenes/selftest_integrated.gd" id="1_test"]
+[ext_resource type="Script" path="res://src/world/bounds_self_test.gd" id="2_bounds"]
 
 [node name="SelfTest" type="Node"]
 script = ExtResource("1_test")
+metadata/_bounds_suite = ExtResource("2_bounds")

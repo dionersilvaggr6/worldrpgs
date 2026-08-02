@@ -1,5 +1,5 @@
 {
-  "_fonte": "spec/11-formulas.md (WP2) + spec/70 §1. As curvas por atributo de 70 substituem o soft cap global antigo.",
+  "_fonte": "spec/11-formulas.md (WP2) + spec/70 §1 + DECISOES.md 01-08 (Mago do Mal como 7.a origem). As curvas por atributo de 70 substituem o soft cap global antigo.",
   "_lei_1": "A regeneracao de stamina, as janelas de esquiva/parry e a velocidade NUNCA escalam com atributos. O nivel compra margem (PV, STA, defesa, mana), nunca compra as ferramentas.",
 
   "base_value": 8,
@@ -13,7 +13,79 @@
     "slice_range": [1, 10],
     "currency": "almas",
     "cost_source": "economy.json/rules/level_cost",
-    "old_linear_xp_formula_revoked": "spec/72: substituída pela curva cúbica canónica"
+    "old_linear_xp_formula_revoked": "spec/72: substituída pela curva cúbica canónica",
+    "published_curve_context": {
+      "level_1_to_70": 680663,
+      "level_71_to_100": 1308518,
+      "late_to_early_ratio": 1.92,
+      "calculation": "soma da fórmula cúbica sem arredondar cada parcela; arredondamento apenas no total",
+      "warning": "economy.json/GameData arredondam e aplicam mínimo a cada compra; a divergência de acumulados está registada em LACUNAS.md"
+    }
+  },
+
+  "level_up_ui": {
+    "_fonte": "spec/20-interface.md (ficha e simulação +1) + spec/58 §2 + spec/70 §1 + spec/72 §1",
+    "_lei_1": "Subir nível só reduz a margem de erro. Este ecrã não consulta nem cria requisitos de nível, conteúdo, arma, classe ou zona.",
+    "_lei_2": "Os números tardios saturam pelas curvas próprias; o ecrã mostra o ganho real do ponto em vez de sugerir uma recta.",
+    "_entrega": {
+      "como_o_jogador_usa": "No ponto de descanso, abre Subir de nível com a acção de interagir, escolhe um atributo com teclado, comando ou rato, lê todos os números antes/depois e confirma uma compra de cada vez.",
+      "como_se_prova": "game/src/ui/levelup_self_test.gd cobre moeda, custo, rollback puro, limites 70/100, curvas nos marcos e pré-visualização; scenes/selftest.tscn tem de conservar pelo menos 9703 testes.",
+      "arte_e_som": "Painéis, divisórias e foco são StyleBoxFlat sintetizados em código; a confirmação usa uma onda curta sintetizada em código no bus UI. Zero textura e zero binário novo.",
+      "custo_na_maquina_do_rico": "Intel Iris Xe, Mobile/Vulkan, 1920x1080 sem VSync: ecrã visível 306,7 fps médios, p99 5,770 ms, pior 6,476 ms, 117 draw calls e 50,1 MiB de VRAM. Todos os frames medidos ficaram dentro dos 16,667 ms de 60 fps."
+    },
+    "performance_measurement": {
+      "date": "2026-08-01",
+      "hardware": "Intel(R) Iris(R) Xe Graphics",
+      "renderer": "Mobile/Vulkan",
+      "resolution": "1920x1080",
+      "warmup_frames": 120,
+      "sample_frames": 600,
+      "baseline": {"average_fps":443.1,"average_ms":2.257,"p95_ms":3.584,"p99_ms":4.163,"worst_ms":4.852,"draw_calls":0,"video_mem_mib":13.1},
+      "levelup_visible": {"average_fps":306.7,"average_ms":3.260,"p95_ms":5.193,"p99_ms":5.770,"worst_ms":6.476,"draw_calls":117,"video_mem_mib":50.1},
+      "conclusion": "A UI acrescenta 1,003 ms médios, 117 draw calls e 37,0 MiB nesta sonda isolada; o pior frame medido fica abaixo do orçamento de 16,667 ms para 60 fps. O modelo só recalcula ao abrir/seleccionar/confirmar e não faz polling."
+    },
+    "strings": {
+      "title": "SUBIR DE NÍVEL",
+      "subtitle": "Um ponto compra margem de erro; nunca abre uma porta.",
+      "level": "NÍVEL",
+      "souls": "ALMAS",
+      "next_cost": "PRÓXIMO NÍVEL",
+      "attributes": "ATRIBUTOS",
+      "preview": "O QUE MUDA SE CONFIRMARES",
+      "preview_hint": "Dano é o golpe leve da arma equipada, antes da DEF do alvo. Esquivas completas usam o custo actual da esquiva.",
+      "curve_hint": "Os marcos mudam o ganho por ponto; a pré-visualização já aplica a banda seguinte.",
+      "confirm": "CONFIRMAR",
+      "currency_singular": "alma",
+      "back": "VOLTAR",
+      "select_prompt": "Escolhe um atributo.",
+      "not_enough": "Almas insuficientes: faltam %s.",
+      "attribute_cap": "Este atributo já chegou ao máximo %s.",
+      "level_cap": "Nível máximo atingido.",
+      "save_failed": "Não foi possível guardar. Nada foi cobrado.",
+      "confirmed": "%s subiu para %s. Foram gastas %s %s.",
+      "curve_context": "Curva publicada: 1→70 = 680 663 · 71→100 = 1 308 518 · rácio 1,92×",
+      "controls": "Aceitar confirma · Cancelar volta · teclado, comando e rato"
+    },
+    "attribute_rows": [
+      {"id":"vida", "display_name":"Vida", "primary_metric":"health", "curve_path":"formulas/health/bands"},
+      {"id":"stamina", "display_name":"Stamina", "primary_metric":"stamina", "curve_path":"formulas/stamina/bands"},
+      {"id":"constituicao", "display_name":"Constituição", "primary_metric":"defense", "curve_path":"formulas/defense/bands"},
+      {"id":"inteligencia", "display_name":"Inteligência", "primary_metric":"mana", "curve_path":"formulas/mana/soft_cap", "secondary_curve_path":"damage/scale_bands"},
+      {"id":"fe", "display_name":"Fé", "primary_metric":"mana", "curve_path":"formulas/mana/soft_cap", "secondary_curve_path":"damage/scale_bands"},
+      {"id":"forca", "display_name":"Força", "primary_metric":"damage", "curve_path":"damage/scale_bands"},
+      {"id":"destreza", "display_name":"Destreza", "primary_metric":"damage", "curve_path":"damage/scale_bands"},
+      {"id":"carga", "display_name":"Carga", "primary_metric":"load_capacity", "curve_path":"formulas/load_capacity/bands"}
+    ],
+    "metric_labels": {
+      "damage": "Dano leve",
+      "health": "PV máximo",
+      "defense": "DEF corporal",
+      "stamina": "Stamina",
+      "dodges": "Esquivas completas",
+      "mana": "Mana",
+      "load_capacity": "Capacidade de carga",
+      "load_fraction": "Carga equipada"
+    }
   },
 
   "formulas": {
@@ -38,13 +110,39 @@
   "attribute_ids": ["vida", "stamina", "constituicao", "inteligencia", "fe", "forca", "destreza", "carga"],
 
   "classes": {
-    "_fonte": "spec/12-classes.md (WP3), tabela das seis fichas. LEI — deixou de ser [PROTO] quando o WP3 chegou.",
-    "_verificacao": "Feiticeiro Int 14 -> 116 mana. Paladino Fe 11 -> 104 mana. Berserker cumpre o machadao exactamente (For 14). Assassino sobra na adaga (Des 14 > 10).",
+    "_fonte": "spec/12-classes.md (WP3), seis fichas historicas, mais [DECIDIDO] Mateus 01-08 em DECISOES.md: Mago do Mal e a 7.a origem.",
+    "_verificacao": "Todas as sete origens distribuem +14 sobre a base 8. Feiticeiro Int 14 -> 116 mana. Mago do Mal equilibra Int 13/Fe 13 porque a escola vermelha escala pelo menor dos dois.",
     "warrior":   { "display_name": "Guerreiro",  "vida": 11, "stamina": 11, "constituicao": 10, "inteligencia": 8,  "fe": 8,  "forca": 12, "destreza": 10, "carga": 8 },
     "sorcerer":  { "display_name": "Feiticeiro", "vida": 10, "stamina": 10, "constituicao": 9,  "inteligencia": 14, "fe": 8,  "forca": 9,  "destreza": 10, "carga": 8 },
     "tank":      { "display_name": "Tanque",     "vida": 12, "stamina": 10, "constituicao": 13, "inteligencia": 8,  "fe": 8,  "forca": 11, "destreza": 8, "carga": 8 },
     "assassin":  { "display_name": "Assassino",  "vida": 10, "stamina": 12, "constituicao": 9,  "inteligencia": 8,  "fe": 8,  "forca": 9,  "destreza": 14, "carga": 8 },
     "berserker": { "display_name": "Berserker",  "vida": 11, "stamina": 12, "constituicao": 9,  "inteligencia": 8,  "fe": 8,  "forca": 14, "destreza": 8, "carga": 8 },
-    "paladin":   { "display_name": "Paladino",   "vida": 11, "stamina": 10, "constituicao": 10, "inteligencia": 8,  "fe": 11, "forca": 11, "destreza": 9, "carga": 8 }
+    "paladin":   { "display_name": "Paladino",   "vida": 11, "stamina": 10, "constituicao": 10, "inteligencia": 8,  "fe": 11, "forca": 11, "destreza": 9, "carga": 8 },
+    "evil_mage": {
+      "display_name": "Mago do Mal",
+      "vida": 10,
+      "stamina": 10,
+      "constituicao": 8,
+      "inteligencia": 13,
+      "fe": 13,
+      "forca": 8,
+      "destreza": 8,
+      "carga": 8,
+      "fatia_1": true,
+      "starting_school": "mal",
+      "starting_spells": ["agulha", "levantar", "voto_sangue"],
+      "ability_id": "cortejo_carmim",
+      "posture": "anda_entre_os_mortos",
+      "origin_trait": {
+        "id": "reservatorio_profano",
+        "effect_type": "max_mana_multiplier",
+        "multiplier": 1.40,
+        "always_active": true,
+        "visible_in_sheet": true,
+        "source": "[DECIDIDO] Mateus, spec/54 §4"
+      },
+      "_code_decision": "[CODEX] Int 13 e Fe 13 preservam a escala pelo menor; Vida 10 e Stamina 10 obrigam-no a estar entre os mortos sem fingir que e um Feiticeiro de retaguarda.",
+      "_discarded_alternative": "Int alta e Fe base: dava mais mana, mas tornava a escola vermelha deliberadamente ineficaz e repetia a postura do Feiticeiro."
+    }
   }
 }

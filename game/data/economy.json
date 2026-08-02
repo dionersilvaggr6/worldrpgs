@@ -2,11 +2,39 @@
   "_fonte": "spec/72-materiais-consumiveis-e-economia.md; fecha os IDs prometidos pelos baralhos do bestiario.",
   "rules": {
     "currency_id": "almas",
-    "level_cost": {"formula":"round(0.02*N^3 + 3.06*N^2 + 105.6*N - 895)","minimum":1,"maximum_level":100,"N":"nivel que se compra"},
+    "level_cost": {
+      "formula": "round(0.02*N^3 + 3.06*N^2 + 105.6*N - 895)",
+      "minimum": 1,
+      "maximum_level": 100,
+      "N": "nivel que se compra"
+    },
     "material_stack_max": 99,
     "consumable_stack_max": 20,
     "materials_are_shared": "o mesmo catalogo serve votos de arma e melhorias de feitico; nao existe moeda paralela para magia",
-    "upgrade_recipe": {"levels":[0,1,2,3,4,5,6],"refinement_points":[0,1,2,3,5,8,12],"must_match_item_origin":true,"consumes_materials":true,"raises_base_power":false,"opens_choice_only":true},
+    "upgrade_recipe": {
+      "levels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "refinement_points": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        8,
+        12
+      ],
+      "must_match_item_origin": true,
+      "consumes_materials": true,
+      "raises_base_power": false,
+      "opens_choice_only": true
+    },
     "random_power": false,
     "loot_transaction": "a derrota recompensada soma almas, tira uma carta sem reposicao e grava um recibo atomico; repetir o event_id nao paga duas vezes",
     "ember_is_not_a_consumable_drop": true
@@ -29,21 +57,53 @@
       "A Raiz": "raiz"
     },
     "item_zone_overrides": {
-      "consumivel:agua_lustral": ["campas_cinzentas"],
-      "consumivel:antidoto_selva": ["selva_funda"],
-      "consumivel:bomba_bruma": ["brumal"],
-      "consumivel:lanterna_raiz": ["raiz"],
-      "consumivel:musgo_seco": ["campas_cinzentas"],
-      "consumivel:oleo_condutor": ["cidade_afogada"],
-      "consumivel:oleo_salino": ["costa_quebrada"],
-      "consumivel:pedra_raio": ["fojo"],
-      "consumivel:po_terra": ["fulgor"],
-      "consumivel:resina_bruma": ["brumal"],
-      "consumivel:sal_gelo": ["cimeira", "fornalha"],
-      "consumivel:sal_seco": ["costa_quebrada", "cidade_afogada"],
-      "consumivel:solvente_teia": ["selva_funda"],
-      "consumivel:tocha_esporo": ["raizama"],
-      "consumivel:veu_sombra": ["santuario_branco"]
+      "consumivel:agua_lustral": [
+        "campas_cinzentas"
+      ],
+      "consumivel:antidoto_selva": [
+        "selva_funda"
+      ],
+      "consumivel:bomba_bruma": [
+        "brumal"
+      ],
+      "consumivel:lanterna_raiz": [
+        "raiz"
+      ],
+      "consumivel:musgo_seco": [
+        "campas_cinzentas"
+      ],
+      "consumivel:oleo_condutor": [
+        "cidade_afogada"
+      ],
+      "consumivel:oleo_salino": [
+        "costa_quebrada"
+      ],
+      "consumivel:pedra_raio": [
+        "fojo"
+      ],
+      "consumivel:po_terra": [
+        "fulgor"
+      ],
+      "consumivel:resina_bruma": [
+        "brumal"
+      ],
+      "consumivel:sal_gelo": [
+        "cimeira",
+        "fornalha"
+      ],
+      "consumivel:sal_seco": [
+        "costa_quebrada",
+        "cidade_afogada"
+      ],
+      "consumivel:solvente_teia": [
+        "selva_funda"
+      ],
+      "consumivel:tocha_esporo": [
+        "raizama"
+      ],
+      "consumivel:veu_sombra": [
+        "santuario_branco"
+      ]
     }
   },
   "chest_rules": {
@@ -61,7 +121,11 @@
     "feedback_rise_m": 1.1,
     "feedback_spacing_m": 0.38,
     "feedback_mesh_size_m": 0.18,
-    "chest_size_m": [1.55, 0.62, 0.92],
+    "chest_size_m": [
+      1.55,
+      0.62,
+      0.92
+    ],
     "chest_lid_height_m": 0.18,
     "chest_open_degrees": 105.0,
     "chest_open_seconds": 0.42,
@@ -80,12 +144,25 @@
     "brumal_arco_partido": {
       "display_name": "Bau do Arco Partido",
       "biome_id": "brumal",
-      "position": [-15.0, 0.55, 16.0],
+      "position": [
+        -15.0,
+        0.55,
+        16.0
+      ],
       "detour_reason": "visivel para la do pilar tombado; pede sair do caminho depois do brutamontes",
       "rewards": [
-        {"item": "arma:dagger", "count": 1},
-        {"item": "arma:staff", "count": 1},
-        {"item": "material:limalha_ferro", "count": 3}
+        {
+          "item": "arma:dagger",
+          "count": 1
+        },
+        {
+          "item": "arma:staff",
+          "count": 1
+        },
+        {
+          "item": "material:limalha_ferro",
+          "count": 3
+        }
       ],
       "visual": "arca baixa de carvalho-negro, cintas de ferro rude e fecho em forma de arco partido",
       "art_source": "dois BoxMesh e materiais sintetizados em game/src/world/chest.gd",
@@ -95,12 +172,25 @@
     "brumal_bivaque": {
       "display_name": "Bau do Bivaque",
       "biome_id": "brumal",
-      "position": [27.0, 0.55, -38.0],
+      "position": [
+        27.0,
+        0.55,
+        -38.0
+      ],
       "detour_reason": "a fogueira e os orcs deixam ver a arca antes de entrar no acampamento",
       "rewards": [
-        {"item": "arma:greataxe", "count": 1},
-        {"item": "arma:shield", "count": 1},
-        {"item": "material:couro_javali", "count": 3}
+        {
+          "item": "arma:greataxe",
+          "count": 1
+        },
+        {
+          "item": "arma:shield",
+          "count": 1
+        },
+        {
+          "item": "material:couro_javali",
+          "count": 3
+        }
       ],
       "visual": "arca larga de carvalho-negro, dobradicas de ferro rude e marcas de maos orcs no tampo",
       "art_source": "dois BoxMesh e materiais sintetizados em game/src/world/chest.gd",
@@ -110,12 +200,25 @@
     "brumal_raiz_da_toca": {
       "display_name": "Bau da Raiz da Toca",
       "biome_id": "brumal",
-      "position": [-30.0, 0.55, -65.0],
+      "position": [
+        -30.0,
+        0.55,
+        -65.0
+      ],
       "detour_reason": "a cinta de ferro reflecte a luz junto da raiz, fora da linha directa para a entrada",
       "rewards": [
-        {"item": "arma:longsword", "count": 1},
-        {"item": "consumivel:resina_bruma", "count": 2},
-        {"item": "material:limalha_ferro", "count": 4}
+        {
+          "item": "arma:longsword",
+          "count": 1
+        },
+        {
+          "item": "consumivel:resina_bruma",
+          "count": 2
+        },
+        {
+          "item": "material:limalha_ferro",
+          "count": 4
+        }
       ],
       "visual": "arca estreita encaixada numa raiz negra, carvalho encerado e fecho de ferro azulado",
       "art_source": "dois BoxMesh e materiais sintetizados em game/src/world/chest.gd",
@@ -124,81 +227,540 @@
     }
   },
   "class_bias": {
-    "profiles": {"warrior":"martial","tank":"martial","assassin":"martial","sorcerer":"arcane","berserker":"martial","paladin":"martial"},
+    "profiles": {
+      "warrior": "martial",
+      "tank": "martial",
+      "assassin": "martial",
+      "sorcerer": "arcane",
+      "berserker": "martial",
+      "paladin": "martial",
+      "evil_mage": "arcane"
+    },
     "recipient_policy_coop": "PERGUNTA_DOS_DONOS_99; a transaccao recebe explicitamente o perfil do destinatario e nao escolhe quem fica com a carta",
     "by_zone": {
-      "brumal": {"martial":"material:couro_javali","arcane":"material:limalha_ferro"},
-      "selva_funda": {"martial":"material:vime_trancado","arcane":"material:seiva_peconha"},
-      "campas_cinzentas": {"martial":"material:ferro_ferrugento","arcane":"material:bile_fatua"},
-      "fojo": {"martial":"material:ferro_bruto","arcane":"material:madeira_bau_antiga"},
-      "costa_quebrada": {"martial":"material:bronze_mar","arcane":"material:membrana_mare"},
-      "cimeira": {"martial":"material:chifre_gelado","arcane":"material:flor_gelo"},
-      "fornalha": {"martial":"material:bronze_fundido","arcane":"material:obsidiana"},
-      "fulgor": {"martial":"material:couro_seco","arcane":"material:fulgurite"},
-      "raizama": {"martial":"material:madeira_cogumelo","arcane":"material:esporo_lumen"},
-      "cidade_afogada": {"martial":"material:marmore_afogado","arcane":"material:vidro_afogado"},
-      "santuario_branco": {"martial":"material:ouro_baco","arcane":"material:cera_benta"},
-      "raiz": {"martial":"material:prata_baca","arcane":"material:lagrima_bruma"}
+      "brumal": {
+        "martial": "material:couro_javali",
+        "arcane": "material:limalha_ferro"
+      },
+      "selva_funda": {
+        "martial": "material:vime_trancado",
+        "arcane": "material:seiva_peconha"
+      },
+      "campas_cinzentas": {
+        "martial": "material:ferro_ferrugento",
+        "arcane": "material:bile_fatua"
+      },
+      "fojo": {
+        "martial": "material:ferro_bruto",
+        "arcane": "material:madeira_bau_antiga"
+      },
+      "costa_quebrada": {
+        "martial": "material:bronze_mar",
+        "arcane": "material:membrana_mare"
+      },
+      "cimeira": {
+        "martial": "material:chifre_gelado",
+        "arcane": "material:flor_gelo"
+      },
+      "fornalha": {
+        "martial": "material:bronze_fundido",
+        "arcane": "material:obsidiana"
+      },
+      "fulgor": {
+        "martial": "material:couro_seco",
+        "arcane": "material:fulgurite"
+      },
+      "raizama": {
+        "martial": "material:madeira_cogumelo",
+        "arcane": "material:esporo_lumen"
+      },
+      "cidade_afogada": {
+        "martial": "material:marmore_afogado",
+        "arcane": "material:vidro_afogado"
+      },
+      "santuario_branco": {
+        "martial": "material:ouro_baco",
+        "arcane": "material:cera_benta"
+      },
+      "raiz": {
+        "martial": "material:prata_baca",
+        "arcane": "material:lagrima_bruma"
+      }
     }
   },
   "materials": {
-    "bile_fatua": {"display_name":"Bile fatua","zone_id":"campas_cinzentas","refinement":2,"trade_value":45,"visual":"frasco de bile azul opaca com uma chama fria presa no fundo"},
-    "bronze_fundido": {"display_name":"Bronze fundido","zone_id":"fornalha","refinement":2,"trade_value":55,"visual":"gota de bronze solidificada, negra fora e laranja nas fissuras"},
-    "bronze_mar": {"display_name":"Bronze-do-mar","zone_id":"costa_quebrada","refinement":2,"trade_value":50,"visual":"placa de bronze verde, comida pelo sal e furada por cracas"},
-    "cera_benta": {"display_name":"Cera benta","zone_id":"santuario_branco","refinement":2,"trade_value":70,"visual":"lacre branco com um fio dourado e marcas de dedos penitentes"},
-    "chifre_gelado": {"display_name":"Chifre gelado","zone_id":"cimeira","refinement":3,"trade_value":90,"visual":"segmento de chifre branco translúcido com geada dentro"},
-    "chifre_riscado": {"display_name":"Chifre riscado","zone_id":"fojo","refinement":3,"trade_value":75,"visual":"ponta de chifre cinzento marcada por sulcos de minério vermelho"},
-    "chifre_tempestade": {"display_name":"Chifre da tempestade","zone_id":"fulgor","refinement":3,"trade_value":105,"visual":"chifre queimado com veios que ainda faíscam a intervalos"},
-    "cinza_ossario": {"display_name":"Cinza de ossário","zone_id":"campas_cinzentas","refinement":1,"trade_value":25,"visual":"cinza fina cinzenta com pequenas lascas brancas de osso"},
-    "corda_espinhosa": {"display_name":"Corda espinhosa","zone_id":"selva_funda","refinement":2,"trade_value":35,"visual":"trança vegetal verde com espinhos virados todos para dentro"},
-    "corda_mina": {"display_name":"Corda de mina","zone_id":"fojo","refinement":1,"trade_value":25,"visual":"corda curta de cânhamo negro impregnada de pó de ferro"},
-    "couro_javali": {"display_name":"Couro de javali","zone_id":"brumal","refinement":2,"trade_value":30,"visual":"tira grossa de couro castanho com cerdas e rebites de ferro"},
-    "couro_seco": {"display_name":"Couro seco","zone_id":"fulgor","refinement":1,"trade_value":35,"visual":"couro pálido e rígido, atravessado por marcas ramificadas de raio"},
-    "craca_branca": {"display_name":"Craca branca","zone_id":"costa_quebrada","refinement":2,"trade_value":50,"visual":"concha calcária branca em estrela com sal cristalizado no centro"},
-    "esporo_lumen": {"display_name":"Esporo-lúmen","zone_id":"raizama","refinement":3,"trade_value":95,"visual":"bolsa azul que ilumina os dedos sempre que é comprimida"},
-    "ferro_bruto": {"display_name":"Ferro bruto","zone_id":"fojo","refinement":1,"trade_value":30,"visual":"nódulo angular de ferro escuro ainda preso a pedra vermelha"},
-    "ferro_ferrugento": {"display_name":"Ferro ferrugento","zone_id":"campas_cinzentas","refinement":1,"trade_value":20,"visual":"escama curva de ferro vermelho, húmida e quebradiça nas pontas"},
-    "flor_gelo": {"display_name":"Flor-de-gelo","zone_id":"cimeira","refinement":2,"trade_value":65,"visual":"seis pétalas transparentes que não derretem na mão"},
-    "fulgurite": {"display_name":"Fulgurite","zone_id":"fulgor","refinement":2,"trade_value":75,"visual":"tubo de vidro natural amarelo, ramificado como uma raiz"},
-    "lagrima_bruma": {"display_name":"Lágrima de bruma","zone_id":"raiz","refinement":3,"trade_value":120,"visual":"gota mineral violeta suspensa dentro de uma cápsula negra"},
-    "limalha_ferro": {"display_name":"Limalha de ferro","zone_id":"brumal","refinement":1,"trade_value":15,"visual":"punhado de aparas azuladas enroladas como pequenas molas"},
-    "lodo_mortuorio": {"display_name":"Lodo mortuório","zone_id":"campas_cinzentas","refinement":2,"trade_value":40,"visual":"pasta cinzenta espessa guardada num pano funerário atado"},
-    "madeira_bau_antiga": {"display_name":"Madeira de baú antiga","zone_id":"fojo","refinement":2,"trade_value":45,"visual":"lasca de carvalho escuro com dentes marcados do lado interior"},
-    "madeira_cogumelo": {"display_name":"Madeira-cogumelo","zone_id":"raizama","refinement":1,"trade_value":45,"visual":"talo lenhoso violeta, flexível e coberto por anéis de crescimento"},
-    "madeira_encharcada": {"display_name":"Madeira encharcada","zone_id":"campas_cinzentas","refinement":1,"trade_value":20,"visual":"ripa negra que larga água turva quando é apertada"},
-    "madeira_naufragio": {"display_name":"Madeira de naufrágio","zone_id":"costa_quebrada","refinement":1,"trade_value":30,"visual":"tábua salgada com tinta azul e um prego de bronze torto"},
-    "marmore_afogado": {"display_name":"Mármore afogado","zone_id":"cidade_afogada","refinement":2,"trade_value":80,"visual":"fragmento branco polido pela água, coberto por linhas verdes"},
-    "membrana_mare": {"display_name":"Membrana de maré","zone_id":"costa_quebrada","refinement":3,"trade_value":75,"visual":"pele azul translúcida que contrai ao ouvir água em movimento"},
-    "obsidiana": {"display_name":"Obsidiana","zone_id":"fornalha","refinement":3,"trade_value":85,"visual":"lâmina natural negra com reflexos vermelhos nas arestas"},
-    "osso_antigo": {"display_name":"Osso antigo","zone_id":"campas_cinzentas","refinement":2,"trade_value":35,"visual":"falange amarela coberta por inscrições quase gastas"},
-    "ouro_baco": {"display_name":"Ouro baço","zone_id":"santuario_branco","refinement":3,"trade_value":110,"visual":"folha de ouro sem brilho, dobrada em forma de língua"},
-    "pena_cimeira": {"display_name":"Pena da Cimeira","zone_id":"cimeira","refinement":1,"trade_value":40,"visual":"pena branca comprida com o eixo azul e a ponta congelada"},
-    "pena_tempestade": {"display_name":"Pena de tempestade","zone_id":"costa_quebrada","refinement":3,"trade_value":70,"visual":"pena cinzenta que se vira sozinha contra qualquer corrente de ar"},
-    "prata_afogada": {"display_name":"Prata afogada","zone_id":"cidade_afogada","refinement":3,"trade_value":105,"visual":"moeda de prata verde que mostra ondas apesar de estar imóvel"},
-    "prata_baca": {"display_name":"Prata baça","zone_id":"raiz","refinement":2,"trade_value":95,"visual":"aro de prata sem reflexo, frio apenas do lado interior"},
-    "quitina_verde": {"display_name":"Quitina verde","zone_id":"selva_funda","refinement":3,"trade_value":55,"visual":"placa curva verde com pontos negros e borda serrada"},
-    "seda_crua": {"display_name":"Seda crua","zone_id":"selva_funda","refinement":1,"trade_value":25,"visual":"novelo bege irregular que adere à pele sem deixar resíduo"},
-    "seda_teia": {"display_name":"Seda de teia","zone_id":"raizama","refinement":2,"trade_value":65,"visual":"fio azul enrolado num osso de fungo e luminoso nas pontas"},
-    "seiva_peconha": {"display_name":"Seiva peçonhenta","zone_id":"selva_funda","refinement":2,"trade_value":40,"visual":"ampola verde com duas camadas que nunca se misturam"},
-    "vidro_afogado": {"display_name":"Vidro afogado","zone_id":"cidade_afogada","refinement":1,"trade_value":55,"visual":"triângulo de vidro verde com bolhas de água presas dentro"},
-    "vime_trancado": {"display_name":"Vime trançado","zone_id":"selva_funda","refinement":1,"trade_value":20,"visual":"pequeno nó de vime húmido que não se consegue desfazer"}
+    "bile_fatua": {
+      "display_name": "Bile fatua",
+      "zone_id": "campas_cinzentas",
+      "refinement": 2,
+      "trade_value": 45,
+      "visual": "frasco de bile azul opaca com uma chama fria presa no fundo"
+    },
+    "bronze_fundido": {
+      "display_name": "Bronze fundido",
+      "zone_id": "fornalha",
+      "refinement": 2,
+      "trade_value": 55,
+      "visual": "gota de bronze solidificada, negra fora e laranja nas fissuras"
+    },
+    "bronze_mar": {
+      "display_name": "Bronze-do-mar",
+      "zone_id": "costa_quebrada",
+      "refinement": 2,
+      "trade_value": 50,
+      "visual": "placa de bronze verde, comida pelo sal e furada por cracas"
+    },
+    "cera_benta": {
+      "display_name": "Cera benta",
+      "zone_id": "santuario_branco",
+      "refinement": 2,
+      "trade_value": 70,
+      "visual": "lacre branco com um fio dourado e marcas de dedos penitentes"
+    },
+    "chifre_gelado": {
+      "display_name": "Chifre gelado",
+      "zone_id": "cimeira",
+      "refinement": 3,
+      "trade_value": 90,
+      "visual": "segmento de chifre branco translúcido com geada dentro"
+    },
+    "chifre_riscado": {
+      "display_name": "Chifre riscado",
+      "zone_id": "fojo",
+      "refinement": 3,
+      "trade_value": 75,
+      "visual": "ponta de chifre cinzento marcada por sulcos de minério vermelho"
+    },
+    "chifre_tempestade": {
+      "display_name": "Chifre da tempestade",
+      "zone_id": "fulgor",
+      "refinement": 3,
+      "trade_value": 105,
+      "visual": "chifre queimado com veios que ainda faíscam a intervalos"
+    },
+    "cinza_ossario": {
+      "display_name": "Cinza de ossário",
+      "zone_id": "campas_cinzentas",
+      "refinement": 1,
+      "trade_value": 25,
+      "visual": "cinza fina cinzenta com pequenas lascas brancas de osso"
+    },
+    "corda_espinhosa": {
+      "display_name": "Corda espinhosa",
+      "zone_id": "selva_funda",
+      "refinement": 2,
+      "trade_value": 35,
+      "visual": "trança vegetal verde com espinhos virados todos para dentro"
+    },
+    "corda_mina": {
+      "display_name": "Corda de mina",
+      "zone_id": "fojo",
+      "refinement": 1,
+      "trade_value": 25,
+      "visual": "corda curta de cânhamo negro impregnada de pó de ferro"
+    },
+    "couro_javali": {
+      "display_name": "Couro de javali",
+      "zone_id": "brumal",
+      "refinement": 2,
+      "trade_value": 30,
+      "visual": "tira grossa de couro castanho com cerdas e rebites de ferro"
+    },
+    "couro_seco": {
+      "display_name": "Couro seco",
+      "zone_id": "fulgor",
+      "refinement": 1,
+      "trade_value": 35,
+      "visual": "couro pálido e rígido, atravessado por marcas ramificadas de raio"
+    },
+    "craca_branca": {
+      "display_name": "Craca branca",
+      "zone_id": "costa_quebrada",
+      "refinement": 2,
+      "trade_value": 50,
+      "visual": "concha calcária branca em estrela com sal cristalizado no centro"
+    },
+    "esporo_lumen": {
+      "display_name": "Esporo-lúmen",
+      "zone_id": "raizama",
+      "refinement": 3,
+      "trade_value": 95,
+      "visual": "bolsa azul que ilumina os dedos sempre que é comprimida"
+    },
+    "ferro_bruto": {
+      "display_name": "Ferro bruto",
+      "zone_id": "fojo",
+      "refinement": 1,
+      "trade_value": 30,
+      "visual": "nódulo angular de ferro escuro ainda preso a pedra vermelha"
+    },
+    "ferro_ferrugento": {
+      "display_name": "Ferro ferrugento",
+      "zone_id": "campas_cinzentas",
+      "refinement": 1,
+      "trade_value": 20,
+      "visual": "escama curva de ferro vermelho, húmida e quebradiça nas pontas"
+    },
+    "flor_gelo": {
+      "display_name": "Flor-de-gelo",
+      "zone_id": "cimeira",
+      "refinement": 2,
+      "trade_value": 65,
+      "visual": "seis pétalas transparentes que não derretem na mão"
+    },
+    "fulgurite": {
+      "display_name": "Fulgurite",
+      "zone_id": "fulgor",
+      "refinement": 2,
+      "trade_value": 75,
+      "visual": "tubo de vidro natural amarelo, ramificado como uma raiz"
+    },
+    "lagrima_bruma": {
+      "display_name": "Lágrima de bruma",
+      "zone_id": "raiz",
+      "refinement": 3,
+      "trade_value": 120,
+      "visual": "gota mineral violeta suspensa dentro de uma cápsula negra"
+    },
+    "limalha_ferro": {
+      "display_name": "Limalha de ferro",
+      "zone_id": "brumal",
+      "refinement": 1,
+      "trade_value": 15,
+      "visual": "punhado de aparas azuladas enroladas como pequenas molas"
+    },
+    "lodo_mortuorio": {
+      "display_name": "Lodo mortuório",
+      "zone_id": "campas_cinzentas",
+      "refinement": 2,
+      "trade_value": 40,
+      "visual": "pasta cinzenta espessa guardada num pano funerário atado"
+    },
+    "madeira_bau_antiga": {
+      "display_name": "Madeira de baú antiga",
+      "zone_id": "fojo",
+      "refinement": 2,
+      "trade_value": 45,
+      "visual": "lasca de carvalho escuro com dentes marcados do lado interior"
+    },
+    "madeira_cogumelo": {
+      "display_name": "Madeira-cogumelo",
+      "zone_id": "raizama",
+      "refinement": 1,
+      "trade_value": 45,
+      "visual": "talo lenhoso violeta, flexível e coberto por anéis de crescimento"
+    },
+    "madeira_encharcada": {
+      "display_name": "Madeira encharcada",
+      "zone_id": "campas_cinzentas",
+      "refinement": 1,
+      "trade_value": 20,
+      "visual": "ripa negra que larga água turva quando é apertada"
+    },
+    "madeira_naufragio": {
+      "display_name": "Madeira de naufrágio",
+      "zone_id": "costa_quebrada",
+      "refinement": 1,
+      "trade_value": 30,
+      "visual": "tábua salgada com tinta azul e um prego de bronze torto"
+    },
+    "marmore_afogado": {
+      "display_name": "Mármore afogado",
+      "zone_id": "cidade_afogada",
+      "refinement": 2,
+      "trade_value": 80,
+      "visual": "fragmento branco polido pela água, coberto por linhas verdes"
+    },
+    "membrana_mare": {
+      "display_name": "Membrana de maré",
+      "zone_id": "costa_quebrada",
+      "refinement": 3,
+      "trade_value": 75,
+      "visual": "pele azul translúcida que contrai ao ouvir água em movimento"
+    },
+    "obsidiana": {
+      "display_name": "Obsidiana",
+      "zone_id": "fornalha",
+      "refinement": 3,
+      "trade_value": 85,
+      "visual": "lâmina natural negra com reflexos vermelhos nas arestas"
+    },
+    "osso_antigo": {
+      "display_name": "Osso antigo",
+      "zone_id": "campas_cinzentas",
+      "refinement": 2,
+      "trade_value": 35,
+      "visual": "falange amarela coberta por inscrições quase gastas"
+    },
+    "ouro_baco": {
+      "display_name": "Ouro baço",
+      "zone_id": "santuario_branco",
+      "refinement": 3,
+      "trade_value": 110,
+      "visual": "folha de ouro sem brilho, dobrada em forma de língua"
+    },
+    "pena_cimeira": {
+      "display_name": "Pena da Cimeira",
+      "zone_id": "cimeira",
+      "refinement": 1,
+      "trade_value": 40,
+      "visual": "pena branca comprida com o eixo azul e a ponta congelada"
+    },
+    "pena_tempestade": {
+      "display_name": "Pena de tempestade",
+      "zone_id": "costa_quebrada",
+      "refinement": 3,
+      "trade_value": 70,
+      "visual": "pena cinzenta que se vira sozinha contra qualquer corrente de ar"
+    },
+    "prata_afogada": {
+      "display_name": "Prata afogada",
+      "zone_id": "cidade_afogada",
+      "refinement": 3,
+      "trade_value": 105,
+      "visual": "moeda de prata verde que mostra ondas apesar de estar imóvel"
+    },
+    "prata_baca": {
+      "display_name": "Prata baça",
+      "zone_id": "raiz",
+      "refinement": 2,
+      "trade_value": 95,
+      "visual": "aro de prata sem reflexo, frio apenas do lado interior"
+    },
+    "quitina_verde": {
+      "display_name": "Quitina verde",
+      "zone_id": "selva_funda",
+      "refinement": 3,
+      "trade_value": 55,
+      "visual": "placa curva verde com pontos negros e borda serrada"
+    },
+    "seda_crua": {
+      "display_name": "Seda crua",
+      "zone_id": "selva_funda",
+      "refinement": 1,
+      "trade_value": 25,
+      "visual": "novelo bege irregular que adere à pele sem deixar resíduo"
+    },
+    "seda_teia": {
+      "display_name": "Seda de teia",
+      "zone_id": "raizama",
+      "refinement": 2,
+      "trade_value": 65,
+      "visual": "fio azul enrolado num osso de fungo e luminoso nas pontas"
+    },
+    "seiva_peconha": {
+      "display_name": "Seiva peçonhenta",
+      "zone_id": "selva_funda",
+      "refinement": 2,
+      "trade_value": 40,
+      "visual": "ampola verde com duas camadas que nunca se misturam"
+    },
+    "vidro_afogado": {
+      "display_name": "Vidro afogado",
+      "zone_id": "cidade_afogada",
+      "refinement": 1,
+      "trade_value": 55,
+      "visual": "triângulo de vidro verde com bolhas de água presas dentro"
+    },
+    "vime_trancado": {
+      "display_name": "Vime trançado",
+      "zone_id": "selva_funda",
+      "refinement": 1,
+      "trade_value": 20,
+      "visual": "pequeno nó de vime húmido que não se consegue desfazer"
+    }
   },
   "consumables": {
-    "agua_lustral": {"display_name":"Água lustral","max_stack":20,"use_seconds":1.2,"effect":{"clear_status_meters":["veneno","sangramento","queimadura"]},"visual":"frasco branco cuja água sobe pelas paredes","sound":"um sino de vidro curto"},
-    "antidoto_selva": {"display_name":"Antídoto da selva","max_stack":20,"use_seconds":1.0,"effect":{"clear_status_meters":["veneno"],"veneno_buildup_multiplier":0.50,"duration_seconds":20},"visual":"folha enrolada à volta de uma ampola verde","sound":"folhas esmagadas e uma expiração"},
-    "bomba_bruma": {"display_name":"Bomba de bruma","max_stack":10,"use_seconds":0.5,"effect":{"cloud_radius_m":4.0,"duration_seconds":6,"breaks_non_boss_tracking":true},"visual":"esfera de barro azul com pavio de junco","sound":"estalo seco seguido de sopro grave"},
-    "lanterna_raiz": {"display_name":"Lanterna da Raiz","max_stack":5,"use_seconds":0.8,"effect":{"light_radius_m":8.0,"duration_seconds":90,"reveals_hidden_ink":true},"visual":"cápsula violeta presa numa armação de prata baça","sound":"cristal grave a acender"},
-    "musgo_seco": {"display_name":"Musgo seco","max_stack":20,"use_seconds":1.0,"effect":{"clear_status_meters":["sangramento"],"sangramento_buildup_multiplier":0.50,"duration_seconds":20},"visual":"tufo castanho atado com fio funerário","sound":"fibra seca a rasgar"},
-    "oleo_condutor": {"display_name":"Óleo condutor","max_stack":10,"use_seconds":1.1,"effect":{"weapon_coating":"raio","hits":5,"status_buildup_per_hit":12},"visual":"frasco verde com limalha a formar relâmpagos","sound":"crepitação fina no gume"},
-    "oleo_salino": {"display_name":"Óleo salino","max_stack":10,"use_seconds":1.1,"effect":{"weapon_coating":"sal","hits":5,"damage_multiplier_vs_submersos":1.15},"visual":"óleo azul leitoso com cristais de sal suspensos","sound":"maré curta sobre metal"},
-    "pedra_raio": {"display_name":"Pedra-raio","max_stack":10,"use_seconds":0.6,"effect":{"thrown_range_m":12,"impact_radius_m":2.0,"posture_damage":20,"interrupts_traps":true},"visual":"seixo de fulgurite enrolado em corda de mina","sound":"estalido agudo no impacto"},
-    "po_terra": {"display_name":"Pó de terra","max_stack":20,"use_seconds":0.9,"effect":{"raio_damage_multiplier":0.70,"duration_seconds":20,"disables_water_sprint":true},"visual":"saqueta de terra negra marcada por um chifre","sound":"pó pesado espalhado na armadura"},
-    "resina_bruma": {"display_name":"Resina de bruma","max_stack":10,"use_seconds":1.1,"effect":{"weapon_coating":"bruma","hits":5,"enemy_reacquisition_delay_seconds":0.35},"visual":"resina azul-cinza que solta fumo frio no gume","sound":"chiado húmido sobre metal"},
-    "sal_gelo": {"display_name":"Sal de gelo","max_stack":20,"use_seconds":0.9,"effect":{"queimadura_buildup_multiplier":0.50,"duration_seconds":20,"clear_status_meters":["queimadura"]},"visual":"saqueta branca com cristais azuis afiados","sound":"gelo partido contra pano"},
-    "sal_seco": {"display_name":"Sal seco","max_stack":20,"use_seconds":0.8,"effect":{"water_slow_multiplier":0.70,"duration_seconds":30},"visual":"cone de sal cinzento embrulhado em rede","sound":"grãos grossos sob as botas"},
-    "solvente_teia": {"display_name":"Solvente de teia","max_stack":20,"use_seconds":0.7,"effect":{"clears_restraint":true,"restraint_buildup_multiplier":0.50,"duration_seconds":20},"visual":"ampola âmbar com tampa de quitina verde","sound":"seda a dissolver num sopro"},
-    "tocha_esporo": {"display_name":"Tocha de esporo","max_stack":10,"use_seconds":0.8,"effect":{"light_radius_m":6.0,"duration_seconds":45,"repels_spore_clouds_radius_m":2.0},"visual":"caule azul preso a uma pega de madeira-cogumelo","sound":"esporos a crepitar como chuva"},
-    "veu_sombra": {"display_name":"Véu de sombra","max_stack":10,"use_seconds":1.0,"effect":{"enemy_detection_range_multiplier":0.65,"ends_on_attack":true,"maximum_duration_seconds":30},"visual":"tira de seda negra que apaga o contorno do rosto","sound":"coro distante abafado por pano"}
+    "agua_lustral": {
+      "display_name": "Água lustral",
+      "max_stack": 20,
+      "use_seconds": 1.2,
+      "effect": {
+        "clear_status_meters": [
+          "veneno",
+          "sangramento",
+          "queimadura"
+        ]
+      },
+      "visual": "frasco branco cuja água sobe pelas paredes",
+      "sound": "um sino de vidro curto"
+    },
+    "antidoto_selva": {
+      "display_name": "Antídoto da selva",
+      "max_stack": 20,
+      "use_seconds": 1.0,
+      "effect": {
+        "clear_status_meters": [
+          "veneno"
+        ],
+        "veneno_buildup_multiplier": 0.5,
+        "duration_seconds": 20
+      },
+      "visual": "folha enrolada à volta de uma ampola verde",
+      "sound": "folhas esmagadas e uma expiração"
+    },
+    "bomba_bruma": {
+      "display_name": "Bomba de bruma",
+      "max_stack": 10,
+      "use_seconds": 0.5,
+      "effect": {
+        "cloud_radius_m": 4.0,
+        "duration_seconds": 6,
+        "breaks_non_boss_tracking": true
+      },
+      "visual": "esfera de barro azul com pavio de junco",
+      "sound": "estalo seco seguido de sopro grave"
+    },
+    "lanterna_raiz": {
+      "display_name": "Lanterna da Raiz",
+      "max_stack": 5,
+      "use_seconds": 0.8,
+      "effect": {
+        "light_radius_m": 8.0,
+        "duration_seconds": 90,
+        "reveals_hidden_ink": true
+      },
+      "visual": "cápsula violeta presa numa armação de prata baça",
+      "sound": "cristal grave a acender"
+    },
+    "musgo_seco": {
+      "display_name": "Musgo seco",
+      "max_stack": 20,
+      "use_seconds": 1.0,
+      "effect": {
+        "clear_status_meters": [
+          "sangramento"
+        ],
+        "sangramento_buildup_multiplier": 0.5,
+        "duration_seconds": 20
+      },
+      "visual": "tufo castanho atado com fio funerário",
+      "sound": "fibra seca a rasgar"
+    },
+    "oleo_condutor": {
+      "display_name": "Óleo condutor",
+      "max_stack": 10,
+      "use_seconds": 1.1,
+      "effect": {
+        "weapon_coating": "raio",
+        "hits": 5,
+        "status_buildup_per_hit": 12
+      },
+      "visual": "frasco verde com limalha a formar relâmpagos",
+      "sound": "crepitação fina no gume"
+    },
+    "oleo_salino": {
+      "display_name": "Óleo salino",
+      "max_stack": 10,
+      "use_seconds": 1.1,
+      "effect": {
+        "weapon_coating": "sal",
+        "hits": 5,
+        "damage_multiplier_vs_submersos": 1.15
+      },
+      "visual": "óleo azul leitoso com cristais de sal suspensos",
+      "sound": "maré curta sobre metal"
+    },
+    "pedra_raio": {
+      "display_name": "Pedra-raio",
+      "max_stack": 10,
+      "use_seconds": 0.6,
+      "effect": {
+        "thrown_range_m": 12,
+        "impact_radius_m": 2.0,
+        "posture_damage": 20,
+        "interrupts_traps": true
+      },
+      "visual": "seixo de fulgurite enrolado em corda de mina",
+      "sound": "estalido agudo no impacto"
+    },
+    "po_terra": {
+      "display_name": "Pó de terra",
+      "max_stack": 20,
+      "use_seconds": 0.9,
+      "effect": {
+        "raio_damage_multiplier": 0.7,
+        "duration_seconds": 20,
+        "disables_water_sprint": true
+      },
+      "visual": "saqueta de terra negra marcada por um chifre",
+      "sound": "pó pesado espalhado na armadura"
+    },
+    "resina_bruma": {
+      "display_name": "Resina de bruma",
+      "max_stack": 10,
+      "use_seconds": 1.1,
+      "effect": {
+        "weapon_coating": "bruma",
+        "hits": 5,
+        "enemy_reacquisition_delay_seconds": 0.35
+      },
+      "visual": "resina azul-cinza que solta fumo frio no gume",
+      "sound": "chiado húmido sobre metal"
+    },
+    "sal_gelo": {
+      "display_name": "Sal de gelo",
+      "max_stack": 20,
+      "use_seconds": 0.9,
+      "effect": {
+        "queimadura_buildup_multiplier": 0.5,
+        "duration_seconds": 20,
+        "clear_status_meters": [
+          "queimadura"
+        ]
+      },
+      "visual": "saqueta branca com cristais azuis afiados",
+      "sound": "gelo partido contra pano"
+    },
+    "sal_seco": {
+      "display_name": "Sal seco",
+      "max_stack": 20,
+      "use_seconds": 0.8,
+      "effect": {
+        "water_slow_multiplier": 0.7,
+        "duration_seconds": 30
+      },
+      "visual": "cone de sal cinzento embrulhado em rede",
+      "sound": "grãos grossos sob as botas"
+    },
+    "solvente_teia": {
+      "display_name": "Solvente de teia",
+      "max_stack": 20,
+      "use_seconds": 0.7,
+      "effect": {
+        "clears_restraint": true,
+        "restraint_buildup_multiplier": 0.5,
+        "duration_seconds": 20
+      },
+      "visual": "ampola âmbar com tampa de quitina verde",
+      "sound": "seda a dissolver num sopro"
+    },
+    "tocha_esporo": {
+      "display_name": "Tocha de esporo",
+      "max_stack": 10,
+      "use_seconds": 0.8,
+      "effect": {
+        "light_radius_m": 6.0,
+        "duration_seconds": 45,
+        "repels_spore_clouds_radius_m": 2.0
+      },
+      "visual": "caule azul preso a uma pega de madeira-cogumelo",
+      "sound": "esporos a crepitar como chuva"
+    },
+    "veu_sombra": {
+      "display_name": "Véu de sombra",
+      "max_stack": 10,
+      "use_seconds": 1.0,
+      "effect": {
+        "enemy_detection_range_multiplier": 0.65,
+        "ends_on_attack": true,
+        "maximum_duration_seconds": 30
+      },
+      "visual": "tira de seda negra que apaga o contorno do rosto",
+      "sound": "coro distante abafado por pano"
+    }
   },
-  "aliases": {"véu_sombra":"veu_sombra"}
+  "aliases": {
+    "véu_sombra": "veu_sombra"
+  }
 }

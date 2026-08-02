@@ -37,6 +37,8 @@
     "broken_posture_duration": 2.0,
     "riposte_mv": 2.5,
     "riposte_duration": 0.9,
+    "riposte_range_m": 2.6,
+    "riposte_half_angle_degrees": 70.0,
     "riposte_has_iframes": true,
     "weapons_that_parry": ["dagger", "shield"],
     "_nota": "133 ms de compromisso antes da janela, 133 ms activa e 667 ms de recuperacao. Falhar ocupa 56 frames; nao escala com nada."
@@ -62,7 +64,8 @@
     "blow_weight_light": 1.0,
     "blow_weight_heavy": 1.8,
     "regen_while_blocking": 10.0,
-    "guard_break_duration": 1.5
+    "guard_break_duration": 1.5,
+    "front_half_angle_degrees": 100.0
   },
 
   "stamina": {
@@ -83,6 +86,7 @@
   "poise": {
     "player_poise": 0.0,
     "posture_damage_per_mv": 10.0,
+    "standard_posture_multiplier": 1.0,
     "shield_bash_posture_multiplier": 2.0,
     "stagger_duration": 1.2,
     "_nota": "Jogador: poise zero por defeito. Excepcoes: i-frames (esquiva, riposte) e hiper-armadura (pesado do machadao, Egide)."

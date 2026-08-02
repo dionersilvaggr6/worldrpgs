@@ -27,31 +27,52 @@ if not defined GODOT (
 set FALHOU=0
 
 echo.
-echo == 1/7  auto-teste principal (contra a spec e os catalogos) ==
+echo == 1/9  auto-teste principal (contra a spec e os catalogos) ==
 "%GODOT%" --headless --audio-driver Dummy --path . scenes/selftest.tscn || set FALHOU=1
 
 echo.
-echo == 2/7  audio e icones das familias de armas ==
+echo == 2/9  audio e icones das familias de armas ==
 "%GODOT%" --headless --audio-driver Dummy --path . --script src/audio/delivery_self_test.gd || set FALHOU=1
 
 echo.
-echo == 3/7  abertura jogavel ==
+echo == 3/9  abertura jogavel ==
 "%GODOT%" --headless --audio-driver Dummy --path . --script src/ui/intro_selftest.gd || set FALHOU=1
 
 echo.
-echo == 4/7  arranque real: criar personagem e entrar no jogo ==
+echo == 4/9  arranque real: criar personagem e entrar no jogo ==
 "%GODOT%" --headless --audio-driver Dummy --path . scenes/repro-inicio.tscn || set FALHOU=1
 
 echo.
-echo == 5/7  melhorias de armas ==
+echo == 5/9  descanso real na fogueira (save isolado) ==
+set "ORIGINAL_APPDATA=%APPDATA%"
+set "ORIGINAL_WORLDRPGS_TEST_USER_ROOT=%WORLDRPGS_TEST_USER_ROOT%"
+set "BONFIRE_TEST_PARENT=%TEMP%\worldrpgs-verificar"
+for %%I in ("!BONFIRE_TEST_PARENT!") do set "BONFIRE_TEST_PARENT=%%~fI"
+set "BONFIRE_TEST_APPDATA=!BONFIRE_TEST_PARENT!\bonfire-!RANDOM!-!RANDOM!"
+2>nul md "!BONFIRE_TEST_APPDATA!"
+if errorlevel 1 (
+  echo Nao foi possivel criar o APPDATA temporario da prova da fogueira.
+  set FALHOU=1
+) else (
+  set "APPDATA=!BONFIRE_TEST_APPDATA!"
+  set "WORLDRPGS_TEST_USER_ROOT=!BONFIRE_TEST_APPDATA!"
+  "%GODOT%" --headless --audio-driver Dummy --path . src/progression/bonfire_gameplay_repro.tscn || set FALHOU=1
+  set "APPDATA=!ORIGINAL_APPDATA!"
+  set "WORLDRPGS_TEST_USER_ROOT=!ORIGINAL_WORLDRPGS_TEST_USER_ROOT!"
+  if exist "!BONFIRE_TEST_APPDATA!\" rd /s /q "!BONFIRE_TEST_APPDATA!"
+  2>nul rd "!BONFIRE_TEST_PARENT!"
+)
+
+echo.
+echo == 6/9  melhorias de armas ==
 "%GODOT%" --headless --audio-driver Dummy --path . --script src/weapons/weapon_progression_selftest.gd || set FALHOU=1
 
 echo.
-echo == 6/7  camada de rede (protocolo, interpolacao, latencia) ==
+echo == 7/9  camada de rede (protocolo, interpolacao, latencia) ==
 "%GODOT%" --headless --audio-driver Dummy --path . --script src/net/net_selftest.gd || set FALHOU=1
 
 echo.
-echo == 7/7  guarda da spec (precisa de node) ==
+echo == 8/8  guarda da spec (precisa de node) ==
 pushd ..
 node tools/check-coerencia.mjs || set FALHOU=1
 popd

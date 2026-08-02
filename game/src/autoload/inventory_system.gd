@@ -135,6 +135,55 @@ func filtered_entries(filter_name: String, state := {}) -> Array[Dictionary]:
 	return result
 
 
+## Fronteira pura usada por recolhas e transaccoes compostas. A mochila nao
+## tem capacidade maxima; a unica recusa e um ID inexistente ou quantidade
+## invalida. Feiticos entram na lista canonica em vez de fingirem uma pilha.
+func add_item_to_state(state: Dictionary, item_key: String, count := 1) -> Dictionary:
+	if state.is_empty() or count <= 0:
+		return {"ok": false, "message": "Recolha invalida."}
+	if not _catalog_has_item(item_key):
+		return {"ok": false, "message": "Objecto desconhecido."}
+	normalise_state(state)
+	var entry := describe_item(item_key, count, state)
+	if entry.is_empty():
+		return {"ok": false, "message": "Objecto desconhecido."}
+	var character: Dictionary = state.get("character", {}) as Dictionary
+	if item_key.begins_with("magia:"):
+		var progression: Dictionary = character.get("progression", {}) as Dictionary
+		var known: Array = (progression.get("known_spells", []) as Array).duplicate()
+		var spell_id := item_key.trim_prefix("magia:")
+		if not known.has(spell_id):
+			known.append(spell_id)
+		progression["known_spells"] = known
+		character["progression"] = progression
+		state["character"] = character
+		return {"ok": true, "key": item_key, "count": 1, "total": 1,
+			"message": "%s aprendido." % String(entry.get("name", spell_id))}
+	var inventory: Dictionary = character.get("inventory", {}) as Dictionary
+	var items: Dictionary = inventory.get("items", {}) as Dictionary
+	var total := int(items.get(item_key, 0)) + count
+	items[item_key] = total
+	inventory["items"] = items
+	character["inventory"] = inventory
+	state["character"] = character
+	return {"ok": true, "key": item_key, "count": count, "total": total,
+		"message": "%s x%d recolhido." % [String(entry.get("name", item_key)), count]}
+
+
+## Acrescenta e grava uma recolha real. O chamador recebe falha se o save nao
+## for publicado; nesse caso `_commit` devolve exactamente ao snapshot anterior.
+func add_item(item_key: String, count := 1) -> Dictionary:
+	var before := GameData.save_state_snapshot()
+	var working := before.duplicate(true)
+	var result := add_item_to_state(working, item_key, count)
+	if not bool(result.get("ok", false)):
+		return result
+	var committed := _commit(before, working, String(result.get("message", "Objecto recolhido.")))
+	for key: String in ["key", "count", "total"]:
+		committed[key] = result.get(key)
+	return committed
+
+
 ## Descreve as quatro leituras simultaneas da caixa. Equipamento e favoritos
 ## continuam a ser as autoridades; a UI nao mantem uma segunda mochila.
 func quick_slot_snapshot(state := {}, runtime_player: Node = null) -> Array[Dictionary]:
@@ -524,6 +573,29 @@ func _armor_data(item_id: String) -> Dictionary:
 
 func _armor_slot(item_id: String) -> String:
 	return String(_armor_data(item_id).get("slot", ""))
+
+
+func _catalog_has_item(item_key: String) -> bool:
+	var parts := item_key.split(":", false, 1)
+	if parts.size() != 2:
+		return false
+	var item_id := String(parts[1])
+	match String(parts[0]):
+		"arma":
+			return not GameData.equipment_weapon(item_id).is_empty() \
+				or not GameData.weapon(item_id).is_empty()
+		"armadura":
+			return not _armor_data(item_id).is_empty()
+		"anel":
+			return not GameData.ring(item_id).is_empty()
+		"magia":
+			return not GameData.spell(item_id).is_empty()
+		"material":
+			return not GameData.material(item_id).is_empty()
+		"consumivel":
+			return item_key == FLASK_ITEM_KEY \
+				or not GameData.consumable(item_id).is_empty()
+	return false
 
 
 func _commit(before: Dictionary, working: Dictionary, message: String) -> Dictionary:

@@ -55,6 +55,13 @@ func _run() -> void:
 	_check(actions.has("next_spell") and actions.has("loadout_prev") \
 		and actions.has("loadout_next") and actions.has("use_item"),
 		"controlos: a caixa referencia apenas accoes declaradas nos dados")
+	var hotbar_actions: Array[String] = []
+	for action_value: Variant in actions.keys():
+		var action := String(action_value)
+		if action.begins_with("hotbar_"):
+			hotbar_actions.append(action)
+	_check(not hotbar_actions.is_empty(),
+		"controlos: seleccao de consumivel nasce das accoes hotbar do catalogo")
 	var ui_source := FileAccess.get_file_as_string("res://src/ui/quick_slots.gd")
 	_check(not ui_source.contains("Engine.time_scale =") \
 		and not ui_source.contains("get_tree().paused ="),
@@ -69,6 +76,16 @@ func _run() -> void:
 	QuickSlotsModelScript.normalise_state(unequipped_state, weapons, default_spells)
 	_check(unequipped_equipment.get("main") == null,
 		"migracao: nao volta a equipar uma arma desequipada deliberadamente")
+	var positional_state := _empty_save("warrior", default_spells)
+	var positional_inventory: Dictionary = ((positional_state.get(
+		"character", {}) as Dictionary).get("inventory", {}) as Dictionary)
+	positional_inventory["quick_slots"] = ["", "bomba_bruma", "bomba_bruma"]
+	QuickSlotsModelScript.normalise_state(positional_state, weapons, default_spells)
+	var positional: Array = positional_inventory.get("quick_slots", []) as Array
+	_check(positional == ["", "consumivel:bomba_bruma", ""],
+		"migracao: preserva indices, completa chaves antigas e limpa duplicados")
+	_check(String(QuickSlotsModelScript.slot_keys(positional_state).get("item", "x")) == "",
+		"caixa: uma primeira ranhura vazia nao bebe o item de outra posicao")
 
 	print("QUICK_SLOTS_SELF_TEST %d passed, %d failed" % [_passed, _failed])
 	quit(0 if _failed == 0 else 1)

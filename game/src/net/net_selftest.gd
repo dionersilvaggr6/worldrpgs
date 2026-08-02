@@ -7,10 +7,10 @@ extends SceneTree
 ##
 ## O QUE ISTO TESTA E O QUE NAO TESTA, dito a serio:
 ##   testa   — o formato do fio, o orcamento de bytes, a interpolacao, a
-##             tolerancia do parry, e as regras de autoridade
-##   NAO testa — duas maquinas reais a ligar-se. Isso mede-se a jogar, e o
-##             numero que interessa (latencia entre as duas casas) so existe
-##             quando as duas casas existirem.
+##             tolerancia do parry, e dois processos do jogo real na mesma
+##             maquina a hospedar/entrar/mostrar/mover os dois corpos
+##   NAO testa — duas maquinas em casas diferentes. A porta/VPN e a latencia
+##             entre as duas casas so existem quando essas casas participarem.
 
 var _passed := 0
 var _failed := 0
@@ -23,6 +23,7 @@ func _init() -> void:
 	_test_interpolation()
 	_test_parry_tolerance()
 	_test_link_quality()
+	_test_gameplay_two_processes()
 	_report()
 
 
@@ -160,6 +161,28 @@ func _test_link_quality() -> void:
 	# Silencio longo = ligacao perdida, nao um jogo a fingir que esta bem.
 	_check(q.quality(t + NetProtocol.STALL_GIVE_UP_S + 1.0) == NetLinkQuality.Quality.PERDIDA,
 		"silencio acima de 10 s conta como perdida")
+
+
+# --- A prova que arranca o jogo ----------------------------------------------
+
+func _test_gameplay_two_processes() -> void:
+	var output: Array = []
+	var args := PackedStringArray([
+		"--headless", "--audio-driver", "Dummy",
+		"--path", ProjectSettings.globalize_path("res://"),
+		"res://src/coop/coop_online_gameplay_proof.tscn",
+	])
+	var exit_code := OS.execute(OS.get_executable_path(), args, output, true)
+	if not output.is_empty():
+		var child_output := String(output[0]).strip_edges()
+		for line: String in child_output.split("\n", false):
+			if line.begins_with("=== CO-OP") or line.begins_with("PASS:") \
+					or line.begins_with("anfitriao:") \
+					or line.begins_with("convidado:") \
+					or line.begins_with("saves:"):
+				print("  " + line)
+	_check(exit_code == 0,
+		"jogo real: F3, Hospedar/Entrar, duas origens, dois corpos e movimento remoto")
 
 
 func _report() -> void:

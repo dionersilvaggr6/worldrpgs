@@ -135,6 +135,7 @@ func ui_text(id: String, fallback: String = "") -> String:
 ## utilizadores sem apagar a pose, o som ou a ancora propria de cada golpe.
 func _expand_enemy_catalog() -> void:
 	var templates: Dictionary = enemies.get("_attack_templates", {}) as Dictionary
+	var attack_defaults: Dictionary = enemies.get("_attack_defaults", {}) as Dictionary
 	var defaults: Dictionary = enemies.get("_enemy_defaults", {}) as Dictionary
 	for enemy_id: String in enemies.keys():
 		if enemy_id.begins_with("_"):
@@ -146,14 +147,15 @@ func _expand_enemy_catalog() -> void:
 		for value: Variant in e.get("attacks", []):
 			var declared: Dictionary = value as Dictionary
 			var template_id := String(declared.get("template", ""))
-			var attack: Dictionary = (templates.get(template_id, {}) as Dictionary).duplicate(true)
+			var attack: Dictionary = attack_defaults.duplicate(true)
+			attack.merge(templates.get(template_id, {}) as Dictionary, true)
 			attack.merge(declared, true)
-			var phase_1 := int(attack.get("phase_1_frames", 24))
-			var phase_2 := int(attack.get("phase_2_frames", 12))
+			var phase_1 := int(attack["phase_1_frames"])
+			var phase_2 := int(attack["phase_2_frames"])
 			var startup := phase_1 + phase_2
-			var active := int(attack.get("active", 5))
-			var recovery := int(attack.get("recovery", 30))
-			var phase_4 := mini(int(attack.get("phase_4_frames", 8)), recovery)
+			var active := int(attack["active"])
+			var recovery := int(attack["recovery"])
+			var phase_4 := mini(int(attack["phase_4_frames"]), recovery)
 			var actor := String(attack.get("actor", "corpo"))
 			var tell := String(attack.get("tell", "recolhe antes de avancar"))
 			var impact := String(attack.get("impact", "cruza o espaco marcado"))
@@ -166,16 +168,17 @@ func _expand_enemy_catalog() -> void:
 			attack["fase_3"] = "%d f — %s" % [active, impact]
 			attack["fases_4_5"] = "%d f de saida + %d f de regresso" % [phase_4, recovery - phase_4]
 			attack["momento_compromisso_frame"] = phase_1
+			var tracking := attack["tracking_curve_deg_s"] as Dictionary
 			attack["curva_seguimento"] = {
-				"fase_1_deg_s": 180,
-				"fase_2_deg_s": 30,
-				"fase_3_deg_s": 0,
+				"fase_1_deg_s": float(tracking["phase_1"]),
+				"fase_2_deg_s": float(tracking["phase_2"]),
+				"fase_3_deg_s": float(tracking["phase_3"]),
 			}
 			attack["som_anuncio"] = {
 				"cue_id": "attack.%s.%s" % [enemy_id, attack.get("id", "unknown")],
 				"descricao": sound_description,
 				"profile": _attack_sound_profile(attack),
-				"alcance_informativo_m": float(attack.get("informative_range_m", 18.0)),
+				"alcance_informativo_m": float(attack["informative_range_m"]),
 			}
 			attack["sinal_visual_equivalente"] = {
 				"ancora": anchor,
@@ -698,7 +701,7 @@ func _validate() -> void:
 
 	# 3. Golpes-para-matar a nivel 1, Guerreiro, leve de espada longa (spec/01 + spec/11).
 	var warrior := class_attributes("warrior")
-	var light_mv: float = (weapon("longsword").get("light", {}) as Dictionary).get("mv", 1.0)
+	var light_mv := float((weapon("longsword")["light"] as Dictionary)["mv"])
 	if not warrior.is_empty():
 		_check_hits("orc_spearman", light_mv, warrior, 3, 5)
 		_check_hits("orc_brute", light_mv, warrior, 6, 9)

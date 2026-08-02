@@ -1,0 +1,227 @@
+{
+  "_meta": {
+    "version": 1,
+    "source": "spec/65-musica-e-ambiente.md",
+    "scope": "Fatia 1: direccao de musica, ambiente de Brumal/Toca e descanso seguro",
+    "decision": "[CODEX] A exploracao permanece musicalmente silenciosa enquanto as composicoes da pergunta 34 nao existem. Razao: silencio honesto preserva a leitura do combate e a entrada futura do chefe. Alternativa descartada: esticar SFX Kenney ou sintetizar um drone e chama-lo musica.",
+    "ownership": "game/src/audio/music*.gd e este catalogo",
+    "public_paths_only": true
+  },
+  "mix": {
+    "user_buses": ["Musica", "Efeitos", "Ambiente", "Vozes"],
+    "internal_buses": {
+      "GameplayInfo": "Efeitos",
+      "Impact": "Efeitos",
+      "UI": "Efeitos",
+      "Music": "Musica",
+      "Ambience": "Ambiente",
+      "Voice": "Vozes"
+    },
+    "max_music_streams_during_crossfade": 2,
+    "max_ambience_streams_during_crossfade": 3,
+    "sfx_voice_ceiling": 24,
+    "gameplay_info_reserved_voices": 8,
+    "ducking": {
+      "owner": "Sfx",
+      "music_db": -8.0,
+      "ambience_db": -6.0,
+      "attack_s": 0.02,
+      "release_s": 0.25,
+      "stacks": false
+    },
+    "pause_attenuation_db": -8.0,
+    "silence_music_is_valid": true
+  },
+  "transitions": {
+    "boot_to_menu_s": 1.5,
+    "zone_crossfade_s": 3.0,
+    "rest_crossfade_s": 2.0,
+    "combat_in_s": 2.0,
+    "combat_out_s": 4.0,
+    "boss_in_s": 1.0,
+    "boss_phase_s": 2.0,
+    "death_silence_s": 0.5,
+    "victory_silence_s": 0.5,
+    "late_join_fade_s": 0.25,
+    "network_sync_target_ms": 50.0,
+    "floor_db": -60.0
+  },
+  "states": {
+    "SILENCE": {"priority": 0, "music_role": "none", "transition": "zone_crossfade_s"},
+    "MENU": {"priority": 1, "music_role": "menu_rest", "transition": "boot_to_menu_s"},
+    "EXPLORE": {"priority": 2, "music_role": "zone_explore", "transition": "zone_crossfade_s"},
+    "REST": {"priority": 3, "music_role": "menu_rest", "transition": "rest_crossfade_s"},
+    "COMBAT": {"priority": 4, "music_role": "zone_combat", "transition": "combat_in_s"},
+    "BOSS_P1": {"priority": 5, "music_role": "boss_p1", "transition": "boss_in_s"},
+    "BOSS_P2": {"priority": 6, "music_role": "boss_p2", "transition": "boss_phase_s"},
+    "VICTORY": {"priority": 7, "music_role": "victory", "transition": "victory_silence_s"},
+    "DEATH": {"priority": 8, "music_role": "death", "transition": "death_silence_s"}
+  },
+  "zones": {
+    "brumal": {
+      "ambience_bed": "amb_brumal_bed",
+      "explore_music": "mus_brumal_explore",
+      "combat_music": "mus_brumal_tension",
+      "ambient_state_db": {"EXPLORE": 0.0, "COMBAT": -3.0, "REST": -9.0, "BOSS_P1": -6.0, "BOSS_P2": -6.0},
+      "silence_character": "vento respirado com folhas intermitentes; sem pulso musical"
+    },
+    "toca": {
+      "ambience_bed": "amb_toca_bed",
+      "explore_music": "mus_toca",
+      "combat_music": "mus_toca",
+      "ambient_state_db": {"EXPLORE": 0.0, "COMBAT": -3.0, "REST": -9.0, "BOSS_P1": -6.0, "BOSS_P2": -6.0},
+      "silence_character": "ar de pedra, gotas esparsas e ressonancia curta; sem passos ou avisos falsos"
+    }
+  },
+  "roles": {
+    "menu_rest": "mus_menu_rest",
+    "boss_p1": "mus_vorgar_p1",
+    "boss_p2": "mus_vorgar_p2",
+    "death": "st_death",
+    "victory": "st_victory",
+    "discovery": "st_discovery",
+    "rest_safety": "amb_rest_campfire"
+  },
+  "entries": {
+    "mus_menu_rest": {
+      "id": "mus_menu_rest", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -10.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 3, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "menu, criacao e descanso",
+      "state": ["MENU", "REST"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "mus_brumal_explore": {
+      "id": "mus_brumal_explore", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -14.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 5, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "Brumal fora de combate",
+      "state": ["EXPLORE"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34_silence_is_intentional"
+    },
+    "mus_brumal_tension": {
+      "id": "mus_brumal_tension", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -12.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 4, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "Brumal depois de ALERT/AGGRO confirmado",
+      "state": ["COMBAT"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_stem_question_34_silence_is_intentional"
+    },
+    "mus_toca": {
+      "id": "mus_toca", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -14.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 4, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "Toca em exploracao e combate",
+      "state": ["EXPLORE", "COMBAT"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34_silence_is_intentional"
+    },
+    "mus_vorgar_p1": {
+      "id": "mus_vorgar_p1", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -9.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 1, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "Vorgar fase 1, so depois da activacao autoritativa",
+      "state": ["BOSS_P1"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "mus_vorgar_p2": {
+      "id": "mus_vorgar_p2", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -9.0, "pitch_range": [1.0, 1.0], "loop": true, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 1, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "Vorgar fase 2 no grito autoritativo",
+      "state": ["BOSS_P2"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "st_death": {
+      "id": "st_death", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -9.0, "pitch_range": [1.0, 1.0], "loop": false, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 0, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "apos o golpe fatal e silencio",
+      "state": ["DEATH"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "st_victory": {
+      "id": "st_victory", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -9.0, "pitch_range": [1.0, 1.0], "loop": false, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 0, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "apos a queda do guardiao e silencio",
+      "state": ["VICTORY"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "st_discovery": {
+      "id": "st_discovery", "source_file": null, "license_id": "pending_question_34", "hash": null,
+      "runtime_file": null, "bus": "Music", "spatial": false, "max_distance_m": 0.0,
+      "gain_db": -12.0, "pitch_range": [1.0, 1.0], "loop": false, "stream": true,
+      "variations": [], "max_polyphony": 1, "priority": 2, "informative": false,
+      "gameplay_cue_type": null, "visual_cue_id": null, "where": "descoberta maior sem chefe, morte ou telegrafia",
+      "state": ["EXPLORE"], "seam_tested": false, "enabled": false,
+      "_estado": "pending_asset_question_34"
+    },
+    "amb_brumal_bed": {
+      "id": "amb_brumal_bed", "source_file": "sintetizado:res://src/audio/music_ambience_synth.gd#make_brumal",
+      "license_id": "worldrpgs_original_code", "hash": "c8fdb08c0de450d9fb9da29da5ff004de7ed1a208641f7167c921396d6ef9416", "runtime_file": null,
+      "bus": "Ambience", "spatial": false, "max_distance_m": 0.0, "gain_db": -19.0,
+      "pitch_range": [1.0, 1.0], "loop": true, "stream": false, "variations": [],
+      "max_polyphony": 1, "priority": 5, "informative": false, "gameplay_cue_type": null,
+      "visual_cue_id": null, "where": "Brumal: vento e folhas numa cama sem sinais falsos",
+      "state": ["EXPLORE", "COMBAT"], "seam_tested": true, "enabled": true,
+      "_estado": "runtime_synthesized"
+    },
+    "amb_toca_bed": {
+      "id": "amb_toca_bed", "source_file": "sintetizado:res://src/audio/music_ambience_synth.gd#make_toca",
+      "license_id": "worldrpgs_original_code", "hash": "c8fdb08c0de450d9fb9da29da5ff004de7ed1a208641f7167c921396d6ef9416", "runtime_file": null,
+      "bus": "Ambience", "spatial": false, "max_distance_m": 0.0, "gain_db": -20.0,
+      "pitch_range": [1.0, 1.0], "loop": true, "stream": false, "variations": [],
+      "max_polyphony": 1, "priority": 5, "informative": false, "gameplay_cue_type": null,
+      "visual_cue_id": null, "where": "Toca: ar de pedra, gotas e ressonancia curta",
+      "state": ["EXPLORE", "COMBAT"], "seam_tested": true, "enabled": true,
+      "_estado": "runtime_synthesized"
+    },
+    "amb_rest_campfire": {
+      "id": "amb_rest_campfire", "source_file": "sintetizado:res://src/audio/music_ambience_synth.gd#make_campfire",
+      "license_id": "worldrpgs_original_code", "hash": "c8fdb08c0de450d9fb9da29da5ff004de7ed1a208641f7167c921396d6ef9416", "runtime_file": null,
+      "bus": "Ambience", "spatial": false, "max_distance_m": 0.0, "gain_db": -8.0,
+      "pitch_range": [1.0, 1.0], "loop": true, "stream": false, "variations": [],
+      "max_polyphony": 1, "priority": 3, "informative": false, "gameplay_cue_type": null,
+      "visual_cue_id": null, "where": "descanso confirmado: fogo proximo, estavel e sem ameaca",
+      "state": ["REST"], "seam_tested": true, "enabled": true,
+      "emotional_role": "safety", "_estado": "runtime_synthesized"
+    }
+  },
+  "archive_inventory": {
+    "root": "art/audio",
+    "ogg_total": 182,
+    "usable_sfx_candidates": 181,
+    "runtime_music_files": 0,
+    "runtime_ambience_loops_from_pack": 0,
+    "runtime_selected_from_pack": 0,
+    "license_files": [
+      "art/audio/kenney-impact-sounds/License.txt",
+      "art/audio/kenney-rpg-audio/License.txt"
+    ],
+    "families": [
+      {"glob": "art/audio/kenney-impact-sounds/Audio/footstep_{carpet,concrete,grass,snow,wood}_*.ogg", "count": 25, "kind": "steps", "bus": "Impact"},
+      {"glob": "art/audio/kenney-impact-sounds/Audio/impact*.ogg", "count": 105, "kind": "impacts", "bus": "Impact"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/{book*,belt*,cloth*,dropLeather,handleSmallLeather*}.ogg", "count": 19, "kind": "inventory_and_cloth", "bus": "Impact"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/{door*,creak*,metalLatch}.ogg", "count": 10, "kind": "doors", "bus": "Impact"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/{drawKnife*,knifeSlice*,chop}.ogg", "count": 6, "kind": "blades", "bus": "Impact"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/handleCoins*.ogg", "count": 2, "kind": "coins", "bus": "UI"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/{metalClick,metalPot*}.ogg", "count": 4, "kind": "props", "bus": "Impact"},
+      {"glob": "art/audio/kenney-rpg-audio/Audio/footstep*.ogg", "count": 10, "kind": "quarantined_steps", "bus": "Impact"}
+    ],
+    "excluded": [
+      {
+        "path": "art/audio/kenney-rpg-audio/Preview.ogg",
+        "sha256": "631d554d100779c7896699bb4727807d4ca365ca850dc79216157cf31dae4b6a",
+        "reason": "demonstracao do pack; nao e faixa nem asset do jogo"
+      }
+    ]
+  }
+}

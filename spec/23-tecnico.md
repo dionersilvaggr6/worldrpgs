@@ -14,7 +14,7 @@ O critério do briefing: *o que é que cada engine entrega mesmo sem GPU dedicad
 | Iteração de dados | recursos + hot-reload simples | boa | boa | do zero |
 | Risco | maturidade 3D menor que os grandes — mitigado: o protótipo já provou o que a fatia precisa | política de licença | desempenho no alvo | é outro projeto |
 
-**Escolha: Godot 4.x** (a versão exacta congela no arranque da construção; hoje: 4.7.x). *Justificação:* é a única com **medição real nas máquinas reais** a favor; renderer Mobile já escolhido com dados (−33% VRAM, melhor 1% low); grátis e sem contas para duas pessoas; a rede de alto nível mapeia directamente na autoridade dividida do WP10. *Alternativa descartada:* Unreal — a mais forte no papel e a mais errada para gráficos integrados: o caminho feliz dela é o que a Lei 4 proíbe. Unity ficaria em segundo; perdeu no peso do editor nas máquinas U-series e no risco de licença.
+**Escolha: Godot 4.7.1-stable**, dentro da família 4.x. A versão ficou congelada quando o protótipo entrou neste repositório; mudá-la exige migração e nova medição. *Justificação:* é a única com **medição real nas máquinas reais** a favor; renderer Mobile já escolhido com dados (−33% VRAM, melhor 1% low); grátis e sem contas para duas pessoas; a rede de alto nível mapeia directamente na autoridade dividida do WP10. *Alternativa descartada:* Unreal — a mais forte no papel e a mais errada para gráficos integrados: o caminho feliz dela é o que a Lei 4 proíbe. Unity ficaria em segundo; perdeu no peso do editor nas máquinas U-series e no risco de licença.
 
 **Linguagem: GDScript** para jogo e ferramentas (iteração rápida; a simulação da fatia — 8 personagens, WP12 — não precisa de mais). Se um sistema medir caro no perfil (a IA a 60 Hz, p. ex.), migra-se **esse sistema** para C#/GDExtension com a medição na mão — nunca por gosto. 
 
@@ -45,18 +45,20 @@ Cada sistema comunica por eventos (sinais), não por acesso directo — é o que
 
 ```
 data/
-  armas.json       frames, MV, custos, dano, requisitos, escala   (WP1/WP2/WP5)
-  inimigos.json    PV, DEF, postura, velocidade, fichas de ataque  (WP6)
-  chefes.json      fases, sequências, alternância                  (WP7)
-  spells.json      mana, tempos, formas, alcances, efeitos         (WP4)
-  curvas.json      XP, escala f(x), tectos da Lei 1               (WP2)
-  jogador.json     esquiva, parry, stamina, movimento             (WP1)
-  encontros.json   composição por zona                             (WP6/WP8)
+  combat.json            frames, esquiva, parry, stamina e contacto     (WP1)
+  weapons.json           armas, golpes, custos, requisitos e escala     (WP1/WP2/WP5)
+  enemies.json           comuns, chefe, ataques e população por zona    (WP6/WP7)
+  spells.json            mana, tempos, formas, alcances e efeitos       (WP4)
+  attributes.json        atributos, bases e curvas                      (WP2/WP3)
+  progression.json       nível, morte, ciclos e tectos                   (WP2/WP9)
+  world.json             topologia, curva e posições de encontros       (WP6/WP8)
+  named_encounters.json  os 36 encontros nomeados                       (WP6/WP8)
+  controls.json          acções e bindings de fábrica                    (WP1/WP11)
 ```
 
 - Formato: JSON (legível em qualquer editor; o Mateus e o Rico podem afinar sem abrir a engine).
 - **Recarga a quente em modo dev:** tecla dedicada relê os dados sem reiniciar — muda-se um número com o Vorgar à frente e sente-se já.
-- Os **tectos da Lei 1** (WP2) validam-se ao carregar: um `inimigos.json` com um golpe acima de 40% da vida base da zona **recusa-se a carregar com erro claro**. A lei é código de validação, não boa intenção.
+- Os **tectos da Lei 1** (WP2) validam-se ao carregar: um `enemies.json` com um golpe acima de 40% da vida base da zona **recusa-se a carregar com erro claro**. A lei é código de validação, não boa intenção.
 
 ## Gravação de progresso
 
@@ -68,7 +70,7 @@ Sem cloud nem encriptação — são dois amigos; editar à mão não é ameaça
 
 - **Windows 11 64-bit, e mais nada** (as duas máquinas — pergunta 0; o briefing corta consolas/telemóvel).
 - Build: export do editor, um clique; `-- dev` liga consola e overlays; a build de jogo normal **mantém o registo de combate** (WP15B precisa dele nas sessões reais).
-- Distribuição entre os dois: pasta partilhada / link directo — são dois; **itch.io privado** fica como opção se quiserem histórico de versões com zero infra-estrutura. Este repositório continua **sem código e sem builds** — a construção vive num repositório novo (`worldrpgs-game`, nome a fechar no arranque), com esta spec como submódulo ou referência.
+- Distribuição entre os dois: pasta partilhada / link directo — são dois; **itch.io privado** fica como opção se quiserem histórico de versões com zero infra-estrutura. `[DECIDIDO]` (Mateus, 31-07-2026): o código vive em `game/` **neste** repositório, ao lado da spec; só builds geradas ficam de fora. Isto substitui a proposta histórica de um `worldrpgs-game` separado, porque spec + dados + código têm de mudar no mesmo PR.
 
 ## Ferramentas de afinação — obrigatórias, não opcionais
 

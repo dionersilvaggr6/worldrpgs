@@ -66,6 +66,55 @@ As consequências, uma a uma:
 
 *Porquê:* com o tecto de 2 atacantes do círculo de agressão (WP6) e arenas apertadas (a Toca), fogo amigo activo tornaria o machadão do Berserker um risco para o parceiro em cada varrido — fricção constante entre amigos, sem ganho de leitura. *Alternativa descartada:* fogo amigo "realista" — realismo não é pilar; e o griefing não é ameaça entre duas pessoas que partilham sofá espiritual. **Decisão de tom final: deles** (fica na pergunta 20 até o disserem).
 
+## `[CODEX]` O Elo de Bruma — primeira prova de combate que exige dois
+
+> **Estado:** exemplar executável proposto para as `[TENSÃO]` 59/60 do [`99`](99-perguntas-abertas.md), não uma promoção a `[DECIDIDO]`. A prova automatizada corrente usa **dois personagens locais**; ainda não prova transporte entre casas.
+
+**Razão:** dois corpos que causam dano em paralelo não provam co-op. Este encontro obriga um jogador a **aguentar a atenção** enquanto o outro cria a abertura, troca esses papéis a cada acerto útil e deixa o jogador sobrevivente **salvar** uma tentativa que ficou bloqueada pela queda do parceiro.
+
+**Alternativa descartada:** duas placas/alavancas simultâneas. Provaria presença, mas não combate: depois de aprender posições, os jogadores executariam um puzzle sem ler alvo, compromisso, risco ou recuperação do inimigo.
+
+### A regra do encontro
+
+- Em co-op, uma colocação autorada de `orc_brute` recebe o **Elo**. O corpo, ataques, dano, postura, arte e sons continuam a vir dos catálogos existentes; o encontro não introduz um segundo inimigo nem números de combate.
+- O Elo bloqueia todo o dano enquanto o atacante for o alvo actual do inimigo. Depois de o ataque terminar os frames activos e entrar na recuperação já declarada na ficha, o **outro jogador vivo** pode acertar com o ataque normal e causar dano. A troca nunca acontece a meio da hitbox: o novo alvo não herda um golpe que foi anunciado ao parceiro.
+- Cada acerto aceite consome essa abertura e transfere a atenção para quem acertou. No compromisso seguinte, o jogador anterior tem de abrir. **O Elo segura um golpe que seria mortal até cada perfil ter criado pelo menos uma abertura**; assim nem uma build capaz de matar num golpe transforma o parceiro num alvo passivo. Um só jogador nunca consegue ser simultaneamente alvo e não-alvo; dividir dois duelos também não resolve.
+- Se um jogador cair, deixa de existir não-alvo vivo e o Elo volta a bloquear todo o dano. A tentativa só avança quando o sobrevivente ressuscita o parceiro ou quando ambos perdem.
+- A solo, esta colocação nasce como o `orc_brute` normal, sem Elo e sem recompensa exclusiva. O encontro co-op é impossível a um corpo sem transformar a campanha solo decidida numa porta fechada.
+
+**Acção do jogador:** atacar, esquivar e gerir alvo usam os comandos normais; salvar usa **manter `interact`** (`E` / botão configurado) sobre o corpo. Não entra uma tecla nova escondida.
+
+### Ressurreição e o jogador menos hábil
+
+Continuam a mandar os dados canónicos de `progression.json`: janela, faixa de canalização, uma utilização partilhada, fracção de vida, frascos conservados e interrupção por dano. O controlador aceita a duração escolhida dentro da faixa; não escreve nenhum desses valores em `.gd`.
+
+⚠️ **`[TENSÃO]` preservada — progresso cumulativo ou reiniciado:** a implementação suporta as duas políticas por parâmetro de sessão. A prova local usa `[PROTO] cumulative`, isto é, levar dano quebra o toque actual mas conserva o progresso anterior. **Recomendação `[CODEX]`: cumulativo**, porque os tempos de recuperação correntes não oferecem uma faixa contínua suficiente e assim o sobrevivente pode construir o resgate em várias iscas. **Alternativa:** `reset_on_interrupt`, que conserva o contrato histórico de 5–7 s sem interrupção, mas precisa de uma recuperação autorada equivalente antes de poder passar o greybox. Mateus + Rico decidem a pergunta 60.
+
+O caso de aceitação inverte deliberadamente a fantasia de poder: o personagem chamado `aprendiz` sobrevive, isca o inimigo para longe, regressa ao corpo em dois toques interrompidos e levanta `veterano`. Só depois os dois voltam a alternar aberturas e podem vencer. Portanto o jogador menos hábil não é carga: **salva a tentativa**.
+
+### Autoridade e transporte
+
+O encontro não altera a arquitectura desta página:
+
+| Evento | Autoridade |
+|---|---|
+| alvo, fase do ataque, abertura consumida, progresso/uso da ressurreição, PV e morte do inimigo | anfitrião, porque são mundo |
+| movimento, queda, `interact`, golpe local, esquiva e parry de cada jogador | dono desse corpo; o anfitrião valida apenas participante/alvo/fase antes de publicar o resultado |
+| comando de invocado | **política injectada e obrigatória**; sem política o evento é recusado |
+
+⚠️ **Quem manda nos invocados continua `[TENSÃO]` 35.** O contrato aceita tanto “quem levantou” como “anfitrião”; não contém fallback silencioso. Isso permite escolher depois sem reescrever o encontro nem atribuir autoridade por acidente.
+
+### As quatro perguntas do fio solto
+
+| Pergunta | Resposta deste exemplar |
+|---|---|
+| Como usa? | ataque normal para puxar/abrir; `interact` mantido para salvar; papéis trocam quando a abertura causa dano |
+| Como prova? | teste headless próprio: solo nunca reduz PV; alvo não reduz PV; não-alvo só reduz na recuperação; ambos criam abertura; `aprendiz` ressuscita `veterano` após interrupção; as duas políticas de invocados encaixam. Um segundo smoke instancia a subclasse real de `Enemy`. O auto-teste geral continua ≥ 9703 |
+| Arte e som? | `Orc.gltf`/materiais já importados; telegrafia visual existente do ataque; `hit_block` e sons existentes sintetizados em código. Zero asset novo |
+| Custo no Rico? | um inimigo que já existia, dois IDs de participante, comparações O(1), zero actor/draw call/material/partícula adicional. O gate integrado ainda mede p99 quando o dono de `main.gd` o colocar no nível |
+
+**Medição isolada `[CODEX]` (01-08-2026, código final):** Intel Iris Xe / i7-1255U / 16 GB, cinco processos de 100 000 validações: **0,584–1,675 µs/evento, mediana 0,597 µs**. Não é uma medição de FPS — o módulo não acrescenta render — nem substitui a prova na máquina do Rico de 8 GB. É o custo CPU da decisão O(1); p99/memória do encontro integrado continuam por medir sem fingir.
+
 ## Quedas e saídas a meio
 
 | Situação | O que acontece |

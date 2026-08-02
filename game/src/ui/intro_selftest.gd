@@ -17,10 +17,15 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	if not _runtime_checked:
 		_runtime_checked = true
-		for tip_id: String in IntroSequenceScript.TIP_IDS:
+		var game_data := root.get_node_or_null("GameData")
+		if game_data == null:
+			_errors.append("GameData indisponível no teste runtime da abertura")
+			quit(1)
+			return true
+		for tip_id: String in IntroSequenceScript.tip_ids(game_data.ui_strings):
 			if IntroSequenceScript.tip_text(tip_id) == "":
 				_errors.append("dica não resolve controlos em runtime: %s" % tip_id)
-		for item_id: String in IntroSequenceScript.STARTING_WEAPON_IDS:
+		for item_id: String in IntroSequenceScript.starting_weapon_ids(game_data.weapons):
 			if IntroSequenceScript.item_description(item_id) == "":
 				_errors.append("descrição não resolve catálogo em runtime: %s" % item_id)
 	if _errors.is_empty():

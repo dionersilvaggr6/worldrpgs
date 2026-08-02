@@ -55,6 +55,10 @@ func chest_count() -> int:
 	return _chests.size()
 
 
+func set_player(player_node: Node3D) -> void:
+	_player = player_node
+
+
 func open_chest(chest_id: String) -> Dictionary:
 	var chest: Node3D = _chests.get(chest_id) as Node3D
 	if chest == null:

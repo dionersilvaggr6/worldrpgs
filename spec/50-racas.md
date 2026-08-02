@@ -28,7 +28,7 @@
 | **Como se veste** | a lei do bioma: ferro rude e couro de javali (Brumal) · bronze verde (Costa) · obsidiana (Fornalha) |
 | **Como luta** | **rápido** (lanceiro) e **pesado** (brutamontes) — os dois professores da fatia ([`15`](15-inimigos.md)) |
 | **Uma coisa que ninguém sabe** | nenhum orc entra na Toca por vontade. Vorgar não guarda a dungeon **dos** orcs — guarda-a **contra** eles |
-| **Descrição visual** | guerreiro tribal maciço, pele cinzenta-esverdeada, ferro rude e couro de javali *(✅ já gerado: `con_orc_lanceiro`, `con_orc_brutamontes`, `con_vorgar`)* |
+| **Descrição visual** | guerreiro tribal maciço, pele cinzenta-esverdeada, ferro rude e couro de javali *(✅ conceitos reais: [`orc-lanceiro.png`](../art/concept/inimigos/orc-lanceiro.png), [`orc-brutamontes.png`](../art/concept/inimigos/orc-brutamontes.png) e [`vorgar.png`](../art/concept/chefes/vorgar.png); fichas do jogo `orc_spearman`, `orc_brute` e `vorgar` em [`enemies.json`](../game/data/enemies.json))* |
 | **Fatia 1?** | ✅ — lanceiro, brutamontes e Vorgar |
 
 ## 2. Goblins

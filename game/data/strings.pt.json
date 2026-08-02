@@ -2,6 +2,32 @@
   "_fonte": "spec/73-fecho-dos-buracos-de-integracao.md §4 + spec/26-narrativa.md §§1.1–1.2",
   "locale": "pt",
   "fallback_locale": "pt",
+  "opening": {
+    "story_bbcode": "Brumal não foi sempre assim.\n\nA bruma chegou. Com ela, vieram os orcs.\n\nA Toca é uma passagem antiga que eles tomaram.\nNo fundo, Vorgar guarda o portão.\n\n[color=#eadbb9]És um forasteiro. Entras onde ninguém entra.[/color]"
+  },
+  "intro": {
+    "location_string_id": "intro.location.context",
+    "tip_ids": ["movement", "attack", "dodge", "parry", "flask"],
+    "owner_question_slots": [
+      "tone",
+      "game_and_world_name",
+      "language",
+      "character_past",
+      "toca_origin",
+      "coop_reason",
+      "provisional_names"
+    ]
+  },
+  "class_roles": {
+    "warrior": ["Equilibrado — a régua dos outros.", "Adapta-se a qualquer abertura.", "Nunca é o especialista da situação."],
+    "sorcerer": ["Precisão azul, controlo e maior reserva de mana.", "Lê a distância e escolhe a forma certa.", "Sofre quando fica encostado."],
+    "tank": ["Absorve, controla espaço e protege a dupla.", "Segura a atenção e mede o bloqueio.", "Mata devagar e sente o peso."],
+    "assassin": ["Rápido, posicional e de parry arriscado.", "Conquista costas e encadeia golpes curtos.", "Sofre de frente contra armadura."],
+    "berserker": ["Pressão bruta sem escudo.", "Troca segurança por avanço.", "Cada erro deixa uma recuperação longa."],
+    "paladin": ["Ferro e magia de raio.", "Muda o tipo de resposta sem ganhar dano grátis.", "Divide os atributos no arranque."],
+    "evil_mage": ["Usa vida e cadáveres como recurso; anda entre os mortos.", "Transforma corpos próximos em novas opções de combate.", "Paga os verbos com a própria vida e precisa de chegar aos corpos."],
+    "_evil_mage_source": "[CODEX] descrição derivada de spec/52 §§2 e 10; alternativa descartada: repetir o Feiticeiro de retaguarda, porque apagava a postura decidida"
+  },
   "rule": "texto apresentado ao jogador vive aqui; IDs, diagnósticos de desenvolvimento e dados numéricos continuam nas respectivas fontes",
   "strings": {
     "hud.help": "COMANDOS — o ecrã é construído sempre a partir das ligações actuais.",
@@ -29,6 +55,8 @@
     "item.weapon.longsword.description": "Espada de guarda simples, marcada por uso paciente. No pomo, alguém apagou um brasão a golpes de lima.",
     "item.weapon.greataxe.description": "Machadão de ferro rude, remendado onde o cabo cedeu. As marcas na lâmina são mais largas do que a mão que agora o segura.",
     "item.weapon.staff.description": "Cajado escurecido pela humidade, com um foco azul preso por arame. A madeira permanece seca quando a bruma se aproxima.",
-    "item.weapon.shield.description": "Escudo de madeira reforçado com ferro desigual. Três cortes foram tapados; o quarto ficou aberto."
+    "item.weapon.shield.description": "Escudo de madeira reforçado com ferro desigual. Três cortes foram tapados; o quarto ficou aberto.",
+    "item.weapon.espada_recta_brumal_espada_de_vigilia.description": "Lâmina recta de dois gumes, com guarda cruciforme curta e pomo circular. Ferro rude e couro de javali conservam as marcas de Brumal.",
+    "item.weapon.espada_prata_santuario.description": "Espada recta de prata baça, com guarda branca e pomo de ouro gasto. A cera benta ainda cobre as marcas do Santuário Branco."
   }
 }

@@ -4,14 +4,6 @@ extends SceneTree
 ## Executar com renderer real, uma vez com --mode=base e outra com
 ## --mode=armed. Ambos usam a mesma cena, camera, luz e corpos a 1920x1080.
 
-const LOADOUTS := [
-	{"main": "longsword", "offhand": "shield"},
-	{"main": "dagger", "offhand": "dagger"},
-	{"main": "greataxe", "offhand": ""},
-	{"main": "staff", "offhand": ""},
-	{"main": "katana_brumal_sabre_de_vigilia", "offhand": ""},
-]
-
 class BenchActor extends Node3D:
 	var main_weapon := ""
 	var offhand_weapon := ""
@@ -21,11 +13,13 @@ class BenchActor extends Node3D:
 var _mode := "armed"
 var _single_weapon := ""
 var _single_offhand := ""
+var _armor_piece := ""
 var _warmup_seconds := 3.0
 var _measure_seconds := 10.0
 var _capture_name := ""
 var _samples: Array[float] = []
 var _visual_surfaces := 0
+var _actor_count := 0
 
 
 func _initialize() -> void:
@@ -62,9 +56,14 @@ func _run() -> void:
 
 
 func _build_stage() -> void:
-	var active_loadouts: Array = LOADOUTS if _single_weapon.is_empty() else [{
+	var game_data := root.get_node("GameData")
+	var weapon_catalogue := game_data.get("weapons") as Dictionary
+	var declared_loadouts: Array = (weapon_catalogue.get("test_loadouts", {}) \
+		as Dictionary).get("order", []) as Array
+	var active_loadouts: Array = declared_loadouts if _single_weapon.is_empty() else [{
 		"main": _single_weapon, "offhand": _single_offhand,
 	}]
+	_actor_count = active_loadouts.size()
 	var stage := Node3D.new()
 	stage.name = "WeaponBenchmark"
 	root.add_child(stage)
@@ -101,7 +100,6 @@ func _build_stage() -> void:
 	floor_mesh.material_override = floor_material
 	stage.add_child(floor_mesh)
 
-	var game_data := root.get_node("GameData")
 	var player_height := float((game_data.call("section", "player") as Dictionary).get(
 		"capsule_height", 0.0))
 	for index: int in active_loadouts.size():
@@ -116,9 +114,14 @@ func _build_stage() -> void:
 			0.0,
 			absf(float(index) - float(active_loadouts.size() - 1) * 0.5) * 0.22)
 		stage.add_child(actor)
-		var visual := CharacterVisual.new()
+		# O benchmark corre como --script; o carregamento tardio deixa os autoloads
+		# registarem-se antes de ArmorVisual resolver GameData.
+		var visual: CharacterVisual = load("res://src/visual/armor_visual.gd").new() \
+			if not _armor_piece.is_empty() else CharacterVisual.new()
 		actor.add_child(visual)
 		visual.setup(player_height, Color.WHITE, true, "body_male", "warrior")
+		if not _armor_piece.is_empty():
+			visual.call("apply_equipment", [_armor_piece])
 		visual.play_animation("Idle")
 		var body_surfaces := _surface_count(visual)
 		_visual_surfaces += body_surfaces
@@ -152,7 +155,7 @@ func _report() -> void:
 	var p99_index := clampi(ceili(float(_samples.size()) * 0.99) - 1, 0, _samples.size() - 1)
 	var result := {
 		"mode": _mode,
-		"actors": 1 if not _single_weapon.is_empty() else LOADOUTS.size(),
+		"actors": _actor_count,
 		"samples": _samples.size(),
 		"adapter": RenderingServer.get_video_adapter_name(),
 		"renderer": RenderingServer.get_current_rendering_method(),
@@ -185,6 +188,8 @@ func _parse_arguments() -> void:
 			_single_weapon = argument.trim_prefix("--weapon=")
 		elif argument.begins_with("--offhand="):
 			_single_offhand = argument.trim_prefix("--offhand=")
+		elif argument.begins_with("--armor="):
+			_armor_piece = argument.trim_prefix("--armor=")
 
 
 static func _surface_count(node: Node) -> int:

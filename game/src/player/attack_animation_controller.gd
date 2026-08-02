@@ -6,106 +6,10 @@ extends Node
 ## biblioteca nao traz sao sintetizadas neste modulo; os tempos de combate nao
 ## vivem aqui e chegam sempre da ficha da arma em `weapons.json`.
 
-const FAMILY_ANIMATIONS := {
-	"espada_recta": {
-		"leve_1": {"source_clip": "Sword_Attack", "motion": "corte_direita", "shape": "slash_right"},
-		"leve_2": {"source_clip": "Sword_Attack", "motion": "corte_retorno", "shape": "slash_left"},
-		"pesado": {"source_clip": "Sword_Attack", "motion": "vertical_duas_maos", "shape": "overhead"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "estocada_avanco", "shape": "thrust"},
-	},
-	"adaga": {
-		"leve_1": {"source_clip": "Punch_Jab", "motion": "estocada_curta", "shape": "jab"},
-		"leve_2": {"source_clip": "Punch_Cross", "motion": "corte_cruzado", "shape": "cross"},
-		"pesado": {"source_clip": "Punch_Cross", "motion": "apunhalar_duas_maos", "shape": "double_thrust"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "entrada_baixa", "shape": "low_lunge"},
-	},
-	"pesada_corte": {
-		"leve_1": {"source_clip": "Sword_Attack", "motion": "diagonal_com_peso", "shape": "diagonal_heavy"},
-		"leve_2": {"source_clip": "Sword_Attack", "motion": "retorno_da_anca", "shape": "hip_return"},
-		"pesado": {"source_clip": "Sword_Attack", "motion": "vertical_esmagador", "shape": "overhead_heavy"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "varrimento_em_corrida", "shape": "running_sweep"},
-	},
-	"katana": {
-		"leve_1": {"source_clip": "Sword_Attack", "motion": "saque_horizontal", "shape": "draw_cut"},
-		"leve_2": {"source_clip": "Sword_Attack", "motion": "corte_de_retorno_alto", "shape": "rising_return"},
-		"pesado": {"source_clip": "Sword_Attack", "motion": "corte_vertical_controlado", "shape": "overhead_narrow"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "iai_em_corrida", "shape": "running_draw"},
-	},
-	"haste": {
-		"leve_1": {"source_clip": "Sword_Attack", "motion": "estocada_longa", "shape": "long_thrust"},
-		"leve_2": {"source_clip": "Sword_Attack", "motion": "estocada_recolhida", "shape": "retract_thrust"},
-		"pesado": {"source_clip": "Sword_Attack", "motion": "varrimento_baixo", "shape": "low_sweep"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "carga_de_haste", "shape": "lance_charge"},
-	},
-	"cajado": {
-		"leve_1": {"source_clip": "Sword_Attack", "motion": "bastao_lateral", "shape": "staff_sweep"},
-		"leve_2": {"source_clip": "Sword_Attack", "motion": "bastao_de_retorno", "shape": "staff_return"},
-		"pesado": {"source_clip": "Sword_Attack", "motion": "pancada_firmada", "shape": "staff_slam"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "empurrao_de_bastao", "shape": "staff_shove"},
-	},
-	"arco": {
-		"leve_1": {"source_clip": "Pistol_Shoot", "motion": "soltar_flecha", "shape": "bow_release"},
-		"leve_2": {"source_clip": "Pistol_Reload", "motion": "rearmar_do_lado", "shape": "bow_nock"},
-		"pesado": {"source_clip": "Pistol_Aim_Neutral", "motion": "tiro_firmado", "shape": "bow_aim"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "disparo_em_corrida", "shape": "bow_running"},
-	},
-	"besta": {
-		"leve_1": {"source_clip": "Pistol_Shoot", "motion": "gatilho_e_recuo", "shape": "crossbow_recoil"},
-		"leve_2": {"source_clip": "Pistol_Reload", "motion": "baixar_e_rearmar", "shape": "crossbow_reload"},
-		"pesado": {"source_clip": "Pistol_Aim_Neutral", "motion": "mira_ampliada", "shape": "crossbow_aim"},
-		"em_corrida": {"source_clip": "Sprint", "motion": "tiro_da_anca", "shape": "crossbow_running"},
-	},
-}
-
-# Graus de pose sao arte sintetizada, nao numeros de combate. Os tempos nunca
-# aparecem nesta tabela; sao construidos exclusivamente com a ficha equipada.
-const SHAPE_POSES := {
-	"slash_right": {"windup": Vector3(-8, -48, -12), "strike": Vector3(6, 55, 14)},
-	"slash_left": {"windup": Vector3(-4, 42, 10), "strike": Vector3(8, -58, -16)},
-	"overhead": {"windup": Vector3(-42, -8, -5), "strike": Vector3(54, 6, 4)},
-	"thrust": {"windup": Vector3(8, -24, 18), "strike": Vector3(-18, 12, -8)},
-	"jab": {"windup": Vector3(12, -34, 24), "strike": Vector3(-12, 18, -16)},
-	"cross": {"windup": Vector3(8, 38, -22), "strike": Vector3(-8, -26, 18)},
-	"double_thrust": {"windup": Vector3(-16, -12, 28), "strike": Vector3(22, 10, -24)},
-	"low_lunge": {"windup": Vector3(26, -28, 12), "strike": Vector3(-28, 16, -10)},
-	"diagonal_heavy": {"windup": Vector3(-36, -46, -26), "strike": Vector3(46, 48, 28)},
-	"hip_return": {"windup": Vector3(24, 52, 32), "strike": Vector3(-20, -58, -30)},
-	"overhead_heavy": {"windup": Vector3(-58, 0, -12), "strike": Vector3(66, 0, 10)},
-	"running_sweep": {"windup": Vector3(4, -62, -20), "strike": Vector3(10, 70, 22)},
-	"draw_cut": {"windup": Vector3(20, -58, 30), "strike": Vector3(-8, 66, -18)},
-	"rising_return": {"windup": Vector3(28, 46, -34), "strike": Vector3(-30, -54, 24)},
-	"overhead_narrow": {"windup": Vector3(-48, -12, 8), "strike": Vector3(58, 14, -6)},
-	"running_draw": {"windup": Vector3(18, -68, 24), "strike": Vector3(-18, 72, -20)},
-	"long_thrust": {"windup": Vector3(4, -32, 8), "strike": Vector3(-8, 20, -4)},
-	"retract_thrust": {"windup": Vector3(-6, 28, -10), "strike": Vector3(12, -18, 8)},
-	"low_sweep": {"windup": Vector3(34, -52, -18), "strike": Vector3(22, 58, 20)},
-	"lance_charge": {"windup": Vector3(18, -18, 2), "strike": Vector3(-32, 8, -2)},
-	"staff_sweep": {"windup": Vector3(12, -46, -28), "strike": Vector3(18, 52, 32)},
-	"staff_return": {"windup": Vector3(10, 48, 30), "strike": Vector3(16, -54, -34)},
-	"staff_slam": {"windup": Vector3(-46, 6, -20), "strike": Vector3(58, -4, 18)},
-	"staff_shove": {"windup": Vector3(6, -24, 30), "strike": Vector3(-14, 18, -28)},
-	"bow_release": {"windup": Vector3(-6, -38, 36), "strike": Vector3(4, 20, -28)},
-	"bow_nock": {"windup": Vector3(22, 28, -18), "strike": Vector3(-12, -34, 24)},
-	"bow_aim": {"windup": Vector3(-18, -8, 42), "strike": Vector3(-4, 10, -36)},
-	"bow_running": {"windup": Vector3(18, -44, 22), "strike": Vector3(-24, 30, -18)},
-	"crossbow_recoil": {"windup": Vector3(-8, -18, 18), "strike": Vector3(16, 14, -14)},
-	"crossbow_reload": {"windup": Vector3(30, 16, -26), "strike": Vector3(-22, -18, 30)},
-	"crossbow_aim": {"windup": Vector3(-22, -4, 28), "strike": Vector3(12, 6, -22)},
-	"crossbow_running": {"windup": Vector3(16, -30, 12), "strike": Vector3(-20, 24, -10)},
-}
-
-const FAMILY_ARM_BIAS := {
-	"espada_recta": Vector3(0, 0, 0),
-	"adaga": Vector3(18, 0, -20),
-	"pesada_corte": Vector3(-24, 0, 26),
-	"katana": Vector3(12, -12, -8),
-	"haste": Vector3(-8, 18, 10),
-	"cajado": Vector3(-16, -10, 18),
-	"arco": Vector3(8, 26, -18),
-	"besta": Vector3(-4, 18, 12),
-}
-
+const ANIMATION_CATALOGUE_PATH := "res://data/animations.json"
 const GENERATED_LIBRARY := "weapon_attacks"
+
+static var _attack_catalogue_cache: Dictionary = {}
 
 var _actor: Node
 var _character_visual: Node3D
@@ -115,6 +19,18 @@ var _last_request := ""
 var _last_state_frame := -1
 var _holding_charge := false
 var _current_playback_name := ""
+
+
+static func _attack_catalogue() -> Dictionary:
+	if not _attack_catalogue_cache.is_empty():
+		return _attack_catalogue_cache
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(
+		ANIMATION_CATALOGUE_PATH))
+	if not parsed is Dictionary:
+		push_error("[attack-animation] catalogo invalido: %s" % ANIMATION_CATALOGUE_PATH)
+		return {}
+	_attack_catalogue_cache = (parsed as Dictionary).get("weapon_attacks", {}) as Dictionary
+	return _attack_catalogue_cache
 
 
 func setup(actor: Node, character_visual: Node3D) -> bool:
@@ -143,7 +59,8 @@ func play_attack(weapon_id: String, attack_kind: String, combo_index: int,
 		return ""
 	var weapon: Dictionary = game_data.call("weapon", weapon_id) as Dictionary
 	var family_id := String(weapon.get("familia", ""))
-	if not FAMILY_ANIMATIONS.has(family_id):
+	var families := _attack_catalogue().get("families", {}) as Dictionary
+	if not families.has(family_id):
 		return ""
 	var action_id := "leve_1"
 	if was_running:
@@ -152,7 +69,9 @@ func play_attack(weapon_id: String, attack_kind: String, combo_index: int,
 		action_id = "pesado"
 	elif combo_index > 1:
 		action_id = "leve_2"
-	var profile: Dictionary = (FAMILY_ANIMATIONS[family_id] as Dictionary)[action_id] as Dictionary
+	var profile: Dictionary = (families[family_id] as Dictionary).get(action_id, {}) as Dictionary
+	if profile.is_empty():
+		return ""
 	var source_clip := String(profile.get("source_clip", ""))
 	if not _animation_player.has_animation(source_clip):
 		push_error("[attack-animation] clip UAL ausente: %s" % source_clip)
@@ -207,7 +126,7 @@ func _generated_name(family_id: String, action_id: String, source_clip: String,
 
 
 func declared_family_animations() -> Dictionary:
-	return FAMILY_ANIMATIONS.duplicate(true)
+	return (_attack_catalogue().get("families", {}) as Dictionary).duplicate(true)
 
 
 func visible_strike_active(state_frame: int, attack: Dictionary,
@@ -267,9 +186,11 @@ func build_attack_animation(source_animation: Animation, family_id: String,
 	## Faz uma animacao completa a partir da UAL, mas substitui tronco e bracos
 	## por quatro poses: neutra, aviso, fim do contacto e recuperacao. Assim a
 	## lamina so percorre o arco ofensivo entre `startup` e `startup + active`.
-	if source_animation == null or not FAMILY_ANIMATIONS.has(family_id):
+	var attack_catalogue := _attack_catalogue()
+	var families := attack_catalogue.get("families", {}) as Dictionary
+	if source_animation == null or not families.has(family_id):
 		return null
-	var family: Dictionary = FAMILY_ANIMATIONS[family_id] as Dictionary
+	var family: Dictionary = families[family_id] as Dictionary
 	if not family.has(action_id):
 		return null
 	for field: String in ["startup", "active", "recovery"]:
@@ -293,12 +214,14 @@ func build_attack_animation(source_animation: Animation, family_id: String,
 	generated.resource_name = "%s_%s" % [family_id, action_id]
 
 	var profile: Dictionary = family[action_id] as Dictionary
-	var shape: Dictionary = SHAPE_POSES.get(String(profile.get("shape", "")), {}) as Dictionary
+	var shapes := attack_catalogue.get("shape_poses_degrees", {}) as Dictionary
+	var shape: Dictionary = shapes.get(String(profile.get("shape", "")), {}) as Dictionary
 	if shape.is_empty():
 		return null
-	var windup: Vector3 = shape.get("windup", Vector3.ZERO) as Vector3
-	var strike: Vector3 = shape.get("strike", Vector3.ZERO) as Vector3
-	var arm_bias: Vector3 = FAMILY_ARM_BIAS.get(family_id, Vector3.ZERO) as Vector3
+	var windup := _vector3(shape.get("windup", []))
+	var strike := _vector3(shape.get("strike", []))
+	var family_biases := attack_catalogue.get("family_arm_bias_degrees", {}) as Dictionary
+	var arm_bias := _vector3(family_biases.get(family_id, []))
 	for bone_name: String in [
 			"spine_03", "upperarm_r", "lowerarm_r", "upperarm_l", "lowerarm_l"]:
 		_replace_bone_rotation_track(generated, source_animation, bone_name,
@@ -306,6 +229,13 @@ func build_attack_animation(source_animation: Animation, family_id: String,
 			_bone_pose_degrees(bone_name, windup, arm_bias),
 			_bone_pose_degrees(bone_name, strike, arm_bias))
 	return generated
+
+
+static func _vector3(value: Variant) -> Vector3:
+	if not value is Array or (value as Array).size() != 3:
+		return Vector3.ZERO
+	var parts := value as Array
+	return Vector3(float(parts[0]), float(parts[1]), float(parts[2]))
 
 
 func _rescale_animation(animation: Animation, target_length: float) -> void:

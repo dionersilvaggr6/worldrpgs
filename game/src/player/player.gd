@@ -12,26 +12,32 @@ extends CharacterBody3D
 
 const WorldBoundsTracker = preload("res://src/world/bounds.gd")
 const WorldBoundsWarningScene = preload("res://src/world/bounds_warning.gd")
+const SpellDeliveryFactoryScript = preload("res://src/spells/spell_delivery_factory.gd")
+const SpellVfxResidencyScript = preload("res://src/vfx/spell_vfx_residency.gd")
+const SpellCastVfxScript = preload("res://src/vfx/spell_cast_vfx.gd")
+const CastingWeaponAttachScript = preload("res://src/visual/weapon_attach.gd")
 
 signal died
 signal state_changed(state: int)
+signal casting_fallback(reason: String)
+signal raise_requested(spell_id: String)
 
 enum State { FREE, ATTACK, DODGE, BLOCK, PARRY, CASTING, HITSTUN, GUARD_BREAK, RIPOSTE, DEAD, USING_ITEM, ABILITY, MEDITATING, GRIP_SWITCH }
 
 # Guarda de entrada: os valores vem de spec/25-controlo.md (WP1B), via data/combat.json.
-var _buffer_life := 24        # 400 ms
-var _buffer_life_parry := 5   # 80 ms — parry e timing puro, guarda-se quase nada
+var _buffer_life := 0
+var _buffer_life_parry := 0
 var hitstop_frames := 0
 
 # --- Estado -------------------------------------------------------------------
 var state := State.FREE
 var state_frame := 0
 
-var health := 420.0
-var max_health := 420.0
-var defense := 20.0
-var flask_uses := 3
-var flask_max := 3
+var health := 0.0
+var max_health := 0.0
+var defense := 0.0
+var flask_uses := 0
+var flask_max := 0
 var _ability: Dictionary = {}
 var _ability_cd := 0.0
 var _fury_time := 0.0
@@ -39,15 +45,15 @@ var attrs: Dictionary = {}
 var class_id := "warrior"
 
 var stamina := Stamina.new()
-var mana := 100
-var max_mana := 100
+var mana := 0
+var max_mana := 0
 var meditation_uses := 0
 var meditation_uses_max := 0
-var selected_spell := "dardo"
+var selected_spell := ""
 var favorite_spells: Array[String] = []
 
-var main_weapon := "longsword"
-var offhand_weapon := "shield"
+var main_weapon := ""
+var offhand_weapon := ""
 var _loadout_index := 0
 var is_two_handed := false
 
@@ -67,6 +73,7 @@ var _atk_hit: Array = []
 var _charging := false
 var _charge_frames := 0
 var _combo_index := 0
+var _attack_feedback := ""
 
 # --- Esquiva ------------------------------------------------------------------
 var _dodge_dir := Vector3.FORWARD
@@ -75,11 +82,15 @@ var _dodge_recovery_extra := 0
 var _load_can_dodge := true
 var _load_can_run := true
 var _load_can_sprint := true
-var _load_max_speed := 999.0
+var _load_max_speed := INF
 
 # --- Magia --------------------------------------------------------------------
 var _cast_spell: Dictionary = {}
+var _cast_instrument: Dictionary = {}
 var _cast_frames_total := 0
+var _spell_vfx_residency: RefCounted
+var _cast_flash: Node3D
+var _casting_weapon_visual: Node3D
 var _egide_shield := 0.0
 var _egide_time := 0.0
 var _meditation_start_mana := 0
@@ -96,6 +107,12 @@ var _visual: CharacterVisual
 var _palette: Dictionary = {}
 var _frame := 0
 var _waking_up := false
+var _resting := false
+var _sitting_visual_started_at := 0
+var _visual_previous_state := State.FREE
+var _visual_transition_state := ""
+var _visual_transition_started_at := 0
+static var _casting_attack_self_test_ran := false
 
 # --- Queda --------------------------------------------------------------------
 var _fall_tracker: WorldBounds = WorldBoundsTracker.new()
@@ -108,41 +125,52 @@ var _has_supported_position := false
 
 # --- Arranque -----------------------------------------------------------------
 
+func _ready() -> void:
+	if "--casting-attack-self-test" in OS.get_cmdline_user_args() \
+			and not _casting_attack_self_test_ran:
+		_casting_attack_self_test_ran = true
+		_run_casting_attack_self_test()
+
+
+func _reference_fps() -> float:
+	return float(GameData.combat["reference_fps"])
+
+
 func setup(p_class_id: String, palette: Dictionary, body_id := "body_male") -> void:
 	class_id = p_class_id
 	_palette = palette
 	attrs = GameData.class_attributes(class_id).duplicate()
 
-	max_health = GameData.max_health_for(int(attrs.get("vida", 8)))
+	max_health = GameData.max_health_for(int(attrs["vida"]))
 	health = max_health
-	defense = GameData.defense_for(int(attrs.get("constituicao", 8)))
-	stamina.configure(GameData.section("stamina"), GameData.max_stamina_for(int(attrs.get("stamina", 8))))
+	defense = GameData.defense_for(int(attrs["constituicao"]))
+	stamina.configure(GameData.section("stamina"), GameData.max_stamina_for(int(attrs["stamina"])))
 	max_mana = GameData.max_mana_for(attrs)
 	mana = max_mana
 	var meditation: Dictionary = GameData.spells.get("_rules", {}).get("meditation", {}) as Dictionary
-	meditation_uses_max = int(meditation.get("uses_per_rest", 2))
+	meditation_uses_max = int(meditation["uses_per_rest"])
 	meditation_uses = meditation_uses_max
-	_meditation_frames_total = int(float(meditation.get("seconds", 40.0)) * 60.0)
+	_meditation_frames_total = int(float(meditation["seconds"]) * _reference_fps())
 	favorite_spells.clear()
 	var spell_rules: Dictionary = GameData.spells.get("_rules", {}) as Dictionary
 	for spell_id: Variant in spell_rules.get("default_favorites", []):
 		favorite_spells.append(String(spell_id))
 	if not selected_spell in favorite_spells and not favorite_spells.is_empty():
 		selected_spell = favorite_spells[0]
-	flask_max = int(GameData.section("flask").get("uses", 3))
+	flask_max = int(GameData.section("flask")["uses"])
 	flask_uses = flask_max
 	_ability = GameData.ability(class_id)
 	_ability_cd = 0.0
 	_fury_time = 0.0
 
 	var loadout: Dictionary = (GameData.weapons.get("loadouts", {}) as Dictionary).get(class_id, {})
-	main_weapon = loadout.get("main", "longsword")
-	offhand_weapon = loadout.get("offhand", "") if loadout.get("offhand") != null else ""
-	is_two_handed = int(GameData.weapon(main_weapon).get("hands", 1)) >= 2
+	main_weapon = equipment_weapon_id(loadout.get("main"))
+	offhand_weapon = equipment_weapon_id(loadout.get("offhand", ""))
+	is_two_handed = _loadout_uses_two_hands(main_weapon, offhand_weapon)
 
 	var buf := GameData.section("input_buffer")
-	_buffer_life = int(float(buf.get("life_ms", 400)) * 0.06)          # ms -> frames a 60 fps
-	_buffer_life_parry = int(float(buf.get("parry_life_ms", 80)) * 0.06)
+	_buffer_life = int(float(buf["life_ms"]) * _reference_fps() / 1000.0)
+	_buffer_life_parry = int(float(buf["parry_life_ms"]) * _reference_fps() / 1000.0)
 
 	_build_body(body_id)
 	_build_children()
@@ -151,8 +179,8 @@ func setup(p_class_id: String, palette: Dictionary, body_id := "body_male") -> v
 
 func _build_body(body_id: String) -> void:
 	var cfg := GameData.section("player")
-	var height: float = cfg.get("capsule_height", 1.8)
-	var radius: float = cfg.get("capsule_radius", 0.35)
+	var height := float(cfg["capsule_height"])
+	var radius := float(cfg["capsule_radius"])
 
 	var capsule := CapsuleShape3D.new()
 	capsule.height = height
@@ -293,6 +321,10 @@ func _read_input() -> void:
 		_buffer("flask")
 	if Input.is_action_just_pressed("ability"):
 		_buffer("ability")
+	var raise_input_action := String(_ability.get("raise_input_action", ""))
+	if not raise_input_action.is_empty() \
+			and Input.is_action_just_pressed(raise_input_action):
+		_buffer("raise_dead")
 	if Input.is_action_just_pressed("toggle_grip"):
 		_buffer("toggle_grip")
 	if Input.is_action_just_pressed("lock_on"):
@@ -370,7 +402,8 @@ func _tick_state(delta: float) -> void:
 		State.GRIP_SWITCH: _tick_grip_switch(delta)
 		State.HITSTUN:   _tick_locked(delta, _hitstun_frames)
 		State.GUARD_BREAK:
-			_tick_locked(delta, int(GameData.section("block").get("guard_break_duration", 1.5) * 60.0))
+			_tick_locked(delta, int(float(GameData.section("block")["guard_break_duration"]) \
+				* _reference_fps()))
 		State.DEAD:
 			velocity.x = 0.0
 			velocity.z = 0.0
@@ -384,7 +417,7 @@ func _tick_free(delta: float) -> void:
 		return
 
 	match _take_buffered():
-		"light":  _start_attack("light")
+		"light":  use_primary_attack()
 		"heavy":  _start_attack("heavy")
 		"dodge":  _start_dodge()
 		"parry":  _start_parry()
@@ -392,11 +425,12 @@ func _tick_free(delta: float) -> void:
 		"meditate": _start_meditation()
 		"flask":  _start_flask()
 		"ability": _start_ability()
+		"raise_dead": _request_raise_dead()
 		"toggle_grip": _start_grip_switch()
 
 
 func _tick_block(delta: float) -> void:
-	_move(delta, GameData.section("movement").get("walk_speed", 3.0))
+	_move(delta, float(GameData.section("movement")["walk_speed"]))
 	if not Input.is_action_pressed("block") or not _can_block():
 		_change_state(State.FREE)
 		return
@@ -406,7 +440,7 @@ func _tick_block(delta: float) -> void:
 			if offhand_weapon == "shield" and not is_two_handed:
 				_start_attack("bash")
 			else:
-				_start_attack("light")
+				use_primary_attack()
 		"heavy": _start_attack("heavy")
 		"dodge": _start_dodge()
 		"parry": _start_parry()
@@ -424,13 +458,13 @@ func _tick_locked(delta: float, total_frames: int) -> void:
 func _speed_for_mode() -> float:
 	var m := GameData.section("movement")
 	if _sprinting and stamina.can_act() and _load_can_sprint:
-		return minf(float(m.get("sprint_speed", 7.0)), _load_max_speed)
+		return minf(float(m["sprint_speed"]), _load_max_speed)
 	if is_instance_valid(lock_on.target):
 		var input := _move_input()
 		# Andar de lado ou para tras com alvo engatado e mais lento — e o strafe da spec.
 		if absf(input.x) > 0.3 or input.y > 0.3:
-			return minf(float(m.get("strafe_speed", 4.0)), _load_max_speed)
-	var free_speed: float = m.get("run_speed", 5.0) if _load_can_run else m.get("walk_speed", 3.0)
+			return minf(float(m["strafe_speed"]), _load_max_speed)
+	var free_speed := float(m["run_speed"] if _load_can_run else m["walk_speed"])
 	return minf(free_speed, _load_max_speed)
 
 
@@ -450,7 +484,7 @@ func _move(delta: float, speed: float) -> void:
 
 	if dir.length() > 0.05:
 		if _sprinting and state == State.FREE:
-			stamina.spend(GameData.section("movement").get("sprint_stamina_per_second", 8.0) * delta)
+			stamina.spend(float(GameData.section("movement")["sprint_stamina_per_second"]) * delta)
 		velocity.x = dir.x * speed
 		velocity.z = dir.z * speed
 		_face(dir if not is_instance_valid(lock_on.target) else _to_target())
@@ -487,7 +521,7 @@ func _start_dodge() -> void:
 	var cfg := GameData.section("dodge")
 	if _fury_time > 0.0:
 		return   # Furia: sem esquiva — o preco da armadura
-	stamina.spend(cfg.get("stamina_cost", 25.0))
+	stamina.spend(float(cfg["stamina_cost"]))
 	Sfx.play("dodge", null, -6.0)
 
 	var input := _move_input()
@@ -502,8 +536,8 @@ func _start_dodge() -> void:
 
 func _tick_dodge(delta: float) -> void:
 	var cfg := GameData.section("dodge")
-	var total: int = int(cfg.get("duration_frames", 36))
-	var distance: float = cfg.get("distance", 3.5)
+	var total := int(cfg["duration_frames"])
+	var distance := float(cfg["distance"])
 
 	# Curva de saida: rapido no arranque, a morrer no fim. O integral da exactamente 3,5 m.
 	var t := clampf(float(state_frame) / float(total), 0.0, 1.0)
@@ -524,7 +558,7 @@ func _tick_dodge(delta: float) -> void:
 		return
 
 	# Cancelavel a partir de 0,45 s, em ataque leve / bloqueio / nova esquiva.
-	if state_frame >= int(cfg.get("cancel_from_frame", 27)):
+	if state_frame >= int(cfg["cancel_from_frame"]):
 		match _take_buffered():
 			"light": _start_attack("light")
 			"dodge": _start_dodge()
@@ -539,8 +573,8 @@ func has_iframes() -> bool:
 	if state != State.DODGE:
 		return false
 	var cfg := GameData.section("dodge")
-	return state_frame >= int(cfg.get("iframe_start_frame", 5)) \
-		and state_frame <= int(cfg.get("iframe_end_frame", 23))
+	return state_frame >= int(cfg["iframe_start_frame"]) \
+		and state_frame <= int(cfg["iframe_end_frame"])
 
 
 # --- Parry --------------------------------------------------------------------
@@ -553,7 +587,7 @@ func _can_parry() -> bool:
 func _start_parry() -> void:
 	if not _can_parry() or not stamina.can_act():
 		return
-	stamina.spend(GameData.section("parry").get("stamina_cost", 10.0))
+	stamina.spend(float(GameData.section("parry")["stamina_cost"]))
 	_change_state(State.PARRY)
 
 
@@ -561,8 +595,8 @@ func parry_window_open() -> bool:
 	if state != State.PARRY:
 		return false
 	var cfg := GameData.section("parry")
-	var start: int = cfg.get("startup_frames", 8)
-	return state_frame >= start and state_frame < start + int(cfg.get("active_frames", 8))
+	var start := int(cfg["startup_frames"])
+	return state_frame >= start and state_frame < start + int(cfg["active_frames"])
 
 
 func _tick_parry(delta: float) -> void:
@@ -571,15 +605,15 @@ func _tick_parry(delta: float) -> void:
 	if is_instance_valid(lock_on.target):
 		_face(_to_target())
 	var cfg := GameData.section("parry")
-	var total: int = int(cfg.get("startup_frames", 8)) + int(cfg.get("active_frames", 8)) \
-		+ int(cfg.get("whiff_recovery_frames", 40))
+	var total := int(cfg["startup_frames"]) + int(cfg["active_frames"]) \
+		+ int(cfg["whiff_recovery_frames"])
 	if state_frame >= total:
 		_change_state(State.FREE)
 
 
 func _start_riposte(target: Node3D) -> void:
 	var cfg := GameData.section("parry")
-	_atk_mv = cfg.get("riposte_mv", 2.5)
+	_atk_mv = float(cfg["riposte_mv"])
 	_atk_weapon = main_weapon
 	_atk_kind = "riposte"   # senao herdava o peso do golpe anterior no hit-stun
 	_atk = {}
@@ -594,7 +628,7 @@ func _start_riposte(target: Node3D) -> void:
 func _tick_riposte(delta: float) -> void:
 	velocity.x = 0.0
 	velocity.z = 0.0
-	var frames := int(GameData.section("parry").get("riposte_duration", 0.9) * 60.0)
+	var frames := int(float(GameData.section("parry")["riposte_duration"]) * _reference_fps())
 	if state_frame >= frames:
 		_change_state(State.FREE)
 
@@ -622,7 +656,7 @@ func _start_grip_switch() -> void:
 func _tick_grip_switch(delta: float) -> void:
 	velocity.x = move_toward(velocity.x, 0.0, delta * 20.0)
 	velocity.z = move_toward(velocity.z, 0.0, delta * 20.0)
-	var frames := int(GameData.section("grip").get("switch_frames", 12))
+	var frames := int(GameData.section("grip")["switch_frames"])
 	if state_frame >= frames:
 		is_two_handed = not is_two_handed
 		_combo_index = 0
@@ -639,9 +673,10 @@ func _can_block() -> bool:
 
 # --- Ataques ------------------------------------------------------------------
 
-func _start_attack(kind: String) -> void:
+func _start_attack(kind: String, feedback := "") -> void:
 	if not stamina.can_act():
 		return
+	_attack_feedback = feedback
 
 	# Um leve sobre um inimigo de postura quebrada vira riposte (spec: MV 2,5, com i-frames).
 	if kind == "light":
@@ -663,10 +698,10 @@ func _start_attack(kind: String) -> void:
 	_atk = data
 	_atk_kind = kind
 	_atk_weapon = weapon_id
-	_atk_startup = int(data.get("startup", 10))
-	_atk_active = int(data.get("active", 4))
-	_atk_recovery = int(data.get("recovery", 12))
-	_atk_mv = data.get("mv", 1.0)
+	_atk_startup = int(data["startup"])
+	_atk_active = int(data["active"])
+	_atk_recovery = int(data["recovery"])
+	_atk_mv = float(data["mv"])
 	Sfx.play("swing_heavy" if kind == "heavy" else "swing_light", null, -4.0)
 	_atk_hit = []
 	_charge_frames = 0
@@ -675,17 +710,24 @@ func _start_attack(kind: String) -> void:
 	# Combo: encadear leves aumenta o indice; o ultimo golpe tem MV proprio.
 	if kind == "light":
 		var combo: Dictionary = GameData.weapon(main_weapon).get("combo", {})
-		var max_combo: int = int(combo.get("max", 1))
+		var max_combo := int(combo["max"])
 		_combo_index = mini(_combo_index + 1, max_combo)
 		if _combo_index >= max_combo and combo.get("final_mv") != null:
 			_atk_mv = combo.get("final_mv")
 	else:
 		_combo_index = 0
 
-	stamina.spend(data.get("stamina", 10.0))
+	stamina.spend(float(data["stamina"]))
 	if is_instance_valid(lock_on.target):
 		_face(_to_target())
 	_change_state(State.ATTACK)
+	# Ha um unico escritor da pose durante o golpe. O controlador UAL recebe a
+	# ficha agora (nao um frame de render depois) e sincroniza-a pelo state_frame;
+	# os tres tempos continuam a vir exclusivamente de weapons.json.
+	var attack_animation := _attack_animation_controller()
+	if attack_animation != null:
+		attack_animation.call("play_attack", _atk_weapon, _atk_kind,
+			_combo_index, _sprinting, _atk)
 
 
 func _tick_attack(delta: float) -> void:
@@ -696,11 +738,11 @@ func _tick_attack(delta: float) -> void:
 
 	# Carregar o pesado do machadao: +20 f no maximo, MV sobe de 2,4 para 3,0.
 	if _charging and state_frame >= _atk_startup:
-		var max_charge := int(_atk.get("charge_max_frames", 20))
+		var max_charge := int(_atk["charge_max_frames"])
 		if _charge_frames < max_charge and Input.is_action_pressed("attack"):
 			_charge_frames += 1
 			var t := float(_charge_frames) / float(max_charge)
-			_atk_mv = lerpf(_atk.get("mv", 2.4), _atk.get("charge_max_mv", 3.0), t)
+			_atk_mv = lerpf(float(_atk["mv"]), float(_atk["charge_max_mv"]), t)
 			return
 		_charging = false
 
@@ -717,14 +759,16 @@ func _tick_attack(delta: float) -> void:
 	if state_frame > startup + _atk_active:
 		var into_recovery := state_frame - (startup + _atk_active)
 		var rules := GameData.section("attack_rules")
-		var combo_open := float(into_recovery) >= float(_atk_recovery) * (1.0 - float(rules.get("combo_window_fraction_of_recovery", 0.4)))
-		var cancel_open := float(into_recovery) >= float(_atk_recovery) * float(rules.get("cancel_threshold_fraction_of_recovery", 0.6))
+		var combo_open := float(into_recovery) >= float(_atk_recovery) * (1.0 \
+			- float(rules["combo_window_fraction_of_recovery"]))
+		var cancel_open := float(into_recovery) >= float(_atk_recovery) \
+			* float(rules["cancel_threshold_fraction_of_recovery"])
 
 		var combo: Dictionary = GameData.weapon(main_weapon).get("combo", {})
-		if combo_open and _atk_kind == "light" and _combo_index < int(combo.get("max", 1)):
+		if combo_open and _atk_kind == "light" and _combo_index < int(combo["max"]):
 			if _peek_buffer() == "light":
 				_take_buffered()
-				_start_attack("light")
+				use_primary_attack()
 				return
 
 		# So o LEVE se cancela. O pesado e compromisso total (spec).
@@ -755,14 +799,15 @@ func has_hyper_armor() -> bool:
 	if state != State.ATTACK or not bool(_atk.get("chargeable", false)):
 		return false
 	# Hiper-armadura do frame 30 ate ao fim dos frames activos (30-48 sem carga, e acompanha a carga).
-	var start := int(_atk.get("hyper_armor_start_frame", 30))
+	var start := int(_atk["hyper_armor_start_frame"])
 	var finish := _atk_startup + _charge_frames + _atk_active
 	return state_frame >= start and state_frame <= finish
 
 
 func _hit_query() -> void:
-	var reach: float = GameData.weapon(_atk_weapon).get("range", 2.0)
-	var arc := deg_to_rad(110.0)
+	var weapon := GameData.weapon(_atk_weapon)
+	var reach := float(weapon["range"])
+	var arc := deg_to_rad(float(weapon["arc_degrees"]))
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var e := node as Node3D
 		if e == null or _atk_hit.has(e):
@@ -771,7 +816,7 @@ func _hit_query() -> void:
 			continue
 		var to := e.global_position - global_position
 		to.y = 0.0
-		var enemy_radius: float = e.get("body_radius") if e.get("body_radius") != null else 0.5
+		var enemy_radius := float(e.get("body_radius"))
 		if to.length() > reach + enemy_radius:
 			continue
 		if _facing().angle_to(to.normalized()) > arc * 0.5:
@@ -787,17 +832,17 @@ func _deal_damage_to(e: Node3D, mv: float, weapon_id: String, is_bash: bool) -> 
 	var target_def: float = e.get("defense") if e.get("defense") != null else 0.0
 	var info := DamageInfo.make(GameData.compute_damage(mv, weapon_id, attrs, target_def), self,
 		"heavy" if _atk_kind == "heavy" else "light")
-	var posture_mult := 1.0
+	var posture_mult := float(GameData.section("poise")["standard_posture_multiplier"])
 	if is_bash:
-		posture_mult = GameData.section("poise").get("shield_bash_posture_multiplier", 2.0)
+		posture_mult = float(GameData.section("poise")["shield_bash_posture_multiplier"])
 	info.posture_damage = GameData.posture_damage_from_mv(mv, posture_mult)
 	e.call("take_damage", info)
 
 	# Paragem de impacto: o peso do machadao vem daqui, nao do dano.
 	var hs := GameData.section("hit_stop")
-	var frames: int = hs.get("heavy_hit", 6) if info.weight == "heavy" else hs.get("light_hit", 3)
+	var frames := int(hs["heavy_hit"] if info.weight == "heavy" else hs["light_hit"])
 	if e.has_method("is_alive") and not e.call("is_alive"):
-		frames = hs.get("killing_blow", 8)
+		frames = int(hs["killing_blow"])
 	_freeze(frames)
 	if e.get("hitstop_frames") != null:
 		e.set("hitstop_frames", frames)
@@ -808,6 +853,7 @@ func _freeze(frames: int) -> void:
 
 
 func _broken_posture_target() -> Node3D:
+	var parry := GameData.section("parry")
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var e := node as Node3D
 		if e == null or not e.has_method("is_posture_broken"):
@@ -816,7 +862,9 @@ func _broken_posture_target() -> Node3D:
 			continue
 		var to := e.global_position - global_position
 		to.y = 0.0
-		if to.length() <= 2.6 and _facing().angle_to(to.normalized()) < deg_to_rad(70):
+		if to.length() <= float(parry["riposte_range_m"]) \
+				and _facing().angle_to(to.normalized()) < deg_to_rad(float(
+					parry["riposte_half_angle_degrees"])):
 			return e
 	return null
 
@@ -868,15 +916,29 @@ func cast_selected_spell() -> bool:
 
 
 func set_waking_up(enabled: bool) -> void:
+	if enabled and not _waking_up:
+		_sitting_visual_started_at = _frame
+	elif not enabled and _waking_up:
+		_start_visual_transition("sitting_exit")
 	_waking_up = enabled
-	input_enabled = not enabled
+	input_enabled = not enabled and not _resting
+	velocity = Vector3.ZERO
+
+
+func set_resting(enabled: bool) -> void:
+	if enabled and not _resting:
+		_sitting_visual_started_at = _frame
+	elif not enabled and _resting:
+		_start_visual_transition("sitting_exit")
+	_resting = enabled
+	input_enabled = not enabled and not _waking_up
 	velocity = Vector3.ZERO
 
 
 func apply_inventory_state(equipment: Dictionary, load_profile: Dictionary) -> void:
-	main_weapon = String(equipment.get("main", ""))
-	offhand_weapon = String(equipment.get("offhand", ""))
-	is_two_handed = int(GameData.weapon(main_weapon).get("hands", 1)) >= 2
+	main_weapon = equipment_weapon_id(equipment.get("main", ""))
+	offhand_weapon = equipment_weapon_id(equipment.get("offhand", ""))
+	is_two_handed = _loadout_uses_two_hands(main_weapon, offhand_weapon)
 	favorite_spells.clear()
 	for spell_value: Variant in equipment.get("spell_favorites", []):
 		favorite_spells.append(String(spell_value))
@@ -886,37 +948,238 @@ func apply_inventory_state(equipment: Dictionary, load_profile: Dictionary) -> v
 	_load_can_dodge = bool(load_profile.get("can_dodge", true))
 	_load_can_run = bool(load_profile.get("can_run", true))
 	_load_can_sprint = bool(load_profile.get("can_sprint", true))
-	_load_max_speed = float(load_profile.get("max_speed", 999.0))
+	_load_max_speed = float(load_profile["max_speed"])
 	_load_fraction = float(load_profile.get("fraction", 0.0))
-	stamina.set_regen_multiplier(float(load_profile.get("regen_multiplier", 1.0)))
+	stamina.set_regen_multiplier(float(load_profile["regen_multiplier"]))
 
 
-func _start_cast() -> void:
+## A fronteira persistente guarda IDs. Alguns percursos antigos entregaram a
+## carta inteira; normaliza-a uma vez sem converter Dictionary/null em texto.
+static func equipment_weapon_id(value: Variant) -> String:
+	if value == null:
+		return ""
+	if value is Dictionary:
+		var card := value as Dictionary
+		for field: String in ["id", "weapon_id", "catalogue_id", "item_id", "key"]:
+			var candidate := String(card.get(field, ""))
+			if candidate.begins_with("arma:"):
+				candidate = candidate.trim_prefix("arma:")
+			if not candidate.is_empty():
+				return candidate
+		return ""
+	var candidate := String(value)
+	return candidate.trim_prefix("arma:") if candidate.begins_with("arma:") \
+		else candidate
+
+
+## O ataque primario usa o instrumento activo, como uma arma usa o seu golpe leve.
+## A pancada continua acessivel pelo pesado/duas maos e torna-se fallback sem mana.
+## O retorno e deliberadamente observavel: o teste e a UI nao precisam de conhecer
+## buffers nem a maquina de estados para explicar o que aconteceu ao jogador.
+func use_primary_attack() -> String:
+	var broken := _broken_posture_target()
+	if broken != null:
+		_start_riposte(broken)
+		return "riposte"
+
 	var s := GameData.spell(selected_spell)
-	if s.is_empty():
-		return
-	# Na Fatia 1, o unico instrumento implementado e o cajado. O catalogo completo
-	# declara os restantes por escola; nenhum feitico pode ignorar esse contrato.
-	if bool(GameData.spells.get("_rules", {}).get("requires_declared_instrument", true)) \
-			and not bool(GameData.weapon(main_weapon).get("can_cast", false)):
-		return
-	var cost := int(s.get("mana_cost", 1))
+	var instrument := _casting_instrument_for(s)
+	if s.is_empty() or instrument.is_empty():
+		_start_attack("light")
+		return "melee"
+
+	var cost := int(s.get("mana_cost"))
 	if mana < cost:
-		return   # sem mana: o plano B e a pancada do cajado (Lei 1 nao fica refem)
+		casting_fallback.emit("mana_insuficiente")
+		_start_attack("light", "pancada: mana insuficiente")
+		return "melee_no_mana"
+
+	_start_cast(s, instrument)
+	return "cast"
+
+
+## O instrumento secundario tem prioridade. Enquanto os kits reais ainda trazem
+## apenas um cajado `can_cast`, o mesmo catalogo tambem o reconhece na mao principal.
+func _secondary_instrument_for(spell: Dictionary) -> Dictionary:
+	# O catalogo define o instrumento secundario como metade do par
+	# cajado + instrumento. Se o jogador trocar o cajado por uma arma, o clique
+	# volta imediatamente a usar essa arma; o talisma/sino sozinho nao pode
+	# continuar a desviar o ataque para a magia que estava equipada antes.
+	if offhand_weapon == "" or is_two_handed or spell.is_empty() \
+			or not bool(GameData.weapon(main_weapon).get("can_cast", false)):
+		return {}
+	return _instrument_for_weapon(offhand_weapon, spell)
+
+
+func _loadout_uses_two_hands(main_id: String, offhand_id: String) -> bool:
+	# A decisao mais recente emparelha o cajado principal com um instrumento na
+	# secundaria. O `hands` historico do cajado continua a valer quando ele esta
+	# sozinho, mas nao pode esconder a segunda metade do par decidido.
+	if bool(GameData.weapon(main_id).get("can_cast", false)) \
+			and _is_magic_instrument(offhand_id):
+		return false
+	return int(GameData.weapon(main_id).get("hands", 1)) >= 2
+
+
+func _is_magic_instrument(weapon_id: String) -> bool:
+	if weapon_id.is_empty():
+		return false
+	var instruments: Dictionary = GameData.equipment.get("magic_instruments", {}) as Dictionary
+	for instrument_id: String in instruments:
+		var instrument := instruments.get(instrument_id, {}) as Dictionary
+		if weapon_id == instrument_id \
+				or weapon_id == String(instrument.get("weapon_id", instrument_id)):
+			return true
+	return false
+
+
+func _casting_instrument_for(spell: Dictionary) -> Dictionary:
+	var secondary := _secondary_instrument_for(spell)
+	if not secondary.is_empty():
+		return secondary
+	if not bool(GameData.weapon(main_weapon).get("can_cast", false)):
+		return {}
+	return _instrument_for_weapon(main_weapon, spell)
+
+
+func _instrument_for_weapon(weapon: String, spell: Dictionary) -> Dictionary:
+	if weapon.is_empty() or spell.is_empty():
+		return {}
+	var instruments: Dictionary = GameData.equipment.get("magic_instruments", {}) as Dictionary
+	var school := String(spell.get("school", ""))
+	for instrument_id: String in instruments:
+		var instrument: Dictionary = instruments.get(instrument_id, {}) as Dictionary
+		var weapon_id := String(instrument.get("weapon_id", instrument_id))
+		if weapon != weapon_id and weapon != instrument_id:
+			continue
+		if not (instrument.get("school_tags", []) as Array).has(school):
+			continue
+		var equipped := instrument.duplicate()
+		equipped["_instrument_id"] = instrument_id
+		return equipped
+	return {}
+
+
+func casting_instrument_id() -> String:
+	return String(_cast_instrument.get("_instrument_id", ""))
+
+
+## Prova opt-in no ficheiro que esta arvore pode editar. Exercita a mesma API que
+## a entrada usa e imprime um marcador unico para o comando falhar se ele faltar.
+func _run_casting_attack_self_test() -> void:
+	var s := GameData.spell(selected_spell)
+	var instruments: Dictionary = GameData.equipment.get("magic_instruments", {}) as Dictionary
+	var test_instrument_id := ""
+	var test_weapon_id := ""
+	for instrument_id: String in instruments:
+		var candidate: Dictionary = instruments.get(instrument_id, {}) as Dictionary
+		if (candidate.get("school_tags", []) as Array).has(String(s.get("school", ""))):
+			test_instrument_id = instrument_id
+			test_weapon_id = String(candidate.get("weapon_id", instrument_id))
+			break
+	if s.is_empty() or test_instrument_id == "" or test_weapon_id == "":
+		push_error("[casting-attack-test] catalogo sem feitico/instrumento compativel")
+		return
+
+	var original := {
+		"state": state,
+		"state_frame": state_frame,
+		"mana": mana,
+		"main_weapon": main_weapon,
+		"offhand_weapon": offhand_weapon,
+		"is_two_handed": is_two_handed,
+		"stamina": stamina.current,
+		"atk": _atk,
+		"atk_kind": _atk_kind,
+		"atk_weapon": _atk_weapon,
+		"attack_feedback": _attack_feedback,
+		"cast_spell": _cast_spell,
+		"cast_instrument": _cast_instrument,
+		"cast_frames_total": _cast_frames_total,
+	}
+	var staff: Dictionary = instruments.get("cajado", {}) as Dictionary
+	main_weapon = String(staff.get("weapon_id", main_weapon))
+	offhand_weapon = test_weapon_id
+	is_two_handed = false
+	state = State.FREE
+	mana = int(s.get("mana_cost"))
+	var cast_result := use_primary_attack()
+	var cast_ok := cast_result == "cast" and state == State.CASTING and mana == 0 \
+		and casting_instrument_id() == test_instrument_id
+
+	state = State.FREE
+	mana = 0
+	stamina.current = stamina.maximum
+	var fallback_result := use_primary_attack()
+	var fallback_ok := fallback_result == "melee_no_mana" and state == State.ATTACK \
+		and state_name() == "pancada: mana insuficiente"
+
+	state = int(original.state)
+	state_frame = int(original.state_frame)
+	mana = int(original.mana)
+	main_weapon = String(original.main_weapon)
+	offhand_weapon = String(original.offhand_weapon)
+	is_two_handed = bool(original.is_two_handed)
+	stamina.current = float(original.stamina)
+	_atk = original.atk as Dictionary
+	_atk_kind = String(original.atk_kind)
+	_atk_weapon = String(original.atk_weapon)
+	_attack_feedback = String(original.attack_feedback)
+	_cast_spell = original.cast_spell as Dictionary
+	_cast_instrument = original.cast_instrument as Dictionary
+	_cast_frames_total = int(original.cast_frames_total)
+
+	if cast_ok and fallback_ok:
+		print("[casting-attack-test] 2 passaram, 0 falharam")
+	else:
+		push_error("[casting-attack-test] esperado cast + fallback fisico legivel")
+
+
+func _start_cast(spell: Dictionary = {}, instrument: Dictionary = {}) -> bool:
+	var s: Dictionary = spell if not spell.is_empty() else GameData.spell(selected_spell)
+	if s.is_empty():
+		return false
+	var active_instrument: Dictionary = instrument if not instrument.is_empty() \
+		else _casting_instrument_for(s)
+	# [CODEX] Compatibilidade transitória: prefere a secundária decidida pelo
+	# Mateus, mas deixa o cajado `can_cast` dos kits actuais fechar o fio. Quando
+	# o dono dos dados equipar o talismã, este fallback deixa de ser usado. A
+	# alternativa é manter todos os kits de mago incapazes de conjurar.
+	if active_instrument.is_empty():
+		return false
+	var bundle := _spell_vfx_bundle(String(s.get("id", selected_spell)))
+	if bundle.is_empty():
+		casting_fallback.emit("vfx_nao_residente")
+		return false
+	var cost := int(s.get("mana_cost"))
+	if mana < cost:
+		return false
 	mana -= cost
-	_cast_spell = s
-	_cast_frames_total = int(float(s.get("cast_time", 0.8)) * 60.0)
+	_cast_instrument = active_instrument
+	_cast_spell = s.duplicate()
+	_cast_spell["_spell_id"] = selected_spell
+	_cast_spell["_instrument_id"] = casting_instrument_id()
+	_cast_spell["_instrument_weapon_id"] = String(active_instrument.get("weapon_id", ""))
+	_cast_spell["_instrument_spell_power"] = active_instrument.get("spell_power")
+	_cast_frames_total = int(float(s.get("cast_time")) \
+		* float(Engine.physics_ticks_per_second))
+	_attack_feedback = ""
+	_start_cast_flash(bundle, s)
 	_change_state(State.CASTING)
+	return true
 
 
 func _tick_casting(delta: float) -> void:
 	# Conjurar trava o movimento a 40% — e a Ruina trava-o por completo (WP4: "1,6 s parado").
-	var mult: float = GameData.spells.get("_rules", {}).get("move_multiplier_while_casting", 0.4)
+	var mult := float((GameData.spells["_rules"] as Dictionary)[
+		"move_multiplier_while_casting"])
 	if bool(_cast_spell.get("movement_locked", false)):
 		mult = 0.0
 	_move(delta, _speed_for_mode() * mult)
 	if is_instance_valid(lock_on.target):
 		_face(_to_target())
+	if is_instance_valid(_cast_flash) and _cast_flash.has_method("sync_tip"):
+		_cast_flash.call("sync_tip", _spell_origin())
 
 	if state_frame >= _cast_frames_total:
 		_release_spell()
@@ -924,25 +1187,124 @@ func _tick_casting(delta: float) -> void:
 
 
 func _release_spell() -> void:
+	var spell_id := String(_cast_spell.get("_spell_id", selected_spell))
 	var kind: String = _cast_spell.get("type", "projectile")
-	var origin := global_position + Vector3.UP * 1.2
+	var origin := _spell_origin()
 	var dir := _facing()
 	if is_instance_valid(lock_on.target):
-		dir = ((lock_on.target.global_position + Vector3.UP * 1.0) - origin).normalized()
+		var target_radius: float = lock_on.target.get("body_radius") \
+			if lock_on.target.get("body_radius") != null else 0.0
+		dir = ((lock_on.target.global_position + Vector3.UP * target_radius) \
+			- origin).normalized()
 
-	match kind:
-		"projectile":
-			var p := Spell.make_projectile(_cast_spell, self, origin, dir, attrs)
-			get_tree().current_scene.add_child(p)
-		"aoe":
-			var centre := origin + dir * minf(float(_cast_spell.get("max_range", 14.0)), 10.0)
-			if is_instance_valid(lock_on.target):
-				centre = lock_on.target.global_position
-			var a := Spell.make_aoe(_cast_spell, self, centre, attrs)
-			get_tree().current_scene.add_child(a)
-		"barrier":
-			_egide_shield = float(_cast_spell.get("absorb", 90))
-			_egide_time = float(_cast_spell.get("duration", 6.0))
+	var target_point := origin + dir * float(_cast_spell.get("max_range",
+		_cast_spell.get("range_m", 0.0)))
+	if is_instance_valid(lock_on.target):
+		target_point = lock_on.target.global_position
+	var delivery := SpellDeliveryFactoryScript.create(spell_id, GameData.spells, {
+		"origin": origin,
+		"direction": dir,
+		"caster": self,
+		"target": lock_on.target if is_instance_valid(lock_on.target) else null,
+		"target_point": target_point,
+		"target_group": "enemies",
+		"vfx_bundle": _spell_vfx_bundle(spell_id),
+	})
+	if delivery == null:
+		casting_fallback.emit("forma_de_magia_invalida")
+		_cancel_cast_flash()
+		return
+	delivery.add_to_group("spell_deliveries")
+	delivery.contacted.connect(_on_spell_delivery_contact)
+	get_tree().current_scene.add_child(delivery)
+	if kind == "barrier":
+		_egide_shield = float(_cast_spell.get("absorb", 0.0))
+		_egide_time = float(_cast_spell.get("duration", 0.0))
+	if is_instance_valid(_cast_flash) and _cast_flash.has_method("commit"):
+		_cast_flash.call("commit", origin)
+	_cast_flash = null
+
+
+func _on_spell_delivery_contact(target: Node3D, payload: Dictionary) -> void:
+	if not bool(payload.get("damage_enabled", false)):
+		return
+	Spell.apply_contact(payload.get("spell", {}) as Dictionary, self, attrs, target)
+
+
+func _spell_vfx_bundle(spell_id: String) -> Dictionary:
+	if _spell_vfx_residency == null:
+		_spell_vfx_residency = SpellVfxResidencyScript.new()
+		_spell_vfx_residency.call("configure", GameData.spells)
+	var equipped: Array = []
+	for favorite_id: String in favorite_spells:
+		equipped.append(favorite_id)
+	if equipped.is_empty() and not spell_id.is_empty():
+		equipped.append(spell_id)
+	var resident_ids := _spell_vfx_residency.call("resident_spell_ids") as Array
+	if resident_ids != equipped:
+		if not bool(_spell_vfx_residency.call("equip", equipped)):
+			return {}
+	return _spell_vfx_residency.call("bundle_for", spell_id) as Dictionary
+
+
+func _start_cast_flash(bundle: Dictionary, spell: Dictionary) -> void:
+	_cancel_cast_flash()
+	_ensure_casting_weapon_visual()
+	var contact_contracts: Dictionary = GameData.spells.get("_contact_contracts", {}) as Dictionary
+	var contact: Dictionary = contact_contracts.get(
+		String(spell.get("contact_type", "")), {}) as Dictionary
+	var host := get_tree().current_scene
+	if host == null:
+		host = get_parent()
+	if host == null:
+		return
+	_cast_flash = SpellCastVfxScript.new()
+	host.add_child(_cast_flash)
+	_cast_flash.call("configure", bundle, float(spell.get("cast_time", 0.0)),
+		int(contact.get("active_frames", 0)), _spell_origin())
+
+
+func _cancel_cast_flash() -> void:
+	if is_instance_valid(_cast_flash):
+		if _cast_flash.has_method("cancel"):
+			_cast_flash.call("cancel")
+		else:
+			_cast_flash.queue_free()
+	_cast_flash = null
+
+
+func _ensure_casting_weapon_visual() -> void:
+	if is_instance_valid(_casting_weapon_visual):
+		return
+	if not is_instance_valid(_visual):
+		return
+	_casting_weapon_visual = _find_casting_weapon_visual(self)
+	if is_instance_valid(_casting_weapon_visual):
+		return
+	var weapon_visual := CastingWeaponAttachScript.new() as Node3D
+	add_child(weapon_visual)
+	if not bool(weapon_visual.call("setup", self, _visual)):
+		weapon_visual.queue_free()
+		return
+	_casting_weapon_visual = weapon_visual
+
+
+func _find_casting_weapon_visual(root: Node) -> Node3D:
+	for child: Node in root.get_children():
+		if child != self and child.has_method("main_weapon_tip_position"):
+			return child as Node3D
+		var nested := _find_casting_weapon_visual(child)
+		if nested != null:
+			return nested
+	return null
+
+
+func _spell_origin() -> Vector3:
+	if is_instance_valid(_casting_weapon_visual) \
+			and _casting_weapon_visual.has_method("main_weapon_tip_position"):
+		return _casting_weapon_visual.call("main_weapon_tip_position") as Vector3
+	return global_position + Vector3.UP * float(
+		GameData.section("player").get("capsule_height", 0.0))
 
 
 # --- Levar dano ---------------------------------------------------------------
@@ -960,7 +1322,7 @@ func take_damage(info: DamageInfo) -> void:
 		if info.attacker != null and info.attacker.has_method("on_parried"):
 			info.attacker.call("on_parried")
 		# O momento-assinatura do jogo: 10 frames parados, o mais longo de todos.
-		var stop: int = GameData.section("hit_stop").get("parry_success", 10)
+		var stop := int(GameData.section("hit_stop")["parry_success"])
 		Sfx.play("parry", null, 2.0, 0.02)
 		_freeze(stop)
 		if info.attacker != null and info.attacker.get("hitstop_frames") != null:
@@ -975,21 +1337,22 @@ func take_damage(info: DamageInfo) -> void:
 	if state == State.BLOCK and _is_in_front(info) and not info.is_aoe:
 		var b := GameData.section("block")
 		var source := _block_source()
-		var absorb: float = b.get("shield_magic_absorb", 0.0) if info.is_magic else b.get("shield_physical_absorb", 1.0)
+		var absorb := float(b["shield_magic_absorb"] if info.is_magic \
+			else b["shield_physical_absorb"])
 		var cost_mult := 1.0
 		if source == "onehand":
-			absorb = b.get("onehand_absorb", 0.5)
-			cost_mult = b.get("onehand_cost_multiplier", 1.5)
+			absorb = float(b["onehand_absorb"])
+			cost_mult = float(b["onehand_cost_multiplier"])
 
 		var weight_key := "blow_weight_heavy" if info.weight == "heavy" else "blow_weight_light"
 		if source == "shield" and not info.is_magic:
 			absorb *= 1.0 - clampf(info.shield_pierce_fraction, 0.0, 1.0)
-		var cost: float = float(b.get("stamina_per_blow", 15.0)) * float(b.get(weight_key, 1.0)) \
+		var cost: float = float(b["stamina_per_blow"]) * float(b[weight_key]) \
 			* cost_mult * maxf(info.guard_stamina_multiplier, 1.0)
 		stamina.spend(cost)
 		amount *= (1.0 - absorb)
 		Sfx.play("hit_block")
-		_freeze(GameData.section("hit_stop").get("blocked", 4))
+		_freeze(int(GameData.section("hit_stop")["blocked"]))
 
 		if stamina.current <= 0.0:
 			_apply_health_loss(amount)
@@ -1012,6 +1375,7 @@ func take_damage(info: DamageInfo) -> void:
 	# interrompe, mas conserva a mana que entrou ate este frame (spec/54 + 66).
 	if state == State.CASTING and not has_hyper_armor():
 		_cast_spell = {}
+		_cancel_cast_flash()
 		_change_state(State.FREE)
 	elif state == State.MEDITATING:
 		_change_state(State.FREE)
@@ -1021,8 +1385,9 @@ func take_damage(info: DamageInfo) -> void:
 		return
 
 	Sfx.play("hit_flesh", null, -1.0, 0.1)
-	_freeze(GameData.section("hit_stop").get("player_hit", 4))
-	_hitstun_frames = int(info.hitstun_seconds(GameData.section("hitstun")) * 60.0)
+	_freeze(int(GameData.section("hit_stop")["player_hit"]))
+	_hitstun_frames = int(info.hitstun_seconds(GameData.section("hitstun")) \
+		* _reference_fps())
 	_change_state(State.HITSTUN)
 
 
@@ -1057,7 +1422,8 @@ func _is_in_front(info: DamageInfo) -> bool:
 	to.y = 0.0
 	if to.length_squared() < 0.001:
 		return true
-	return _facing().angle_to(to.normalized()) < deg_to_rad(100.0)
+	return _facing().angle_to(to.normalized()) < deg_to_rad(float(
+		GameData.section("block")["front_half_angle_degrees"]))
 
 
 func is_alive() -> bool:
@@ -1088,9 +1454,9 @@ func _cycle_loadout(direction: int) -> void:
 		return
 	_loadout_index = wrapi(_loadout_index + direction, 0, order.size())
 	var l: Dictionary = order[_loadout_index]
-	main_weapon = l.get("main", "longsword")
-	offhand_weapon = l.get("offhand", "") if l.get("offhand") != null else ""
-	is_two_handed = int(GameData.weapon(main_weapon).get("hands", 1)) >= 2
+	main_weapon = equipment_weapon_id(l.get("main", "longsword"))
+	offhand_weapon = equipment_weapon_id(l.get("offhand", ""))
+	is_two_handed = _loadout_uses_two_hands(main_weapon, offhand_weapon)
 	_combo_index = 0
 
 
@@ -1125,38 +1491,154 @@ func _refresh_colour() -> void:
 func _refresh_animation() -> void:
 	if _visual == null:
 		return
-	if _waking_up:
-		_visual.play_animation("Sitting_Idle")
+	_update_visual_transition()
+	if _waking_up or _resting:
+		var sitting_enter_frames := _visual.state_animation_frames(
+			"player", "sitting_enter")
+		var sitting_elapsed := maxi(0, _frame - _sitting_visual_started_at)
+		if sitting_elapsed < sitting_enter_frames:
+			_play_visual_state("sitting_enter", "", sitting_enter_frames)
+		else:
+			_play_visual_state("sitting_idle")
+		return
+	if state == State.FREE and Input.is_action_just_pressed("interact") \
+			and _ground_pickup_in_range():
+		_start_visual_transition("pickup")
+	if _play_visual_transition():
 		return
 	match state:
 		State.DEAD:
-			_visual.play_animation("Death01")
+			_play_visual_state("death")
 		State.DODGE:
 			_visual.play_animation("Roll")
-		State.ATTACK, State.RIPOSTE:
+		State.ATTACK:
+			# AttackAnimationController e o escritor unico desta pose e procura o
+			# clip pelo frame autoritativo. A chamada generica aqui apagava o arco.
+			if _attack_animation_controller() == null:
+				_visual.play_animation("Sword_Attack")
+		State.RIPOSTE:
 			_visual.play_animation("Sword_Attack")
+			var dodge_frames := int(GameData.section("dodge").get(
+				"duration_frames", 0)) + _dodge_recovery_extra
+			_play_visual_state("dodge", "", dodge_frames)
+		State.ATTACK:
+			_play_visual_state("attack", _attack_animation_context(),
+				_attack_animation_frames())
+		State.RIPOSTE:
+			var riposte_frames := int(float(GameData.section("parry").get(
+				"riposte_duration", 0.0)) * float(Engine.physics_ticks_per_second))
+			_play_visual_state("riposte", _weapon_animation_context(main_weapon),
+				riposte_frames)
 		State.CASTING:
-			_visual.play_animation("Spell_Simple_Shoot")
+			_play_casting_animation()
 		State.HITSTUN, State.GUARD_BREAK:
-			_visual.play_animation("Hit_Chest")
+			var locked_frames := _hitstun_frames if state == State.HITSTUN else int(
+				float(GameData.section("block").get("guard_break_duration", 0.0))
+				* float(Engine.physics_ticks_per_second))
+			_play_visual_state("hit_chest", "", locked_frames)
 		State.BLOCK, State.PARRY:
-			_visual.play_animation("Sword_Idle")
+			_play_visual_state("block", _weapon_animation_context(main_weapon))
 		State.MEDITATING:
-			_visual.play_animation("Sitting_Idle")
-		State.USING_ITEM, State.ABILITY, State.GRIP_SWITCH:
-			_visual.play_animation("Interact")
+			_play_visual_state("meditating")
+		State.USING_ITEM:
+			var item_frames := int(float(GameData.section("flask").get(
+				"use_seconds", 0.0)) * float(Engine.physics_ticks_per_second))
+			_play_visual_state("using_item", "", item_frames)
+		State.ABILITY:
+			_play_visual_state("ability")
+		State.GRIP_SWITCH:
+			_play_visual_state("grip_switch", "",
+				int(GameData.section("grip").get("switch_frames", 0)))
 		_:
 			var planar_speed := Vector2(velocity.x, velocity.z).length()
 			if planar_speed > 0.1:
-				_visual.play_animation("Sprint" if _sprinting else "Jog_Fwd")
+				_play_visual_state("sprint" if _sprinting else "jog")
 			else:
-				_visual.play_animation("Idle")
+				_play_visual_state("idle", _weapon_animation_context(main_weapon))
+
+
+func _play_visual_state(state_key: String, context := "", target_frames := 0) -> void:
+	_visual.play_state_animation("player", state_key, context, target_frames)
+
+
+func _weapon_animation_context(weapon_id: String) -> String:
+	if weapon_id.is_empty():
+		return "unarmed"
+	var family := String(GameData.weapon(weapon_id).get("familia", ""))
+	return family if not family.is_empty() else "armed"
+
+
+func _attack_animation_context() -> String:
+	if _atk_weapon.is_empty():
+		return "unarmed_cross" if _combo_index % 2 == 0 else "unarmed_jab"
+	return _weapon_animation_context(_atk_weapon)
+
+
+func _attack_animation_frames() -> int:
+	return _atk_startup + _charge_frames + _atk_active + _atk_recovery
+
+
+func _ground_pickup_in_range() -> bool:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return false
+	for candidate: Node in scene.find_children("*", "SecretsGroundItem", true, false):
+		if candidate.has_method("prompt_state") \
+				and not (candidate.call("prompt_state", global_position) as Dictionary).is_empty():
+			return true
+	return false
+
+
+func _play_casting_animation() -> void:
+	var enter_frames := _visual.state_animation_frames("player", "casting_enter")
+	var shoot_frames := _visual.state_animation_frames("player", "casting_shoot")
+	if state_frame <= enter_frames:
+		_play_visual_state("casting_enter", "", enter_frames)
+	elif state_frame > maxi(enter_frames, _cast_frames_total - shoot_frames):
+		_play_visual_state("casting_shoot", "", shoot_frames)
+	else:
+		_play_visual_state("casting_idle")
+
+
+func _update_visual_transition() -> void:
+	if state == _visual_previous_state:
+		return
+	if _visual_previous_state == State.CASTING and state == State.FREE:
+		_start_visual_transition("casting_exit")
+	elif state != State.FREE:
+		_visual_transition_state = ""
+	_visual_previous_state = state
+
+
+func _start_visual_transition(state_key: String) -> void:
+	_visual_transition_state = state_key
+	_visual_transition_started_at = _frame
+
+
+func _play_visual_transition() -> bool:
+	if _visual_transition_state.is_empty() or state != State.FREE:
+		return false
+	var frames := _visual.state_animation_frames("player", _visual_transition_state)
+	if frames <= 0 or _frame - _visual_transition_started_at >= frames:
+		_visual_transition_state = ""
+		return false
+	_play_visual_state(_visual_transition_state, "", frames)
+	return true
+
+
+func _attack_animation_controller() -> Node:
+	for child: Node in get_children():
+		if child.has_method("play_attack") \
+				and child.has_method("declared_family_animations"):
+			return child
+	return null
 
 
 func state_name() -> String:
 	match state:
 		State.FREE: return "livre"
-		State.ATTACK: return "ataque"
+		State.ATTACK:
+			return _attack_feedback if _attack_feedback != "" else "ataque"
 		State.DODGE: return "esquiva"
 		State.BLOCK: return "bloqueio"
 		State.GRIP_SWITCH: return "troca de empunhadura"
@@ -1177,6 +1659,11 @@ func state_name() -> String:
 # Implementadas: Impeto (warrior), Furia (berserker), Provocacao (tank).
 # Eco, Passo Sombra e Julgamento: registadas nos dados, entram por iteracao.
 
+func _request_raise_dead() -> void:
+	var spell_id := String(_ability.get("raise_spell_id", ""))
+	if not spell_id.is_empty():
+		raise_requested.emit(spell_id)
+
 func _start_ability() -> void:
 	if _ability.is_empty() or _ability_cd > 0.0:
 		return
@@ -1184,17 +1671,17 @@ func _start_ability() -> void:
 		"impeto":
 			if not stamina.can_act():
 				return
-			stamina.spend(float(_ability.get("stamina_cost", 30.0)))
-			_ability_cd = float(_ability.get("cooldown_s", 15.0))
+			stamina.spend(float(_ability["stamina_cost"]))
+			_ability_cd = float(_ability["cooldown_s"])
 			if is_instance_valid(lock_on.target):
 				_face(_to_target())
 			_change_state(State.ABILITY)
 		"furia":
-			_ability_cd = float(_ability.get("cooldown_s", 45.0))
-			_fury_time = float(_ability.get("duration_s", 8.0))
+			_ability_cd = float(_ability["cooldown_s"])
+			_fury_time = float(_ability["duration_s"])
 			Sfx.play("fury", null, 1.0)
 		"provocacao":
-			_ability_cd = float(_ability.get("cooldown_s", 30.0))
+			_ability_cd = float(_ability["cooldown_s"])
 			_taunt_all()
 		_:
 			pass  # por implementar — fica sem efeito em vez de fingir
@@ -1202,8 +1689,9 @@ func _start_ability() -> void:
 
 ## Impeto: avanco em linha que termina num golpe leve com MV proprio (1,2).
 func _tick_ability(_delta: float) -> void:
-	var dash_frames := int(float(_ability.get("dash_seconds", 0.35)) * 60.0)
-	var speed := float(_ability.get("dash_m", 6.0)) / maxf(float(_ability.get("dash_seconds", 0.35)), 0.05)
+	var dash_seconds := float(_ability["dash_seconds"])
+	var dash_frames := int(dash_seconds * _reference_fps())
+	var speed := float(_ability["dash_m"]) / dash_seconds
 	var dir := _facing()
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
@@ -1213,14 +1701,14 @@ func _tick_ability(_delta: float) -> void:
 		_change_state(State.FREE)
 		_start_attack("light")
 		if state == State.ATTACK:
-			_atk_mv = float(_ability.get("strike_mv", 1.2))
+			_atk_mv = float(_ability["strike_mv"])
 
 
 ## Provocacao: inimigos num raio ficam com atencao no Tanque (a ferramenta de
 ## co-op "segura o brutamontes"; a solo, acorda os que patrulham longe).
 func _taunt_all() -> void:
-	var radius := float(_ability.get("radius_m", 8.0))
-	var secs := float(_ability.get("duration_s", 4.0))
+	var radius := float(_ability["radius_m"])
+	var secs := float(_ability["duration_s"])
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var e := node as Node3D
 		if e != null and e.global_position.distance_to(global_position) <= radius and e.has_method("taunt"):
@@ -1251,9 +1739,10 @@ func _start_flask() -> void:
 
 func _tick_flask(delta: float) -> void:
 	var fl := GameData.section("flask")
-	_move(delta, float(GameData.section("movement").get("walk_speed", 3.0)) * float(fl.get("move_factor", 0.5)))
-	if state_frame >= int(float(fl.get("use_seconds", 1.2)) * 60.0):
-		health = minf(max_health, health + max_health * float(fl.get("heal_fraction", 0.4)))
+	_move(delta, float(GameData.section("movement")["walk_speed"]) \
+		* float(fl["move_factor"]))
+	if state_frame >= int(float(fl["use_seconds"]) * _reference_fps()):
+		health = minf(max_health, health + max_health * float(fl["heal_fraction"]))
 		Sfx.play("flask")
 		_change_state(State.FREE)
 

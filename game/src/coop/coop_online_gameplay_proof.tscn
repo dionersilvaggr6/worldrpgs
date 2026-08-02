@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/coop/coop_online_gameplay_proof.gd" id="1_proof"]
+
+[node name="CoopOnlineGameplayProof" type="Node"]
+script = ExtResource("1_proof")

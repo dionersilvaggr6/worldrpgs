@@ -21,10 +21,10 @@ func _run() -> void:
 		quit(1)
 		return
 	var errors: Array[String] = StartingLoadoutsContract.contract_errors(
-			game_data.weapons, game_data.equipment)
+			game_data.weapons, game_data.equipment, game_data.attributes)
 	var checks := 1
 	var loadouts := game_data.weapons.get("loadouts", {}) as Dictionary
-	for origin_id: String in StartingLoadoutsContract.ACTIVE_ORIGIN_IDS:
+	for origin_id: String in StartingLoadoutsContract.active_origin_ids(game_data.weapons):
 		checks += 3
 		var loadout := loadouts.get(origin_id, {}) as Dictionary
 		var expected_main := String(loadout.get("main", ""))

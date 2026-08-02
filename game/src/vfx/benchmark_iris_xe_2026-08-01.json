@@ -1,0 +1,33 @@
+{
+  "date": "2026-08-01",
+  "engine": "Godot 4.7.1 stable",
+  "adapter": "Intel(R) Iris(R) Xe Graphics",
+  "driver": "32.0.101.7082",
+  "renderer": "Forward Mobile / Vulkan",
+  "resolution": [1920, 1080],
+  "vsync": false,
+  "warmup_seconds": 6.0,
+  "sample_seconds": 12.0,
+  "spells_on_screen": ["dardo", "ruina", "egide"],
+  "visible_spell_count": 3,
+  "sample_frames": 2406,
+  "average_fps": 200.326550594943,
+  "average_frame_ms": 4.99184954280965,
+  "p95_frame_ms": 11.446,
+  "p99_frame_ms": 13.896,
+  "worst_frame_ms": 22.179,
+  "draw_calls": 13,
+  "objects": 185,
+  "static_memory_delta_bytes": 10059427,
+  "static_memory_peak_bytes": 76895392,
+  "residency": {
+    "policy": "equipped_only",
+    "resident_spell_count": 3,
+    "mesh_count": 3,
+    "material_count": 1,
+    "resource_count": 4,
+    "last_build_ms": 0.116
+  },
+  "capture": "user://spell-vfx-three.png",
+  "command": "godot --audio-driver Dummy --path game --rendering-method mobile --resolution 1920x1080 --script res://src/vfx/spell_vfx_benchmark.gd"
+}

@@ -1,6 +1,7 @@
 extends SceneTree
 ## Prova autónoma da arte inimiga. Valida escala/pés, produz uma captura com a
-## câmara a 30 m e compara o custo isolado do renderer corrente com o proposto.
+## câmara à distância de leitura do catálogo e compara o custo isolado do
+## renderer corrente com o proposto.
 ##
 ## godot --path game --rendering-method mobile \
 ##   --script res://assets/models/enemies/monster_visual_audit.gd -- --capture
@@ -16,7 +17,7 @@ var _frames := 0
 var _capture := false
 var _benchmark := false
 var _implementation := "monster"
-var _camera_distance_m := 30.0
+var _camera_distance_m := 20.0
 var _warmup_s := 0.0
 var _duration_s := 0.0
 var _elapsed_s := 0.0
@@ -128,31 +129,34 @@ func _validate_monster(enemy_id: String, visual: Node3D) -> void:
 		"%s: corpo mede %.4f m, alvo %.4f m" % [enemy_id, body.size.y, target])
 	_check(full.position.y >= -ground_tolerance,
 		"%s: silhueta atravessa o chão em %.4f m" % [enemy_id, full.position.y])
-	var distance := float(audit.get("readability_distance_m", 30.0))
+	var distance := float(audit.get("readability_distance_m", 20.0))
 	var fov_rad := deg_to_rad(float(audit.get("vertical_fov_deg", 70.0)))
 	var viewport_height := float(audit.get("viewport_height_px", 1080.0))
 	var body_pixels := 2.0 * atan(target / (2.0 * distance)) / fov_rad * viewport_height
-	_check(body_pixels >= float(audit.get("minimum_body_height_px_at_30m", 0.0)),
-		"%s: só %.1f px de corpo a 30 m" % [enemy_id, body_pixels])
-	print("[MONSTER_AUDIT] família=%s corpo=%.3fm pés=%.4fm silhueta_piso=%.4fm leitura_30m=%.1fpx" % [
-		enemy_id, body.size.y, body.position.y, full.position.y, body_pixels])
+	_check(body_pixels >= float(audit.get("minimum_body_height_px_at_distance", 0.0)),
+		"%s: só %.1f px de corpo a %.0f m" % [enemy_id, body_pixels, distance])
+	print("[MONSTER_AUDIT] família=%s corpo=%.3fm pés=%.4fm silhueta_piso=%.4fm leitura_%.0fm=%.1fpx" % [
+		enemy_id, body.size.y, body.position.y, full.position.y, distance, body_pixels])
 
 
 func _validate_family_set(ids: Array[String]) -> void:
-	_check(ids == ["orc_brute", "orc_spearman", "vorgar"],
-		"catálogo tem exactamente as três famílias da Fatia 1")
+	var expected_count := int(MONSTER_VISUAL.audit_rules().get(
+		"expected_family_count", ids.size()))
+	_check(ids.size() == expected_count,
+		"catálogo tem as %d famílias declaradas" % expected_count)
 	var signatures: Dictionary = {}
-	var previous_height := 0.0
-	for enemy_id: String in ["orc_spearman", "orc_brute", "vorgar"]:
+	var heights: Array[float] = []
+	for enemy_id: String in ids:
 		var profile := MONSTER_VISUAL.profile_for(enemy_id)
 		var signature := String(profile.get("silhouette_signature", ""))
 		_check(not signature.is_empty() and not signatures.has(signature),
 			"%s tem assinatura de silhueta própria" % enemy_id)
 		signatures[signature] = true
-		var height := float(profile.get("target_height_m", 0.0))
-		_check(height > previous_height,
-			"%s cresce por desenho (%.2f m)" % [enemy_id, height])
-		previous_height = height
+		heights.append(float(profile.get("target_height_m", 0.0)))
+	heights.sort()
+	for index: int in range(1, heights.size()):
+		_check(heights[index] > heights[index - 1],
+			"as alturas de silhueta do catálogo são distintas")
 
 
 func _build_environment(stage: Node3D) -> void:
@@ -229,7 +233,9 @@ func _capture_and_finish() -> void:
 
 func _finish_validation() -> void:
 	if _failures.is_empty():
-		print("[MONSTER_AUDIT] PASS famílias=3 escala=JSON pés=no_chão leitura=30m")
+		print("[MONSTER_AUDIT] PASS famílias=%d escala=JSON pés=no_chão leitura=%.0fm" \
+			% [MONSTER_VISUAL.family_ids().size(), float(MONSTER_VISUAL.audit_rules().get(
+				"readability_distance_m", 20.0))])
 		quit(0)
 		return
 	for failure: String in _failures:

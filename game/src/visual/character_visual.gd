@@ -3,9 +3,11 @@ extends Node3D
 ## Corpo humano Quaternius vestido sobre a capsula de fisica.
 ##
 ## Os dois corpos base partilham o esqueleto UAL de 65 ossos. A origem nunca
-## substitui esse corpo: acrescenta poucas pecas por cima, presas aos mesmos
-## ossos. O KayKit continua no repositorio para cenario, mas nao e um corpo de
-## jogador.
+## troca o rig. Quando existe um fato modular, porem, a geometria do fato
+## substitui o corpo e o modelo base conserva apenas cabeca, olhos e
+## sobrancelhas. E o contrato do pack Quaternius e evita clipping e trabalho de
+## vertices invisiveis. O KayKit continua no repositorio para cenario, mas nao
+## e um corpo de jogador.
 
 const PLAYER_BODY_PACK := "quaternius"
 const BODY_PATHS := {
@@ -155,6 +157,10 @@ const OUTFIT_MATERIALS := {
 }
 
 const QUATERNIUS_ANIMATION_PATH := "res://assets/models/animations/quaternius/UAL1_Standard.glb"
+const ANIMATION_CATALOGUE_PATH := "res://data/animations.json"
+const HEAD_BONES := [&"Head", &"neck_01"]
+const HEAD_WEIGHT_THRESHOLD := 0.5
+const AGGRESSIVE_LOD_TRIANGLE_THRESHOLD := 6000
 
 # Um unico ShaderMaterial por material-fonte; actor_tint e class_tint sao
 # uniforms de instancia. Assim seis cores nao criam seis materiais por actor.
@@ -174,15 +180,46 @@ uniform float normal_scale = 1.0;
 uniform float material_metallic = 0.0;
 instance uniform vec4 actor_tint : source_color = vec4(1.0);
 instance uniform vec4 class_tint : source_color = vec4(1.0);
+instance uniform vec4 equipment_tint : source_color = vec4(1.0);
+instance uniform float equipment_tint_strength = 0.0;
+instance uniform float equipment_material_strength = 0.0;
+instance uniform float equipment_roughness = 1.0;
+instance uniform float equipment_metallic = 0.0;
 
 void fragment() {
 	vec3 base_colour = material_albedo.rgb;
 	if (use_albedo_texture) {
 		base_colour *= texture(albedo_texture, UV).rgb;
 	}
-	ALBEDO = base_colour * actor_tint.rgb * mix(vec3(1.0), class_tint.rgb, 0.35);
-	ROUGHNESS = material_roughness;
-	METALLIC = material_metallic;
+	base_colour *= actor_tint.rgb * mix(vec3(1.0), class_tint.rgb, 0.35);
+	// A tinta de equipamento existe para dar COR a geometria gerada sem textura.
+	// Aplicada com forca total sobre um modelo que JA TRAZ textura, multiplica
+	// escuro por escuro e o boneco fica preto — foi o que o Mateus viu em
+	// 02-08 ("o personagem ta preto total"), com o inimigo iluminado ao lado.
+	// Onde ha textura, a tinta passa a ser um toque, nao uma segunda camada.
+	float equip = equipment_tint_strength * (use_albedo_texture ? 0.22 : 1.0);
+	base_colour *= mix(vec3(1.0), equipment_tint.rgb, equip);
+	// A luz clara do pack entra no mundo frio e humido por material, nunca por
+	// uma segunda textura. Assim a mesma regra cobre modelos e pecas geradas.
+	// ⚠️ O escurecimento global tambem se acumulava: sobre textura fica mais
+	// leve, senao dessatura duas vezes o que ja vinha dessaturado.
+	float luminance = dot(base_colour, vec3(0.2126, 0.7152, 0.0722));
+	float dessatura = use_albedo_texture ? 0.18 : 0.32;
+	// ⭐ 02-08, medido: T_Ranger_BaseColor tem luminancia media 63/255 e a do
+	// Peasant 57 — sao texturas JA escuras de origem. Multiplica-las ainda por
+	// um escurecimento global dava o "personagem preto total" que o Mateus viu,
+	// com o inimigo iluminado ao lado. Onde ha textura, LEVANTA-SE em vez de se
+	// escurecer, e o mundo frio continua a vir do nevoeiro e da gradacao.
+	// ⚠️ Sem isto nao ha material nem luz que salve: a cor de partida ja e preta.
+	vec3 saida = mix(base_colour, vec3(luminance), dessatura);
+	if (use_albedo_texture) {
+		saida = pow(saida, vec3(0.62)) * 1.18;
+	} else {
+		saida *= 0.78;
+	}
+	ALBEDO = saida;
+	ROUGHNESS = mix(material_roughness, equipment_roughness, equipment_material_strength);
+	METALLIC = mix(material_metallic, equipment_metallic, equipment_material_strength);
 	if (use_roughness_texture) {
 		ROUGHNESS *= texture(roughness_texture, UV).r;
 	}
@@ -190,25 +227,44 @@ void fragment() {
 		NORMAL_MAP = texture(normal_texture, UV).rgb;
 		NORMAL_MAP_DEPTH = normal_scale;
 	}
+	// ⭐ 02-08 — LUZ DE RECORTE. O Mateus: "o personagem ta preto total". Nao era
+	// so o material: em Brumal a luz vem de cima e de tras, e o jogador fica em
+	// contraluz enquanto o inimigo a sua frente apanha a luz toda. Sem isto a
+	// silhueta desaparece exactamente quando e mais precisa — a olhar para a
+	// frente, que e o que se faz o jogo inteiro.
+	// E o que os souls-like fazem: a personagem le-se SEMPRE, mesmo contra a luz.
+	// ⚠️ Custa uma multiplicacao por pixel e nada de memoria. Lei 4 intacta.
+	float rim = pow(1.0 - clamp(dot(normalize(NORMAL), normalize(VIEW)), 0.0, 1.0), 2.6);
+	RIM = 0.55;
+	RIM_TINT = 0.35;
+	EMISSION = ALBEDO * rim * 0.30;
 }
 """
 
 static var _quaternius_library: AnimationLibrary
 static var _quaternius_library_configured := false
+static var _animation_catalogue: Dictionary = {}
+static var _animation_catalogue_loaded := false
 static var _shared_shader: Shader
 static var _shared_double_sided_shader: Shader
 static var _shared_materials: Dictionary = {}
 static var _outfit_source_materials: Dictionary = {}
+static var _reduced_mesh_cache: Dictionary = {}
+static var _head_mesh_cache: Dictionary = {}
 
 var _animation_player: AnimationPlayer
 var _meshes: Array[MeshInstance3D] = []
 var _body: Node3D
 var _skeleton: Skeleton3D
 var _generated_attachments: Array[BoneAttachment3D] = []
+var _original_body_meshes: Dictionary = {}
 var _body_source_path := ""
 var _origin_id := ""
 var _current_animation := ""
+var _current_state_request := ""
+var _current_state_speed := 1.0
 var _current_tint := Color(-1.0, -1.0, -1.0, -1.0)
+var _body_is_head_only := false
 
 
 func setup(target_height: float, tint := Color.WHITE, casts_shadow := true,
@@ -241,19 +297,22 @@ func setup(target_height: float, tint := Color.WHITE, casts_shadow := true,
 	if _skeleton == null:
 		push_error("[CharacterVisual] Corpo Quaternius sem Skeleton3D: %s" % _body_source_path)
 		return
+	_remember_original_body_meshes()
 	_build_animation_player()
 	# A biblioteca UAL tem uma pose inicial diferente do rest pose importado.
 	# Aplicamo-la antes de calcular encaixes, para a roupa nao ganhar um braco de
 	# alavanca invisivel quando a primeira animacao entra.
-	if _animation_player != null and _animation_player.has_animation("Idle"):
-		_animation_player.play("Idle", 0.0)
+	var initial_profile := animation_state_profile("player", "idle", "unarmed")
+	var initial_clip := String(initial_profile.get("clip", ""))
+	if _animation_player != null and _animation_player.has_animation(initial_clip):
+		_animation_player.play(initial_clip, 0.0)
 		_animation_player.advance(0.0)
-		_current_animation = "Idle"
+		_current_animation = initial_clip
 	_build_origin_outfit(class_id)
 	var class_tint: Color = CLASS_TINTS.get(class_id, Color.WHITE)
 	_collect_meshes(_body, casts_shadow, class_tint)
 	set_tint(tint)
-	play_animation("Idle")
+	play_state_animation("player", "idle", "unarmed")
 	set_meta("character_body_pack", PLAYER_BODY_PACK)
 	set_meta("character_body_source", _body_source_path)
 	set_meta("origin_id", _origin_id)
@@ -315,6 +374,52 @@ func get_equipment_skeleton() -> Skeleton3D:
 	return _skeleton
 
 
+func set_body_replaced_by_outfit(replaced: bool) -> void:
+	## O readme Quaternius manda usar so a cabeca com roupa modular. Restaurar e
+	## deterministico para o caso de o jogador desequipar tudo no mesmo actor.
+	if _body == null or _skeleton == null or _body_is_head_only == replaced:
+		return
+	for mesh_node: Node in _body.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mesh_node as MeshInstance3D
+		var original := _original_body_meshes.get(mesh_instance) as Mesh
+		if original == null:
+			continue
+		if not replaced:
+			mesh_instance.mesh = original
+			continue
+		var cache_key := "%s#%s" % [_body_source_path, mesh_instance.name]
+		if _is_main_body_mesh(mesh_instance):
+			mesh_instance.mesh = _head_only_mesh(original, _skeleton, cache_key)
+		else:
+			mesh_instance.mesh = _reduced_skinned_mesh(original, _skeleton, cache_key)
+	_body_is_head_only = replaced
+	set_meta("body_geometry", "head_only" if replaced else "full_body")
+
+
+func body_is_replaced_by_outfit() -> bool:
+	return _body_is_head_only
+
+
+func reduced_skinned_mesh(source: Mesh, cache_key: String) -> Mesh:
+	## Fronteira usada por ArmorVisual para as pecas importadas. Materializa um
+	## LOD como malha principal; pecas densas usam o segundo nivel para que botas
+	## e mangas nunca custem mais do que o corpo que vieram substituir.
+	return _reduced_skinned_mesh(source, _skeleton, cache_key)
+
+
+func visible_triangle_count() -> int:
+	var total := 0
+	for mesh_node: Node in find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mesh_node as MeshInstance3D
+		if not mesh_instance.visible or mesh_instance.mesh == null:
+			continue
+		for surface: int in mesh_instance.mesh.get_surface_count():
+			var indices: PackedInt32Array = mesh_instance.mesh.surface_get_arrays(
+				surface)[Mesh.ARRAY_INDEX]
+			total += indices.size() / 3
+	return total
+
+
 func set_tint(tint: Color) -> void:
 	# Uniform de instancia: muda estado/cor sem duplicar nem reescrever materiais.
 	if tint.is_equal_approx(_current_tint):
@@ -324,15 +429,294 @@ func set_tint(tint: Color) -> void:
 		mesh_instance.set_instance_shader_parameter("actor_tint", tint)
 
 
+func _remember_original_body_meshes() -> void:
+	_original_body_meshes.clear()
+	for mesh_node: Node in _body.find_children("*", "MeshInstance3D", true, false):
+		var mesh_instance := mesh_node as MeshInstance3D
+		if mesh_instance.mesh != null:
+			_original_body_meshes[mesh_instance] = mesh_instance.mesh
+
+
+static func _is_main_body_mesh(mesh_instance: MeshInstance3D) -> bool:
+	var lowered := mesh_instance.name.to_lower()
+	return "superhero" in lowered or "superhero" in String(
+		mesh_instance.mesh.resource_name).to_lower()
+
+
+static func _head_only_mesh(source: Mesh, skeleton: Skeleton3D,
+		cache_key: String) -> Mesh:
+	if _head_mesh_cache.has(cache_key):
+		return _head_mesh_cache[cache_key] as Mesh
+	var head_bone_indices: Array[int] = []
+	for bone_name: StringName in HEAD_BONES:
+		var bone_index := skeleton.find_bone(bone_name)
+		if bone_index >= 0:
+			head_bone_indices.append(bone_index)
+	if head_bone_indices.is_empty():
+		push_warning("[CharacterVisual] corpo sem ossos de cabeca; conserva corpo completo")
+		return source
+	var cropped := ArrayMesh.new()
+	for surface: int in source.get_surface_count():
+		var arrays := _portable_surface_arrays(source.surface_get_arrays(surface))
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
+		var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
+		if vertices.is_empty() or indices.is_empty() or bones.is_empty() or weights.is_empty():
+			continue
+		var influences := int(bones.size() / vertices.size())
+		var head_indices := PackedInt32Array()
+		for offset: int in range(0, indices.size(), 3):
+			var keep_face := true
+			for corner: int in 3:
+				var vertex_index := indices[offset + corner]
+				var head_weight := 0.0
+				for influence: int in influences:
+					var influence_offset := vertex_index * influences + influence
+					if bones[influence_offset] in head_bone_indices:
+						head_weight += weights[influence_offset]
+				if head_weight < HEAD_WEIGHT_THRESHOLD:
+					keep_face = false
+					break
+			if keep_face:
+				for corner: int in 3:
+					head_indices.append(indices[offset + corner])
+		if head_indices.is_empty():
+			continue
+		arrays[Mesh.ARRAY_INDEX] = head_indices
+		cropped.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		cropped.surface_set_material(cropped.get_surface_count() - 1,
+			source.surface_get_material(surface))
+	if cropped.get_surface_count() == 0:
+		push_warning("[CharacterVisual] recorte de cabeca vazio; conserva corpo completo")
+		return source
+	var reduced := _reduced_skinned_mesh(cropped, skeleton, "%s#head" % cache_key)
+	_head_mesh_cache[cache_key] = reduced
+	return reduced
+
+
+static func _reduced_skinned_mesh(source: Mesh, skeleton: Skeleton3D,
+		cache_key: String) -> Mesh:
+	if source == null or skeleton == null:
+		return source
+	if _reduced_mesh_cache.has(cache_key):
+		return _reduced_mesh_cache[cache_key] as Mesh
+	var importer := ImporterMesh.new()
+	for surface: int in source.get_surface_count():
+		importer.add_surface(Mesh.PRIMITIVE_TRIANGLES,
+			_portable_surface_arrays(source.surface_get_arrays(surface)), [], {},
+			source.surface_get_material(surface), "surface_%d" % surface)
+	var bone_transforms: Array[Transform3D] = []
+	for bone_index: int in skeleton.get_bone_count():
+		bone_transforms.append(skeleton.get_bone_global_rest(bone_index))
+	importer.generate_lods(deg_to_rad(60.0), deg_to_rad(25.0), bone_transforms)
+	var source_triangle_count := 0
+	for surface: int in source.get_surface_count():
+		var source_indices: PackedInt32Array = source.surface_get_arrays(
+			surface)[Mesh.ARRAY_INDEX]
+		source_triangle_count += source_indices.size() / 3
+	var preferred_lod := 1 if source_triangle_count > AGGRESSIVE_LOD_TRIANGLE_THRESHOLD else 0
+	var reduced := ArrayMesh.new()
+	for surface: int in source.get_surface_count():
+		var arrays := _portable_surface_arrays(source.surface_get_arrays(surface))
+		var lod_count := importer.get_surface_lod_count(surface)
+		if lod_count > 0:
+			arrays[Mesh.ARRAY_INDEX] = importer.get_surface_lod_indices(
+				surface, mini(preferred_lod, lod_count - 1))
+		reduced.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		reduced.surface_set_material(surface, source.surface_get_material(surface))
+	_reduced_mesh_cache[cache_key] = reduced
+	return reduced
+
+
+static func _portable_surface_arrays(source_arrays: Array) -> Array:
+	## Os GLTF do corpo trazem canais custom comprimidos que so o mesh importado
+	## original sabe descrever. Nao contêm posicao, UV, normal, tangent, Skin nem
+	## material; remove-los permite materializar o LOD sem alterar o aspecto.
+	var arrays := source_arrays.duplicate()
+	for custom_channel: int in range(Mesh.ARRAY_CUSTOM0, Mesh.ARRAY_CUSTOM3 + 1):
+		arrays[custom_channel] = null
+	return arrays
+
+
+func apply_equipment_material(mesh_instance: MeshInstance3D,
+		tint: Color, tint_strength: float, roughness: float, metallic: float) -> void:
+	## Parametros de instancia: duas armaduras que partilham textura continuam a
+	## partilhar o Material, mas leem couro/ferro/pano sem editar o PNG 1024x1024.
+	mesh_instance.set_instance_shader_parameter("equipment_tint", tint)
+	mesh_instance.set_instance_shader_parameter("equipment_tint_strength", tint_strength)
+	mesh_instance.set_instance_shader_parameter("equipment_material_strength", tint_strength)
+	mesh_instance.set_instance_shader_parameter("equipment_roughness", roughness)
+	mesh_instance.set_instance_shader_parameter("equipment_metallic", metallic)
+
+
 func play_animation(animation_name: String, speed := 1.0) -> void:
+	_current_state_request = ""
+	_play_clip(animation_name, speed)
+
+
+func play_state_animation(actor_kind: String, state_key: String,
+		context := "", target_frames := 0) -> String:
+	## Fronteira semântica: Player e Enemy dizem o estado e os frames; o nome do
+	## clip e a sua duração-fonte pertencem exclusivamente a animations.json.
+	var profile := animation_state_profile(actor_kind, state_key, context)
+	var animation_name := String(profile.get("clip", ""))
+	if animation_name.is_empty():
+		return ""
+	var speed := animation_playback_speed(profile, target_frames)
+	var request := "%s|%s|%s|%d" % [actor_kind, state_key, context, target_frames]
+	var looped := bool(profile.get("loop", false))
+	if _current_state_request == request and _current_animation == animation_name \
+			and _animation_player != null \
+			and _animation_player.assigned_animation == animation_name:
+		_animation_player.speed_scale = speed
+		_current_state_speed = speed
+		if _animation_player.is_playing() or not looped:
+			return animation_name
+	_current_state_request = request
+	_play_clip(animation_name, speed)
+	return animation_name
+
+
+func state_animation_frames(actor_kind: String, state_key: String,
+		context := "") -> int:
+	return int(animation_state_profile(actor_kind, state_key, context).get(
+		"phase_frames", 0))
+
+
+func current_animation_name() -> String:
+	if _animation_player == null:
+		return ""
+	return String(_animation_player.assigned_animation)
+
+
+func _play_clip(animation_name: String, speed: float) -> void:
 	if _animation_player == null:
 		return
 	if not _animation_player.has_animation(animation_name):
 		animation_name = "Idle"
-	if _current_animation == animation_name and _animation_player.is_playing():
+	if _current_animation == animation_name \
+			and _animation_player.assigned_animation == animation_name \
+			and _animation_player.is_playing():
+		animation_name = String(_catalogue().get("fallback_clip", ""))
+	if animation_name.is_empty() or not _animation_player.has_animation(animation_name):
+		return
+	speed = maxf(speed, 0.001)
+	if _current_animation == animation_name and _animation_player.is_playing() \
+			and _animation_player.assigned_animation == animation_name:
+		_animation_player.speed_scale = speed
+		_current_state_speed = speed
 		return
 	_current_animation = animation_name
-	_animation_player.play(animation_name, 0.12, speed)
+	_current_state_speed = speed
+	_animation_player.speed_scale = speed
+	_animation_player.play(animation_name, 0.12)
+
+
+static func animation_state_profile(actor_kind: String, state_key: String,
+		context := "") -> Dictionary:
+	var catalogue := _catalogue()
+	var actor: Dictionary = catalogue.get(actor_kind, {}) as Dictionary
+	var states: Dictionary = actor.get("states", {}) as Dictionary
+	var state_value: Variant = states.get(state_key, {})
+	if not state_value is Dictionary:
+		return _profile_for_clip(String(state_value))
+	var state_profile := state_value as Dictionary
+	var selected: Variant = state_profile
+	var contexts: Dictionary = state_profile.get("contexts", {}) as Dictionary
+	if not contexts.is_empty():
+		selected = contexts.get(context)
+		if selected == null and context.begins_with("unarmed"):
+			selected = contexts.get("unarmed")
+		if selected == null and not context.begins_with("unarmed"):
+			selected = contexts.get("armed")
+		if selected == null:
+			selected = contexts.get("default")
+	var profile := _normalise_profile(selected)
+	for inherited_key: String in ["phase_frames", "loop", "source_frames"]:
+		if state_profile.has(inherited_key) and not profile.has(inherited_key):
+			profile[inherited_key] = state_profile[inherited_key]
+	return _complete_profile(profile)
+
+
+static func animation_playback_speed(profile: Dictionary, target_frames: int) -> float:
+	if target_frames <= 0:
+		return float(profile.get("speed", 1.0))
+	var source_frames := float(profile.get("source_frames", 0.0))
+	if source_frames <= 0.0:
+		return 1.0
+	return source_frames / float(target_frames)
+
+
+static func animation_catalogue_errors() -> PackedStringArray:
+	var errors := PackedStringArray()
+	var catalogue := _catalogue()
+	var clips: Dictionary = catalogue.get("clips", {}) as Dictionary
+	if clips.size() != 43:
+		errors.append("o catálogo UAL declara %d clips, esperados 43" % clips.size())
+	for actor_kind: String in ["player", "enemy"]:
+		var states: Dictionary = (catalogue.get(actor_kind, {}) as Dictionary).get(
+			"states", {}) as Dictionary
+		if states.is_empty():
+			errors.append("%s não declara estados" % actor_kind)
+		for state_key: String in states:
+			_collect_profile_errors(actor_kind, state_key, states[state_key], clips, errors)
+	return errors
+
+
+static func _collect_profile_errors(actor_kind: String, state_key: String,
+		value: Variant, clips: Dictionary, errors: PackedStringArray) -> void:
+	if value is String:
+		if not clips.has(String(value)):
+			errors.append("%s/%s aponta clip ausente %s" % [actor_kind, state_key, value])
+		return
+	if not value is Dictionary:
+		errors.append("%s/%s não é um perfil" % [actor_kind, state_key])
+		return
+	var profile := value as Dictionary
+	if profile.has("clip") and not clips.has(String(profile.get("clip", ""))):
+		errors.append("%s/%s aponta clip ausente %s" % [
+			actor_kind, state_key, profile.get("clip", "")])
+	for context: String in (profile.get("contexts", {}) as Dictionary):
+		_collect_profile_errors(actor_kind, "%s[%s]" % [state_key, context],
+			(profile.get("contexts", {}) as Dictionary)[context], clips, errors)
+
+
+static func _normalise_profile(value: Variant) -> Dictionary:
+	if value is String:
+		return {"clip": String(value)}
+	if value is Dictionary:
+		return (value as Dictionary).duplicate(true)
+	return {}
+
+
+static func _profile_for_clip(animation_name: String) -> Dictionary:
+	return _complete_profile({"clip": animation_name})
+
+
+static func _complete_profile(profile: Dictionary) -> Dictionary:
+	var animation_name := String(profile.get("clip", ""))
+	var clip_profile: Dictionary = (_catalogue().get("clips", {}) as Dictionary).get(
+		animation_name, {}) as Dictionary
+	for key: String in clip_profile:
+		if not profile.has(key):
+			profile[key] = clip_profile[key]
+	return profile
+
+
+static func _catalogue() -> Dictionary:
+	if _animation_catalogue_loaded:
+		return _animation_catalogue
+	_animation_catalogue_loaded = true
+	var parsed: Variant = JSON.parse_string(
+		FileAccess.get_file_as_string(ANIMATION_CATALOGUE_PATH))
+	if parsed is Dictionary:
+		_animation_catalogue = parsed as Dictionary
+		for error: String in animation_catalogue_errors():
+			push_error("[CharacterVisual] %s" % error)
+	else:
+		push_error("[CharacterVisual] catálogo inválido: %s" % ANIMATION_CATALOGUE_PATH)
+	return _animation_catalogue
 
 
 func _parent_class_id() -> String:
@@ -538,12 +922,8 @@ static func _cape_mesh(top_width: float, bottom_width: float, height: float,
 		var a := vertices[triangles[index]]
 		var b := vertices[triangles[index + 1]]
 		var c := vertices[triangles[index + 2]]
-		var normal := (b - a).cross(c - a).normalized()
-		for vertex: Vector3 in [a, b, c]:
-			surface.set_normal(normal)
-			surface.add_vertex(vertex)
-	surface.set_material(material)
-	return surface.commit()
+		_add_triangle(surface, a, b, c)
+	return _finish_smooth_surface(surface, material)
 
 
 static func _torso_mesh(top_width: float, bottom_width: float, height: float,
@@ -581,8 +961,7 @@ static func _torso_mesh(top_width: float, bottom_width: float, height: float,
 	for index in range(0, triangles.size(), 3):
 		_add_triangle(surface, v[triangles[index]], v[triangles[index + 1]],
 			v[triangles[index + 2]])
-	surface.set_material(material)
-	return surface.commit()
+	return _finish_smooth_surface(surface, material)
 
 
 static func _hood_mesh(size: Vector3, material: Material) -> ArrayMesh:
@@ -616,15 +995,21 @@ static func _hood_mesh(size: Vector3, material: Material) -> ArrayMesh:
 				cos(angle1) * float(upper["z"]))
 			_add_triangle(surface, a, b, c)
 			_add_triangle(surface, c, b, d)
-	surface.set_material(material)
-	return surface.commit()
+	return _finish_smooth_surface(surface, material)
 
 
 static func _add_triangle(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3) -> void:
-	var normal := (b - a).cross(c - a).normalized()
 	for vertex: Vector3 in [a, b, c]:
-		surface.set_normal(normal)
 		surface.add_vertex(vertex)
+
+
+static func _finish_smooth_surface(surface: SurfaceTool, material: Material) -> ArrayMesh:
+	## Nunca regressar a uma normal por triangulo: foi essa luz facetada que fazia
+	## as pecas geradas lerem-se como caixas, mesmo quando a silhueta era curva.
+	surface.index()
+	surface.generate_normals()
+	surface.set_material(material)
+	return surface.commit()
 
 
 static func _outfit_source_material(material_id: String) -> StandardMaterial3D:
@@ -698,12 +1083,16 @@ static func _quaternius_animation_library() -> AnimationLibrary:
 	source_root.free()
 	if _quaternius_library == null or _quaternius_library_configured:
 		return _quaternius_library
-	for looping: String in [
-		"Idle", "Sword_Idle", "Walk", "Jog_Fwd", "Sprint", "Crouch_Idle",
-		"Crouch_Fwd", "Spell_Simple_Idle", "Sitting_Idle",
-	]:
-		if _quaternius_library.has_animation(looping):
-			_quaternius_library.get_animation(looping).loop_mode = Animation.LOOP_LINEAR
+	var clips: Dictionary = (_catalogue().get("clips", {}) as Dictionary)
+	for animation_name: String in clips:
+		var clip_profile: Dictionary = clips.get(animation_name, {}) as Dictionary
+		if not _quaternius_library.has_animation(animation_name):
+			push_error("[CharacterVisual] clip catalogado ausente na UAL: %s" \
+				% animation_name)
+			continue
+		if bool(clip_profile.get("loop", false)) \
+				and _quaternius_library.has_animation(animation_name):
+			_quaternius_library.get_animation(animation_name).loop_mode = Animation.LOOP_LINEAR
 	_quaternius_library_configured = true
 	return _quaternius_library
 

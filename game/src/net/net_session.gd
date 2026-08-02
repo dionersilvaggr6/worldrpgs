@@ -30,6 +30,9 @@ signal session_ended(reason: String)
 signal connection_failed(reason: String)
 signal link_warning(message: String)
 signal combat_event(event_type: int, payload: Dictionary)
+signal peer_profile_received(peer_id: int, profile: Dictionary)
+
+const COOP_PLAYER_RUNTIME_SCRIPT = preload("res://src/coop/coop_player_runtime.gd")
 
 enum Role { OFFLINE, ANFITRIAO, CONVIDADO }
 
@@ -38,6 +41,9 @@ const DEFAULT_PORT := 27015
 var role := Role.OFFLINE
 var last_error := ""
 var link := NetLinkQuality.new()
+## Mantem a porta decidida pela spec no jogo. Provas paralelas podem escolher
+## outra antes de carregar nos mesmos botoes, sem disputar a 27015 entre arvores.
+var connection_port := DEFAULT_PORT
 
 ## Corpos remotos, por id de peer. Cada um com o seu interpolador.
 var _remote: Dictionary = {}
@@ -54,11 +60,14 @@ var local_body: Dictionary = {
 	"position": Vector3.ZERO, "yaw": 0.0, "state": 0,
 	"frame": 0, "health_fraction": 1.0, "flags": 0,
 }
+var local_profile: Dictionary = {}
+var _remote_profiles: Dictionary = {}
 
 ## Bytes enviados desde o inicio da sessao — para a medicao ser real e nao fe.
 var bytes_sent := 0
 var bytes_received := 0
 var _session_start := 0.0
+var _player_runtime: CoopPlayerRuntime
 
 
 func _ready() -> void:
@@ -67,6 +76,10 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_on_connected_ok)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	_player_runtime = COOP_PLAYER_RUNTIME_SCRIPT.new() as CoopPlayerRuntime
+	_player_runtime.name = "CoopPlayerRuntime"
+	add_child(_player_runtime)
+	_player_runtime.setup(self)
 	set_process(false)
 
 
@@ -74,35 +87,37 @@ func _ready() -> void:
 # spec/19, criterio 1 da fatia: "entrar numa sessao: < 2 min, sem editar
 # ficheiros". Por isso isto sao duas funcoes com um argumento cada.
 
-func host(port: int = DEFAULT_PORT) -> bool:
+func host(port: int = 0) -> bool:
 	if role != Role.OFFLINE:
 		_fail("Já estás numa sessão. Sai primeiro.")
 		return false
+	var target_port := connection_port if port <= 0 else port
 	var peer := ENetMultiplayerPeer.new()
 	# MAX_PLAYERS - 1: a spec fixa DOIS jogadores exactamente, e o anfitriao
 	# ja conta. Recusar o terceiro aqui e mais honesto do que o deixar entrar
 	# e partir-se num sitio qualquer mais a frente.
-	var err := peer.create_server(port, NetProtocol.MAX_PLAYERS - 1)
+	var err := peer.create_server(target_port, NetProtocol.MAX_PLAYERS - 1)
 	if err != OK:
-		_fail(_explain_host_error(err, port))
+		_fail(_explain_host_error(err, target_port))
 		return false
 	multiplayer.multiplayer_peer = peer
 	role = Role.ANFITRIAO
 	_begin_session()
-	hosting_started.emit(port)
+	hosting_started.emit(target_port)
 	return true
 
 
-func join(address: String, port: int = DEFAULT_PORT) -> bool:
+func join(address: String, port: int = 0) -> bool:
 	if role != Role.OFFLINE:
 		_fail("Já estás numa sessão. Sai primeiro.")
 		return false
+	var target_port := connection_port if port <= 0 else port
 	var clean := address.strip_edges()
 	if clean.is_empty():
 		_fail("Falta o endereço do teu parceiro.")
 		return false
 	var peer := ENetMultiplayerPeer.new()
-	var err := peer.create_client(clean, port)
+	var err := peer.create_client(clean, target_port)
 	if err != OK:
 		_fail("Não consegui ligar a %s. Confirma o endereço e se ele já está a hospedar." % clean)
 		return false
@@ -120,6 +135,7 @@ func leave(reason: String = "Saíste da sessão.") -> void:
 	multiplayer.multiplayer_peer = null
 	role = Role.OFFLINE
 	_remote.clear()
+	_remote_profiles.clear()
 	link.reset()
 	_warned = false
 	set_process(false)
@@ -261,6 +277,78 @@ func partner_body() -> Dictionary:
 	return remote_body(id) if id != 0 else {}
 
 
+# --- Identidade visual (fiavel) ----------------------------------------------
+
+## A pose cabe no canal de 20 Hz; a identidade muda raramente e tem de chegar.
+## Envia apenas ids de catalogo, nunca caminhos nem recursos arbitrarios.
+func set_local_profile(profile: Dictionary) -> bool:
+	var versioned := profile.duplicate(true)
+	versioned["protocol_version"] = NetProtocol.VERSION
+	var normalized := _normalise_profile(versioned)
+	if normalized.is_empty():
+		return false
+	local_profile = normalized
+	if is_online() and not multiplayer.get_peers().is_empty():
+		_receive_profile.rpc(local_profile)
+	return true
+
+
+func remote_profile(peer_id: int) -> Dictionary:
+	return (_remote_profiles.get(peer_id, {}) as Dictionary).duplicate(true)
+
+
+func partner_profile() -> Dictionary:
+	var id := partner_id()
+	return remote_profile(id) if id != 0 else {}
+
+
+func _normalise_profile(profile: Dictionary) -> Dictionary:
+	if int(profile.get("protocol_version", -1)) != NetProtocol.VERSION:
+		return {}
+	var profile_id := String(profile.get("profile_id", "")).strip_edges()
+	var class_id := String(profile.get("class_id", "")).strip_edges()
+	var classes := GameData.attributes.get("classes", {}) as Dictionary
+	if profile_id.is_empty() or class_id.is_empty() or class_id.begins_with("_") \
+			or not classes.has(class_id):
+		return {}
+	var body_id := String(profile.get("body_id", "body_male")).strip_edges()
+	if body_id.is_empty():
+		body_id = "body_male"
+	var appearance_options := GameData.appearance.get("options", {}) as Dictionary
+	var body_ids := appearance_options.get("body_id", []) as Array
+	if not body_id in body_ids:
+		return {}
+	return {
+		"protocol_version": NetProtocol.VERSION,
+		"profile_id": profile_id,
+		"class_id": class_id,
+		"body_id": body_id,
+	}
+
+
+func _send_profile_to(peer_id: int) -> void:
+	if peer_id == 0 or local_profile.is_empty():
+		return
+	_receive_profile.rpc_id(peer_id, local_profile)
+
+
+@rpc("any_peer", "reliable", "call_remote", 2)
+func _receive_profile(profile: Dictionary) -> void:
+	var sender := multiplayer.get_remote_sender_id()
+	var normalized := _normalise_profile(profile)
+	if normalized.is_empty():
+		var message := ("As versões dos dois jogos são diferentes. Actualizem os dois antes de voltar a entrar."
+			if int(profile.get("protocol_version", -1)) != NetProtocol.VERSION
+			else "Não consegui mostrar o corpo do teu parceiro porque o aspecto ou a origem dele não existe neste jogo.")
+		_fail(message)
+		call_deferred("leave", message)
+		return
+	if (_remote_profiles.get(sender, {}) as Dictionary) == normalized:
+		return
+	_remote_profiles[sender] = normalized
+	peer_profile_received.emit(sender, normalized.duplicate(true))
+
+
 # --- Eventos de combate (fiaveis, imediatos) ---------------------------------
 # spec/19: "eventos fiaveis e imediatos para golpes, parries e aggro".
 # Um golpe que nao conta e a Lei 1 quebrada — por isso estes vao no canal
@@ -366,11 +454,13 @@ func _on_peer_connected(id: int) -> void:
 			multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
 	_remote[id] = NetInterpolator.new()
+	_send_profile_to(id)
 	peer_connected.emit(id)
 
 
 func _on_peer_disconnected(id: int) -> void:
 	_remote.erase(id)
+	_remote_profiles.erase(id)
 	peer_disconnected.emit(id)
 	if is_host():
 		# spec/19: o mundo continua. Quem fica nao herda uma luta de dois —
@@ -379,6 +469,7 @@ func _on_peer_disconnected(id: int) -> void:
 
 
 func _on_connected_ok() -> void:
+	_send_profile_to(1)
 	joined.emit(multiplayer.get_unique_id())
 
 

@@ -48,7 +48,7 @@ A tabela de diagnóstico, para não se mexer em tudo ao mesmo tempo:
 | Morte típica em < 20 s de arena | dano do chefe alto | dano por golpe (tecto 60% da vida, WP2) | — |
 | Frasco nunca usado | cura não vale o risco de 1,2 s | valor do gole (40% → 50%) | duração do gole (é a decisão-com-corpo) |
 | Frasco esvaziado sempre | dano ambiente alto de mais | dano dos comuns da zona | cargas (3 é identidade da fatia) |
-| Jogador foge de grupos sempre | grupos ilegíveis | tamanho do grupo no `encontros.json` | o círculo de agressão (2 é a regra de justiça) |
+| Jogador foge de grupos sempre | grupos ilegíveis | composição/curva da zona em `world.json`; se for um rosto único, a ficha em `named_encounters.json` | o círculo de agressão (2 é a regra de justiça) |
 
 **Resumo da ordem de afinação:** 1.º correcção técnica → 2.º leitura e resposta executável → 3.º recompensa/custo do erro → 4.º duração/recursos → 5.º co-op → 6.º progressão. A árvore completa e os passos máximos vivem no [`63`](63-como-se-afinam-os-numeros.md) §3–6. **Nunca** se usa janela de esquiva/parry ou i-frames como botão de dificuldade; mexer-lhes é mudar de jogo.
 

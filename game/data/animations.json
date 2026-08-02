@@ -1,0 +1,468 @@
+{
+  "_schema": "worldrpgs.animations.v1",
+  "_decision": "Os estados pedem verbos semânticos; só este catálogo conhece os nomes importados. source_frames mede o clip a 60 fps e permite fazer a pose terminar no mesmo frame do estado de combate.",
+  "source_library": "res://assets/models/animations/quaternius/UAL1_Standard.glb",
+  "reference_fps": 60,
+  "fallback_clip": "Idle",
+  "weapon_attacks": {
+    "_source": "spec/41 + spec/68 + UAL1_Standard.glb; a lista vive no catalogo para uma familia nova nao depender de GDScript",
+    "families": {
+      "espada_recta": {
+        "leve_1": {"source_clip": "Sword_Attack", "motion": "corte_direita", "shape": "slash_right"},
+        "leve_2": {"source_clip": "Sword_Attack", "motion": "corte_retorno", "shape": "slash_left"},
+        "pesado": {"source_clip": "Sword_Attack", "motion": "vertical_duas_maos", "shape": "overhead"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "estocada_avanco", "shape": "thrust"}
+      },
+      "adaga": {
+        "leve_1": {"source_clip": "Punch_Jab", "motion": "estocada_curta", "shape": "jab"},
+        "leve_2": {"source_clip": "Punch_Cross", "motion": "corte_cruzado", "shape": "cross"},
+        "pesado": {"source_clip": "Punch_Cross", "motion": "apunhalar_duas_maos", "shape": "double_thrust"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "entrada_baixa", "shape": "low_lunge"}
+      },
+      "pesada_corte": {
+        "leve_1": {"source_clip": "Sword_Attack", "motion": "diagonal_com_peso", "shape": "diagonal_heavy"},
+        "leve_2": {"source_clip": "Sword_Attack", "motion": "retorno_da_anca", "shape": "hip_return"},
+        "pesado": {"source_clip": "Sword_Attack", "motion": "vertical_esmagador", "shape": "overhead_heavy"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "varrimento_em_corrida", "shape": "running_sweep"}
+      },
+      "katana": {
+        "leve_1": {"source_clip": "Sword_Attack", "motion": "saque_horizontal", "shape": "draw_cut"},
+        "leve_2": {"source_clip": "Sword_Attack", "motion": "corte_de_retorno_alto", "shape": "rising_return"},
+        "pesado": {"source_clip": "Sword_Attack", "motion": "corte_vertical_controlado", "shape": "overhead_narrow"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "iai_em_corrida", "shape": "running_draw"}
+      },
+      "haste": {
+        "leve_1": {"source_clip": "Sword_Attack", "motion": "estocada_longa", "shape": "long_thrust"},
+        "leve_2": {"source_clip": "Sword_Attack", "motion": "estocada_recolhida", "shape": "retract_thrust"},
+        "pesado": {"source_clip": "Sword_Attack", "motion": "varrimento_baixo", "shape": "low_sweep"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "carga_de_haste", "shape": "lance_charge"}
+      },
+      "cajado": {
+        "leve_1": {"source_clip": "Sword_Attack", "motion": "bastao_lateral", "shape": "staff_sweep"},
+        "leve_2": {"source_clip": "Sword_Attack", "motion": "bastao_de_retorno", "shape": "staff_return"},
+        "pesado": {"source_clip": "Sword_Attack", "motion": "pancada_firmada", "shape": "staff_slam"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "empurrao_de_bastao", "shape": "staff_shove"}
+      },
+      "arco": {
+        "leve_1": {"source_clip": "Pistol_Shoot", "motion": "soltar_flecha", "shape": "bow_release"},
+        "leve_2": {"source_clip": "Pistol_Reload", "motion": "rearmar_do_lado", "shape": "bow_nock"},
+        "pesado": {"source_clip": "Pistol_Aim_Neutral", "motion": "tiro_firmado", "shape": "bow_aim"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "disparo_em_corrida", "shape": "bow_running"}
+      },
+      "besta": {
+        "leve_1": {"source_clip": "Pistol_Shoot", "motion": "gatilho_e_recuo", "shape": "crossbow_recoil"},
+        "leve_2": {"source_clip": "Pistol_Reload", "motion": "baixar_e_rearmar", "shape": "crossbow_reload"},
+        "pesado": {"source_clip": "Pistol_Aim_Neutral", "motion": "mira_ampliada", "shape": "crossbow_aim"},
+        "em_corrida": {"source_clip": "Sprint", "motion": "tiro_da_anca", "shape": "crossbow_running"}
+      }
+    },
+    "shape_poses_degrees": {
+      "slash_right": {"windup": [-8, -48, -12], "strike": [6, 55, 14]},
+      "slash_left": {"windup": [-4, 42, 10], "strike": [8, -58, -16]},
+      "overhead": {"windup": [-42, -8, -5], "strike": [54, 6, 4]},
+      "thrust": {"windup": [8, -24, 18], "strike": [-18, 12, -8]},
+      "jab": {"windup": [12, -34, 24], "strike": [-12, 18, -16]},
+      "cross": {"windup": [8, 38, -22], "strike": [-8, -26, 18]},
+      "double_thrust": {"windup": [-16, -12, 28], "strike": [22, 10, -24]},
+      "low_lunge": {"windup": [26, -28, 12], "strike": [-28, 16, -10]},
+      "diagonal_heavy": {"windup": [-36, -46, -26], "strike": [46, 48, 28]},
+      "hip_return": {"windup": [24, 52, 32], "strike": [-20, -58, -30]},
+      "overhead_heavy": {"windup": [-58, 0, -12], "strike": [66, 0, 10]},
+      "running_sweep": {"windup": [4, -62, -20], "strike": [10, 70, 22]},
+      "draw_cut": {"windup": [20, -58, 30], "strike": [-8, 66, -18]},
+      "rising_return": {"windup": [28, 46, -34], "strike": [-30, -54, 24]},
+      "overhead_narrow": {"windup": [-48, -12, 8], "strike": [58, 14, -6]},
+      "running_draw": {"windup": [18, -68, 24], "strike": [-18, 72, -20]},
+      "long_thrust": {"windup": [4, -32, 8], "strike": [-8, 20, -4]},
+      "retract_thrust": {"windup": [-6, 28, -10], "strike": [12, -18, 8]},
+      "low_sweep": {"windup": [34, -52, -18], "strike": [22, 58, 20]},
+      "lance_charge": {"windup": [18, -18, 2], "strike": [-32, 8, -2]},
+      "staff_sweep": {"windup": [12, -46, -28], "strike": [18, 52, 32]},
+      "staff_return": {"windup": [10, 48, 30], "strike": [16, -54, -34]},
+      "staff_slam": {"windup": [-46, 6, -20], "strike": [58, -4, 18]},
+      "staff_shove": {"windup": [6, -24, 30], "strike": [-14, 18, -28]},
+      "bow_release": {"windup": [-6, -38, 36], "strike": [4, 20, -28]},
+      "bow_nock": {"windup": [22, 28, -18], "strike": [-12, -34, 24]},
+      "bow_aim": {"windup": [-18, -8, 42], "strike": [-4, 10, -36]},
+      "bow_running": {"windup": [18, -44, 22], "strike": [-24, 30, -18]},
+      "crossbow_recoil": {"windup": [-8, -18, 18], "strike": [16, 14, -14]},
+      "crossbow_reload": {"windup": [30, 16, -26], "strike": [-22, -18, 30]},
+      "crossbow_aim": {"windup": [-22, -4, 28], "strike": [12, 6, -22]},
+      "crossbow_running": {"windup": [16, -30, 12], "strike": [-20, 24, -10]}
+    },
+    "family_arm_bias_degrees": {
+      "espada_recta": [0, 0, 0],
+      "adaga": [18, 0, -20],
+      "pesada_corte": [-24, 0, 26],
+      "katana": [12, -12, -8],
+      "haste": [-8, 18, 10],
+      "cajado": [-16, -10, 18],
+      "arco": [8, 26, -18],
+      "besta": [-4, 18, 12]
+    }
+  },
+  "clips": {
+    "A_TPose": {
+      "source_frames": 150,
+      "loop": false
+    },
+    "Crouch_Fwd": {
+      "source_frames": 120,
+      "loop": true
+    },
+    "Crouch_Idle": {
+      "source_frames": 176,
+      "loop": true
+    },
+    "Dance": {
+      "source_frames": 60,
+      "loop": true
+    },
+    "Death01": {
+      "source_frames": 144,
+      "loop": false
+    },
+    "Driving": {
+      "source_frames": 100,
+      "loop": true
+    },
+    "Fixing_Kneeling": {
+      "source_frames": 312,
+      "loop": false
+    },
+    "Hit_Chest": {
+      "source_frames": 20,
+      "loop": false
+    },
+    "Hit_Head": {
+      "source_frames": 26,
+      "loop": false
+    },
+    "Idle": {
+      "source_frames": 150,
+      "loop": true
+    },
+    "Idle_Talking": {
+      "source_frames": 176,
+      "loop": true
+    },
+    "Idle_Torch": {
+      "source_frames": 76,
+      "loop": true
+    },
+    "Interact": {
+      "source_frames": 120,
+      "loop": false
+    },
+    "Jog_Fwd": {
+      "source_frames": 56,
+      "loop": true
+    },
+    "Jump": {
+      "source_frames": 150,
+      "loop": true
+    },
+    "Jump_Land": {
+      "source_frames": 76,
+      "loop": false
+    },
+    "Jump_Start": {
+      "source_frames": 80,
+      "loop": false
+    },
+    "PickUp_Table": {
+      "source_frames": 50,
+      "loop": false
+    },
+    "Pistol_Aim_Down": {
+      "source_frames": 10,
+      "loop": false
+    },
+    "Pistol_Aim_Neutral": {
+      "source_frames": 10,
+      "loop": false
+    },
+    "Pistol_Aim_Up": {
+      "source_frames": 10,
+      "loop": false
+    },
+    "Pistol_Idle": {
+      "source_frames": 100,
+      "loop": true
+    },
+    "Pistol_Reload": {
+      "source_frames": 100,
+      "loop": false
+    },
+    "Pistol_Shoot": {
+      "source_frames": 38,
+      "loop": false
+    },
+    "Punch_Cross": {
+      "source_frames": 60,
+      "loop": false
+    },
+    "Punch_Jab": {
+      "source_frames": 52,
+      "loop": false
+    },
+    "Push": {
+      "source_frames": 160,
+      "loop": true
+    },
+    "Roll": {
+      "source_frames": 88,
+      "loop": false
+    },
+    "Sitting_Enter": {
+      "source_frames": 78,
+      "loop": false
+    },
+    "Sitting_Exit": {
+      "source_frames": 62,
+      "loop": false
+    },
+    "Sitting_Idle": {
+      "source_frames": 100,
+      "loop": true
+    },
+    "Sitting_Talking": {
+      "source_frames": 176,
+      "loop": true
+    },
+    "Spell_Simple_Enter": {
+      "source_frames": 32,
+      "loop": false
+    },
+    "Spell_Simple_Exit": {
+      "source_frames": 26,
+      "loop": false
+    },
+    "Spell_Simple_Idle": {
+      "source_frames": 126,
+      "loop": true
+    },
+    "Spell_Simple_Shoot": {
+      "source_frames": 30,
+      "loop": false
+    },
+    "Sprint": {
+      "source_frames": 40,
+      "loop": true
+    },
+    "Swim_Fwd": {
+      "source_frames": 80,
+      "loop": true
+    },
+    "Swim_Idle": {
+      "source_frames": 200,
+      "loop": true
+    },
+    "Sword_Attack": {
+      "source_frames": 92,
+      "loop": false
+    },
+    "Sword_Idle": {
+      "source_frames": 100,
+      "loop": true
+    },
+    "Walk": {
+      "source_frames": 80,
+      "loop": true
+    },
+    "Walk_Formal": {
+      "source_frames": 80,
+      "loop": true
+    }
+  },
+  "player": {
+    "states": {
+      "idle": {
+        "contexts": {
+          "unarmed": "Idle",
+          "cajado": "Sword_Idle",
+          "armed": "Sword_Idle"
+        },
+        "_porque": "[CLAUDE] 02-08: o contexto \"cajado\" usava Spell_Simple_Idle e deixava a mao levantada para sempre. Passa a Sword_Idle (repouso armado). O Spell_Simple_Idle vive so no estado de canalizar."
+      },
+      "walk": {
+        "clip": "Walk"
+      },
+      "jog": {
+        "clip": "Jog_Fwd"
+      },
+      "sprint": {
+        "clip": "Sprint"
+      },
+      "crouch_idle": {
+        "clip": "Crouch_Idle"
+      },
+      "crouch_move": {
+        "clip": "Crouch_Fwd"
+      },
+      "torch_idle": {
+        "clip": "Idle_Torch"
+      },
+      "attack": {
+        "contexts": {
+          "unarmed": "Punch_Jab",
+          "unarmed_jab": "Punch_Jab",
+          "unarmed_cross": "Punch_Cross",
+          "armed": "Sword_Attack"
+        }
+      },
+      "riposte": {
+        "contexts": {
+          "unarmed": "Punch_Cross",
+          "armed": "Sword_Attack"
+        }
+      },
+      "dodge": {
+        "clip": "Roll"
+      },
+      "death": {
+        "clip": "Death01"
+      },
+      "hit_chest": {
+        "clip": "Hit_Chest"
+      },
+      "hit_head": {
+        "clip": "Hit_Head"
+      },
+      "block": {
+        "contexts": {
+          "unarmed": "Idle",
+          "armed": "Sword_Idle"
+        }
+      },
+      "casting_enter": {
+        "clip": "Spell_Simple_Enter",
+        "phase_frames": 8
+      },
+      "casting_idle": {
+        "clip": "Spell_Simple_Idle"
+      },
+      "casting_shoot": {
+        "clip": "Spell_Simple_Shoot",
+        "phase_frames": 16
+      },
+      "casting_exit": {
+        "clip": "Spell_Simple_Exit",
+        "phase_frames": 8
+      },
+      "sitting_enter": {
+        "clip": "Sitting_Enter",
+        "phase_frames": 24
+      },
+      "sitting_idle": {
+        "clip": "Sitting_Idle"
+      },
+      "sitting_exit": {
+        "clip": "Sitting_Exit",
+        "phase_frames": 20
+      },
+      "pickup": {
+        "clip": "PickUp_Table",
+        "phase_frames": 50
+      },
+      "interact": {
+        "clip": "Interact",
+        "phase_frames": 120
+      },
+      "push": {
+        "clip": "Push"
+      },
+      "jump_start": {
+        "clip": "Jump_Start"
+      },
+      "jump": {
+        "clip": "Jump"
+      },
+      "jump_land": {
+        "clip": "Jump_Land"
+      },
+      "using_item": {
+        "clip": "Interact"
+      },
+      "ability": {
+        "clip": "Interact"
+      },
+      "grip_switch": {
+        "clip": "Interact"
+      },
+      "meditating": {
+        "clip": "Sitting_Idle"
+      }
+    }
+  },
+  "enemy": {
+    "states": {
+      "idle": {
+        "clip": "Idle",
+        "loop": true
+      },
+      "patrol": {
+        "clip": "Walk",
+        "loop": true
+      },
+      "chase": {
+        "clip": "Jog_Fwd",
+        "loop": true
+      },
+      "attack": {
+        "contexts": {
+          "orc_spearman": {
+            "clip": "Sword_Attack",
+            "source_frames": 24
+          },
+          "orc_brute": {
+            "clip": "Sword_Attack",
+            "source_frames": 52
+          },
+          "vorgar": {
+            "clip": "Sword_Attack",
+            "source_frames": 52
+          },
+          "armed": {
+            "clip": "Sword_Attack",
+            "source_frames": 52
+          }
+        }
+      },
+      "hit": {
+        "contexts": {
+          "orc_spearman": {
+            "clip": "Hit_Chest",
+            "source_frames": 18
+          },
+          "orc_brute": {
+            "clip": "Hit_Chest",
+            "source_frames": 36
+          },
+          "vorgar": {
+            "clip": "Hit_Chest",
+            "source_frames": 36
+          },
+          "armed": "Hit_Chest"
+        }
+      },
+      "death": {
+        "contexts": {
+          "orc_spearman": {
+            "clip": "Death01",
+            "source_frames": 22
+          },
+          "orc_brute": {
+            "clip": "Death01",
+            "source_frames": 46
+          },
+          "vorgar": {
+            "clip": "Death01",
+            "source_frames": 46
+          },
+          "armed": "Death01"
+        }
+      }
+    }
+  }
+}

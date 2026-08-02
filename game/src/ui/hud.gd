@@ -28,6 +28,7 @@ var _lesson_time := 0.0
 var _prompt: Label
 var _save_status: Label
 var _save_status_time := 0.0
+var _network_hint: Label
 
 
 func _ready() -> void:
@@ -86,6 +87,10 @@ func _build_labels() -> void:
 	_save_status = _styled_label(Vector2(1580, 34), 16)
 	_save_status.size = Vector2(300, 40)
 	_save_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_network_hint = _styled_label(Vector2(1510, 282), 18)
+	_network_hint.size = Vector2(370, 32)
+	_network_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_network_hint.add_theme_color_override("font_color", Color("e6cf79"))
 	_lesson = _styled_label(Vector2(510, 748), 20)
 	_lesson.size = Vector2(900, 58)
 	_lesson.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -166,6 +171,10 @@ func has_context_tip() -> bool:
 
 func set_prompt(message: String) -> void:
 	_prompt.text = message
+
+
+func set_network_hint(message: String) -> void:
+	_network_hint.text = message
 
 
 func indicate_save() -> void:

@@ -12,8 +12,8 @@ O combate vem antes de tudo o que se vê porque é o risco nº 1 do projeto (WP0
 
 ### M0 — Fundação (a semana de alicerces)
 
-**Existe no fim:** repositório de construção novo (`worldrpgs-game` — nome a fechar com os dois); projecto Godot 4.x com renderer Mobile (WP14); `data/*.json` carregados com os números da spec e **validação dos tectos da Lei 1 ao carregar**; consola (F1), overlays (F2/F3), registo CSV e escrita atómica de saves (WP14) — as ferramentas primeiro, porque todos os marcos seguintes as usam.
-**Verifica-se:** boneco-cápsula anda numa sala vazia; mudar um número em `armas.json` e recarregar a quente muda o jogo sem reiniciar; um `inimigos.json` com golpe acima do tecto recusa carregar.
+**Existe no fim:** código em `game/` no repositório `worldrpgs` — `[DECIDIDO]` (Mateus, 31-07-2026), substitui o repositório separado previsto na primeira versão —; projecto Godot 4.7.1-stable com renderer Mobile (WP14); `data/*.json` carregados com os números da spec e **validação dos tectos da Lei 1 ao carregar**; consola (F1), overlays (F2/F3), registo CSV e escrita atómica de saves (WP14) — as ferramentas primeiro, porque todos os marcos seguintes as usam.
+**Verifica-se:** boneco-cápsula anda numa sala vazia; mudar um número em `weapons.json` e recarregar a quente muda o jogo sem reiniciar; um `enemies.json` com golpe acima do tecto recusa carregar.
 **Risco:** nenhum técnico; o risco é saltar os alicerces por parecerem lentos. Não saltar.
 
 ### M1 — Desempenho ✅ **já feito, antecipado** (31-07-2026)
@@ -54,7 +54,7 @@ O teste que este marco pedia correu antes do plano existir ([`09-tecnico.md`](09
 
 ### M7 — A fatia 1 inteira
 
-**Existe no fim:** tudo dos marcos anteriores, junto: as 6 classes com habilidades (WP3), criação de personagem, menus completos (WP11), e todos os produtores ligados à gravação atómica do [`59`](59-saves.md).
+**Existe no fim:** tudo dos marcos anteriores, junto: as **sete origens catalogadas** com habilidades (WP3), incluindo o Mago do Mal decidido a 01-08, criação de personagem, menus completos (WP11), e todos os produtores ligados à gravação atómica do [`59`](59-saves.md).
 **Verifica-se:** **os 7 critérios do WP0, um a um, com o CSV a prová-los** — rede < 2 min, jogador novo < 2 h, nível-1-zero-pontos, morte < 30 s, 60 fps quentes nas duas máquinas, telegrafia 8/10, e o voto dos dois ("queremos a fatia 2?").
 **Depois disto:** a gravação da sessão 2 (as decisões pendentes do 99) e a fatia 2 (Selva ou Campas — deles).
 

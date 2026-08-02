@@ -1,6 +1,7 @@
 {
-  "_fonte": "spec/66-catalogo-de-magia.md; herda spec/52 sem reescrever a escola vermelha e aplica spec/54-55",
-  "_lei_2": "Cada melhoria abre forma, area ou lancamentos; nenhuma linha e apenas forca.",
+  "_fonte": "spec/66-catalogo-de-magia.md + spec/52 §10 + DECISOES.md 01-08. A escola vermelha executa as quatro decisoes directas do Mateus.",
+  "_lei_2": "Cada melhoria abre forma, area ou lancamentos. [TENSÃO] Voto de Sangue e a excepcao decidida pelo Mateus: +30/+60/+90% continua aberto contra a Lei 2, sem ser silenciosamente trocado por verbos.",
+  "_tensao_voto_sangue": "[TENSÃO] spec/53 §§4-5 propoe trocas de verbo; DECISOES.md preserva o +30/+60/+90% escolhido pelo Mateus. Estes dados executam a decisao dele sem fechar a tensao.",
   "_instrument_scope": "[CODEX] o M2 executa apenas cajado, baseline 1,0; sino/talisma/chama/relicario/hibrido saem das fichas ate os donos responderem a 56.",
   "_schools": {
     "feiticaria": {
@@ -33,7 +34,17 @@
       "instrumentos": [
         "cajado"
       ],
-      "cor": "vermelho"
+      "cor": "vermelho",
+      "access_policy": "sem_bloqueio_de_origem",
+      "resource_costs": ["mana", "cadaver", "vida_maxima_visivel"],
+      "instrument_choice": {
+        "policy": "livre",
+        "roles": ["dano_dedicado", "necromancia_dedicada", "hibrido"],
+        "runtime_instrument_ids": ["cajado"],
+        "missing_catalogue_ids": ["relicario", "hibrido"],
+        "tradeoff": "dois dedicados ocupam as duas maos; um hibrido deixa uma mao livre e perde eficacia nas duas funcoes",
+        "source": "[DECIDIDO] Mateus, spec/52 §10"
+      }
     }
   },
   "_delivery_forms": [
@@ -50,9 +61,16 @@
     "onda_sem_dano",
     "isco"
   ],
+  "_contact_contracts": {
+    "_decision": "[CODEX] instantaneo usa 6 frames, o topo do intervalo decidido de 3-6; razao: conserva a leitura do golpe magico sem exceder a janela honesta. Alternativa descartada: 3 frames, que aumentava falhas de amostragem a 60 Hz sem criar uma escolha nova.",
+    "instantaneo": {"active_frames": 6, "hit_policy": "once_per_target"},
+    "volume_movel": {"active_while": "visible_and_moving", "hit_policy": "once_per_target_per_passage"},
+    "volume_persistente": {"active_while": "visible", "hit_policy": "declared_pulse_interval"},
+    "nenhum": {"active_frames": 0, "hit_policy": "no_contact"}
+  },
   "_delivery_contracts": {
     "projectil_simples": {"speed_m_s": 18.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.18, "lifetime_s": 1.5, "hit_policy": "first_body_or_solid", "count": 1, "cadence_s": 0.0, "pulse_s": 0.0},
-    "perfurante": {"speed_m_s": 20.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.16, "lifetime_s": 1.4, "hit_policy": "up_to_3_bodies_then_solid", "count": 1, "cadence_s": 0.0, "pulse_s": 0.0},
+    "perfurante": {"speed_m_s": 20.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.16, "lifetime_s": 1.4, "hit_policy": "up_to_3_bodies_then_solid", "max_target_hits": 3, "count": 1, "cadence_s": 0.0, "pulse_s": 0.0},
     "perseguidor": {"speed_m_s": 10.0, "turn_deg_s": 120.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.22, "lifetime_s": 2.0, "hit_policy": "first_body_or_solid_los_breaks", "count": 1, "cadence_s": 0.0, "pulse_s": 0.0},
     "orbitante": {"speed_m_s": 0.0, "turn_deg_s": 180.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.28, "lifetime_s": 2.5, "hit_policy": "once_per_target", "count": 3, "cadence_s": 0.0, "pulse_s": 0.20},
     "feixe": {"speed_m_s": 0.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.20, "lifetime_s": 0.60, "hit_policy": "pulse_visible_line_until_solid", "count": 1, "cadence_s": 0.0, "pulse_s": 0.20},
@@ -63,6 +81,81 @@
     "portador": {"speed_m_s": 8.0, "turn_deg_s": 90.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.30, "lifetime_s": 2.0, "hit_policy": "first_body_or_solid_each", "count": 3, "cadence_s": 0.50, "pulse_s": 0.0},
     "onda_sem_dano": {"speed_m_s": 9.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.15, "lifetime_s": 0.80, "hit_policy": "once_per_target_no_damage", "count": 1, "cadence_s": 0.0, "pulse_s": 0.0},
     "isco": {"speed_m_s": 0.0, "turn_deg_s": 0.0, "gravity_m_s2": 0.0, "collision_radius_m": 0.35, "lifetime_s": 8.0, "hit_policy": "no_damage_periodic_lure", "count": 1, "cadence_s": 0.0, "pulse_s": 1.0}
+  },
+  "_vfx": {
+    "_decision": "[CODEX] os VFX usam geometria e emissao sintetizadas em codigo, sem texturas, luzes ou particulas; so os feiticos equipados podem residir. Razao: tres silhuetas fortes e partilhadas custam menos na Iris Xe. Alternativa descartada: pre-carregar os 53 perfis, porque aumenta residencia sem melhorar o frame corrente.",
+    "residency": {
+      "policy": "equipped_only",
+      "max_spells": 8,
+      "reject_catalog_preload": true,
+      "share_mesh_by": "shape",
+      "share_material_by": "school",
+      "source": "synthesized_in_code"
+    },
+    "render": {
+      "radial_segments": 12,
+      "rings": 6,
+      "base_diameter_m": 1.0,
+      "shard_width_m": 0.22,
+      "shard_length_m": 1.0,
+      "plate_height_m": 0.16,
+      "beam_width_m": 0.20,
+      "beam_height_m": 0.12,
+      "blade_width_m": 0.18,
+      "blade_length_m": 1.0,
+      "ring_inner_radius_m": 0.42,
+      "ring_outer_radius_m": 0.50,
+      "core_scale": 0.55,
+      "halo_scale": 1.0,
+      "emission_energy": 2.4,
+      "halo_alpha": 0.28,
+      "cast_shadow": false
+    },
+    "school_colors": {
+      "feiticaria": "#63C7FF",
+      "milagre": "#FFD86A",
+      "piromancia": "#FF6A24",
+      "mal": "#D31F36"
+    },
+    "form_shapes": {
+      "projectil_simples": "shard",
+      "perfurante": "shard",
+      "perseguidor": "orb",
+      "orbitante": "plate",
+      "feixe": "beam",
+      "feixe_rasteiro": "beam",
+      "barragem_cone": "orb",
+      "chuva": "shard",
+      "forma_arma": "blade",
+      "portador": "orb",
+      "onda_sem_dano": "ring",
+      "isco": "orb"
+    },
+    "audio_profiles": {
+      "feiticaria": "attack_parry",
+      "milagre": "attack_dodge",
+      "piromancia": "attack_area",
+      "mal": "attack_hunter"
+    },
+    "benchmark": {
+      "spells": ["dardo", "ruina", "egide"],
+      "width": 1920,
+      "height": 1080,
+      "warmup_s": 6.0,
+      "sample_s": 12.0,
+      "target_fps": 60.0,
+      "target_frame_ms": 16.67,
+      "capture_frame": 90,
+      "background_color": "#07101F",
+      "ground_color": "#132844",
+      "floor_size_m": 30.0,
+      "camera_position": [0.0, 7.0, 13.0],
+      "camera_target": [0.0, 1.0, 0.0],
+      "origins": [[-3.2, 1.2, 2.0], [0.0, 1.4, 1.0], [3.2, 1.2, 2.0]],
+      "directions": [[0.10, 0.05, -1.0], [0.0, 0.0, -1.0], [-0.10, 0.05, -1.0]],
+      "targets": [[-2.4, 1.4, -7.0], [0.0, 1.4, -6.0], [2.4, 1.4, -7.0]],
+      "visible_cycle_s": [0.25, 0.65, 1.50]
+    }
   },
   "_escape_vectors": [
     "sair_da_linha",
@@ -108,6 +201,23 @@
       "interrupted_by_any_damage": true,
       "partial_mana_kept": true,
       "world_pauses": false
+    },
+    "dark_mage_health_budget": {
+      "resource": "vida_maxima_visivel",
+      "total_fraction": 1.0,
+      "must_remain_alive": true,
+      "payment_policy": "reserve_while_effect_active",
+      "release_does_not_heal": true,
+      "shared_by": ["raise_dead", "raise_boss", "blood_oath"],
+      "player_feedback": "a barra mostra imediatamente a vida maxima disponivel",
+      "source": "[DECIDIDO] spec/52 §10: chefe, Voto e invocacoes competem no mesmo orcamento"
+    },
+    "dark_mage_summons": {
+      "design_limit": "none",
+      "render_limit_by_preset": {"alto": 8, "medio": 5, "baixo": 3},
+      "render_limit_kind": "hardware_not_design",
+      "player_message_required": true,
+      "source": "spec/52 §10, Lei 4; medir na Iris Xe antes de promover os valores"
     }
   },
   "dardo": {
@@ -2322,6 +2432,22 @@
     "type": "catalog_only",
     "mv": 0,
     "base_damage": 0,
+    "effect_type": "raise_dead",
+    "effect": {
+      "requires_corpse": true,
+      "corpse_must_have_died_in_presence": true,
+      "corpse_reusable": false,
+      "health_cost_fraction_by_size": {"pequeno": 0.05, "medio": 0.10, "grande": 0.15},
+      "raised_health_fraction": 0.60,
+      "can_regenerate": false,
+      "can_be_healed": false,
+      "design_limit": "none",
+      "uses_shared_health_budget": true,
+      "ends_on": ["summon_death", "leave_zone", "rest"],
+      "ally_collision": "partner_passes_through",
+      "ally_colour": "vermelho"
+    },
+    "tuning_state": "[DECIDIDO] custos, 60% PV, sem cura, sem reutilizar e sem tecto de desenho vêm da spec/52 §10",
     "upgrades": [
       {
         "level": 0,
@@ -2378,6 +2504,24 @@
     "type": "catalog_only",
     "mv": 0,
     "base_damage": 0,
+    "effect_type": "raise_boss",
+    "effect": {
+      "requires_boss_corpse": true,
+      "corpse_reusable": false,
+      "health_cost_fraction": 0.50,
+      "raised_health_fraction": 0.60,
+      "can_regenerate": false,
+      "can_be_healed": false,
+      "active_policy": "single_boss",
+      "portable": true,
+      "uses_shared_health_budget": true,
+      "ends_on": ["summon_death", "rest"],
+      "preserve_full_ai": true,
+      "preserve_telegraphs": true,
+      "ally_collision": "partner_passes_through",
+      "ally_colour": "vermelho"
+    },
+    "tuning_state": "[DECIDIDO] chefe unico, portatil, IA completa e 60% PV; o custo de 50% compete no mesmo orcamento da spec/52 §10",
     "upgrades": [
       {
         "level": 0,
@@ -2928,9 +3072,9 @@
   "voto_sangue": {
     "display_name": "Voto de Sangue",
     "school": "mal",
-    "question": "aceito menos vida para trocar o verbo dos feitiços",
-    "verb": "cada camada custa 20% da vida; até três, com as trocas de verbo do spec/53",
-    "formula": "0 dano; efeito declarado não escala em força",
+    "question": "aceito menos vida maxima visivel para aumentar o dano ate descansar",
+    "verb": "cada camada reserva 20% da vida maxima e soma +30% de dano; empilha tres vezes",
+    "formula": "camadas: 1 = -20% PV/+30% dano; 2 = -40%/+60%; 3 = -60%/+90%",
     "mana_cost": 18,
     "cast_time": 0.8,
     "interruptible": true,
@@ -2949,6 +3093,19 @@
     "type": "catalog_only",
     "mv": 0,
     "base_damage": 0,
+    "effect_type": "blood_oath",
+    "effect": {
+      "layers": [
+        {"layer": 1, "health_cost_fraction_total": 0.20, "damage_bonus_fraction_total": 0.30},
+        {"layer": 2, "health_cost_fraction_total": 0.40, "damage_bonus_fraction_total": 0.60},
+        {"layer": 3, "health_cost_fraction_total": 0.60, "damage_bonus_fraction_total": 0.90}
+      ],
+      "stack_policy": "advance_to_next_layer",
+      "uses_shared_health_budget": true,
+      "visible_max_health_reduction": true,
+      "ends_on": ["rest"]
+    },
+    "tuning_state": "[DECIDIDO] Mateus: +30/+60/+90% por 20/40/60% PV. [TENSÃO] spec/53 propoe trocas de verbo; nao decidida, alternativa preservada no topo do ficheiro.",
     "upgrades": [
       {
         "level": 0,

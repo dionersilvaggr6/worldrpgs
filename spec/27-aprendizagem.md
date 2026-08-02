@@ -19,7 +19,7 @@ A orla de Brumal é o tutorial — sem nunca se anunciar como tal.
 | 0:00–0:30 | Aparecem na orla. Caminho de terra à frente, floresta densa aos lados | Mover + câmara | Espaço aberto, zero ameaças. A bruma fecha as direcções erradas (Lei 4 a fazer level design) |
 | 0:30–1:30 | **Um** orc lanceiro sozinho, no caminho, virado de costas | Aproximação + primeiro ataque | De costas = o jogador escolhe quando começa. Vida baixa: morre em 3–4 golpes leves |
 | 1:30–2:30 | **Dois** lanceiros, de frente | **Esquiva.** A estocada do lanceiro é linear e telegrafada → esquiva lateral resolve | Dois ao mesmo tempo tornam "só atacar" caro; a estocada falhada deixa-o exposto — a recompensa da esquiva é visível já |
-| 2:30–4:00 | **Um** brutamontes sozinho, a guardar um arco de pedra no caminho | **Parry.** O armar exagerado por cima da cabeça (o do conceito `con_orc_brutamontes`) é a janela desenhada | Lento demais para ser morto à pressa: rodeá-lo é possível mas o arco é estreito — o jogo *convida* a experimentar o parry sem o exigir |
+| 2:30–4:00 | **Um** brutamontes sozinho, a guardar um arco de pedra no caminho | **Parry.** O armar exagerado por cima da cabeça da ficha `orc_brute` — conceito real [`orc-brutamontes.png`](../art/concept/inimigos/orc-brutamontes.png) — é a janela desenhada | Lento demais para ser morto à pressa: rodeá-lo é possível mas o arco é estreito — o jogo *convida* a experimentar o parry sem o exigir |
 | 4:00–5:00 | Clareira com ponto de descanso e bivaque de orcs ao longe | Respirar, curar, olhar o mundo | Primeira pausa segura; o Frasco de Bruma usa-se aqui se sobreviveu arranhado |
 
 O aspecto final do ponto de descanso continua autoria visual; a função já está decidida: renascimento, reposição do frasco/mana/tentativas e reaparecimento dos inimigos (`→WP1`, [`33`](33-morte-e-almas.md), [`54`](54-mana-meditacao-e-tracos-de-classe.md)).
@@ -43,6 +43,8 @@ Formaliza a ideia do WP0 (os dois orcs são professores) como **padrão reutiliz
 Primeira vez que cada acção fica disponível, uma linha discreta no fundo do ecrã, 4 s, uma única vez por perfil:
 
 > `Espaço — esquiva` · `Q — aparar` · `R — Frasco de Bruma`
+
+São **exemplos dos valores de fábrica**, nunca texto fixo. A linha lê as acções `dodge_sprint`, `parry` e `use_item` de `controls.json` através de `SettingsSystem`; se o jogador remapear, a tecla mostrada muda no mesmo acto, como manda o [`45`](45-controlos-configuraveis.md).
 
 Nunca em combate — aparece no momento calmo *antes* do inimigo-professor. Desactivável nas opções (`→WP11`). *Alternativa descartada: zero texto absoluto — puro, mas com teclado+rato há teclas literalmente indescobríveis (parry por toque vs manter), e um jogador que nunca descobre o parry perdeu metade do jogo.*
 

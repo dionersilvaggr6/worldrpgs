@@ -1,5 +1,51 @@
 {
   "_fonte": "spec/70 §§1 e 5. Correcções canonicas de queda, ciclos, ressurreicao e Brasa.",
+  "enemy_lifecycle": {
+    "respawns_per_placement": 10,
+    "rewarded_defeats_per_placement": 10,
+    "placement_id_format": "zone_id:stable_spawn_id",
+    "respawn_counter_scope": "placement",
+    "soul_reward_counter_scope": "placement",
+    "loot_deck_scope": "enemy_type",
+    "bosses_respawn_on_rest": false,
+    "_codex_state_extension": "[CODEX] world.enemy_soul_rewards separa o orcamento de almas por colocacao do baralho por tipo; razao: spec/67 calcula quantidade colocada x10 e o runtime antigo fechava ao decimo saque do tipo; alternativa descartada: aumentar ou reiniciar o baralho, porque duplicaria itens garantidos."
+  },
+  "bonfire": {
+    "input_action": "interact",
+    "restores": ["health", "stamina", "mana", "flasks"],
+    "sets_checkpoint": true,
+    "respawns_common_enemies_in_zone": true,
+    "opens_level_up": true,
+    "opens_ember": true,
+    "visual_source": "synthesized_in_existing_bonfire_code",
+    "sound_source": "synthesized_in_progression_code",
+    "rest_audio": {"sample_rate_hz": 22050, "duration_s": 0.32, "start_hz": 260.0, "end_hz": 520.0, "volume_db": -12.0},
+    "ember_audio": {"sample_rate_hz": 22050, "duration_s": 0.45, "start_hz": 180.0, "end_hz": 720.0, "volume_db": -10.0}
+  },
+  "soul_stain": {
+    "pickup_action": "reach_body",
+    "visual_source": "synthesized_in_progression_code",
+    "sound_source": "synthesized_in_progression_code",
+    "presentation": {
+      "radius_m": 0.55,
+      "height_m": 0.08,
+      "pulse_hz": 1.4,
+      "emission_min": 0.9,
+      "emission_max": 2.1,
+      "light_energy": 0.7,
+      "light_range_m": 2.8,
+      "color": "#78D6C8",
+      "pickup_audio": {"sample_rate_hz": 22050, "duration_s": 0.24, "start_hz": 330.0, "end_hz": 660.0, "volume_db": -10.0},
+      "benchmark_max_simultaneous_stains": 2
+    }
+  },
+  "leveling": {
+    "where": "bonfire",
+    "cost_source": "economy.json/rules/level_cost",
+    "points_source": "attributes.json/level/points_per_level",
+    "maximum_level_source": "attributes.json/level/max_level",
+    "opens_content_by_level": false
+  },
   "fall": {
     "no_damage_max_m": 5.0,
     "fatal_min_m": 20.0,
@@ -34,7 +80,15 @@
     "purchasable": false,
     "source": "unique_optional_placed_reward",
     "raises_exactly_one_zone_by_cycles": 1,
+    "held_field": "character.progression.embers_held",
+    "collected_source_field": "character.progression.collected_placed_items",
+    "zone_cycles_field": "world.zone_cycles",
+    "visual_source": "existing_bonfire_mesh_changes_zone_cycle",
+    "sound_source": "bonfire.ember_audio_synthesized_in_progression_code",
+    "resets_enemy_respawns_in_zone": true,
+    "revives_zone_bosses": true,
     "already_rewarded_clear_souls": 0,
+    "resets_enemy_soul_rewards": false,
     "resets_loot_deck": false,
     "irreversible": true
   }

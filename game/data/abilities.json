@@ -1,6 +1,6 @@
 {
-  "_fonte": "spec/12-classes.md (WP3) — habilidade especial por classe, sob a Lei 2: verbos novos, nao numeros. Cooldowns fixos, nada escala com nivel.",
-  "_tecla": "[PROTO] V — a tabela de comandos do WP1 nao reservou tecla para a habilidade. Lacuna registada em PERGUNTAS.md.",
+  "_fonte": "spec/12-classes.md (WP3) + DECISOES.md 01-08 para a 7.a origem. Habilidade especial por origem, sob a Lei 2: verbos novos, nao numeros. Cooldowns fixos, nada escala com nivel.",
+  "_tecla": "A accao remapeavel ability existe em controls.json: V no teclado e Start/Options no comando por defeito. O mago do mal declara ainda raise_dead: B por defeito, sempre lido do mapa de controlos.",
   "_execution_baseline": "[CODEX] Tarefa 5: tempos de activacao/compromisso e regra de cooldown sao ponto de partida mensuravel; validar feel no M2 e manter a pergunta 45 aberta.",
 
   "warrior":   { "id": "impeto",        "display_name": "Impeto",        "effect_type": "dash_then_strike",       "cooldown_s": 15.0, "activation_s": 0.35, "commit_point_s": 0.18, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "stamina_cost": 30.0, "dash_m": 6.0, "dash_seconds": 0.35, "strike_mv": 1.2 },
@@ -8,5 +8,45 @@
   "tank":      { "id": "provocacao",    "display_name": "Provocacao",    "effect_type": "force_enemy_target",     "cooldown_s": 30.0, "activation_s": 0.50, "commit_point_s": 0.30, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "radius_m": 8.0, "duration_s": 4.0 },
   "assassin":  { "id": "entre_sombras", "display_name": "Entre Sombras", "effect_type": "dodge_passthrough_branch", "cooldown_s": 25.0, "activation_s": 0.20, "commit_point_s": 0.10, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "window_s": 3.0, "cross_slash_window_s": 2.0, "changes_iframes": false, "_estado": "proposta do Rico, Mateus pendente; baseline de execucao no spec/74, runtime M2" },
   "berserker": { "id": "furia",         "display_name": "Furia",         "effect_type": "hyper_armor_trade",      "cooldown_s": 45.0, "activation_s": 0.60, "commit_point_s": 0.40, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "duration_s": 8.0, "hyper_armor_all_attacks": true, "can_block": false, "can_dodge": false },
-  "paladin":   { "id": "julgamento",    "display_name": "Julgamento",    "effect_type": "weapon_element_conversion", "cooldown_s": 40.0, "activation_s": 0.70, "commit_point_s": 0.45, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "duration_s": 10.0, "element": "raio", "conversion_fraction": 1.0, "increases_total_damage": false, "_estado": "baseline de execucao [CODEX]; usa as resistencias do WP6 e valida no M2" }
+  "paladin":   { "id": "julgamento",    "display_name": "Julgamento",    "effect_type": "weapon_element_conversion", "cooldown_s": 40.0, "activation_s": 0.70, "commit_point_s": 0.45, "interruptible_before_commit": true, "cooldown_starts": "on_commit", "duration_s": 10.0, "element": "raio", "conversion_fraction": 1.0, "increases_total_damage": false, "_estado": "baseline de execucao [CODEX]; usa as resistencias do WP6 e valida no M2" },
+  "evil_mage": {
+    "id": "cortejo_carmim",
+    "display_name": "Cortejo Carmim",
+    "effect_type": "toggle_summon_order",
+    "input_action": "ability",
+    "raise_input_action": "raise_dead",
+    "raise_spell_id": "levantar",
+    "corpse_body_size_by_role": {
+      "grupo": "pequeno",
+      "distancia": "pequeno",
+      "armadilha": "pequeno",
+      "rapido": "medio",
+      "pesado": "grande"
+    },
+    "raise_feedback": {
+      "accepted": "O corpo levantou-se e luta ao teu lado.",
+      "no_eligible_corpse": "Nenhum corpo reclamável à tua frente.",
+      "insufficient_current_health": "PV insuficientes: Levantar deixava-te morto.",
+      "insufficient_health_budget": "PV máximos insuficientes: o pacto já consumiu a tua margem.",
+      "corpse_already_claimed": "Esse corpo já foi reclamado.",
+      "missing_body_size_data": "Esse corpo não tem tamanho de necromancia definido.",
+      "rejected": "Não foi possível levantar esse corpo."
+    },
+    "cooldown_s": 1.0,
+    "activation_s": 0.30,
+    "commit_point_s": 0.15,
+    "interruptible_before_commit": true,
+    "cooldown_starts": "on_commit",
+    "requires_active_summon": true,
+    "default_order": "follow_caster",
+    "orders": ["follow_caster", "hold_ground"],
+    "presentation": {
+      "visual_event": "anel_vermelho_de_ordem",
+      "visual_source": "sintetizado em codigo; o conceito art/concept/classes/mago-do-mal.png fixa silhueta e paleta, nao e asset runtime",
+      "sound_event": "corrente_curta_e_pulsacao_grave",
+      "sound_source": "a sintetizar em codigo no banco Sfx, sem ficheiro externo"
+    },
+    "_estado": "[CODEX] alternar seguir/guardar dá controlo ao exército sem aumentar dano. Razao: invocacoes sem tecto precisam de um verbo unico e legivel no V; alternativa descartada: puxar cadaveres ao mago, porque apagava a postura de ter de andar entre os mortos. Integracao em player/Sfx pertence aos respectivos donos.",
+    "_timing_state": "[CODEX] 0,30 s de activacao, compromisso a 0,15 s e cooldown de 1 s tornam a troca visivel e evitam duplo toque acidental; alternativa descartada: alternancia instantanea sem cooldown, que nao comunica qual ordem ficou activa. Validar feel no M2."
+  }
 }

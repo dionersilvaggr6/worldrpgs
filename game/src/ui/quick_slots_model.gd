@@ -64,12 +64,24 @@ static func normalise_state(state: Dictionary, weapons: Dictionary,
 	var quick_slots: Array = []
 	var stored_quick_slots: Variant = inventory.get("quick_slots", [])
 	if typeof(stored_quick_slots) == TYPE_ARRAY:
+		var seen_quick_keys: Dictionary = {}
 		for quick_value: Variant in (stored_quick_slots as Array):
 			var quick_key := String(quick_value)
-			if quick_key.begins_with("consumivel:") and not quick_slots.has(quick_key):
-				quick_slots.append(quick_key)
-	if not quick_slots.has(FLASK_ITEM_KEY):
-		quick_slots.push_front(FLASK_ITEM_KEY)
+			# Saves do primeiro editor guardavam apenas o id. A autoridade da
+			# mochila e do runtime e a chave completa `tipo:id`.
+			if quick_key != "" and not quick_key.contains(":"):
+				quick_key = "consumivel:%s" % quick_key
+			if not quick_key.begins_with("consumivel:") \
+					or seen_quick_keys.has(quick_key):
+				quick_key = ""
+			if quick_key != "":
+				seen_quick_keys[quick_key] = true
+			quick_slots.append(quick_key)
+	# Uma lista vazia e um save ainda nao configurado. Depois de o jogador
+	# editar, o ecran guarda todas as posicoes (inclusive vazias), portanto
+	# limpar um atalho nao faz o frasco reaparecer por surpresa.
+	if quick_slots.is_empty():
+		quick_slots.append(FLASK_ITEM_KEY)
 		changed = true
 	if typeof(stored_quick_slots) != TYPE_ARRAY \
 			or quick_slots != (stored_quick_slots as Array):
@@ -97,7 +109,7 @@ static func slot_keys(state: Dictionary, selected_spell := "") -> Dictionary:
 		"right_hand": _weapon_key(equipment.get("main")),
 		"left_hand": _weapon_key(equipment.get("offhand")),
 		"spell": "magia:%s" % spell_id if spell_id != "" else NO_SPELL_KEY,
-		"item": String(quick_slots[0]) if not quick_slots.is_empty() else FLASK_ITEM_KEY,
+		"item": String(quick_slots[0]) if not quick_slots.is_empty() else "",
 	}
 
 

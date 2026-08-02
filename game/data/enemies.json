@@ -35,6 +35,8 @@
     "leash_range": 34.0,
     "attack_range": 2.8,
     "preferred_distance": 2.4,
+    "attack_entry_padding_m": 0.4,
+    "anti_kite_reach_padding_m": 0.5,
     "color_idle": "#777777",
     "crowd": {
       "separation_radius_multiplier": 1.35,
@@ -130,6 +132,18 @@
     "armadilha": {"role": "armadilha", "speed_m_s": 3.4, "reason": "defende a bolsa preparada em vez de perseguir para fora dela"},
     "pesado": {"role": "pesado", "speed_m_s": 3.2, "reason": "massa e alcance trocam velocidade por compromisso legivel"}
   },
+  "_attack_defaults": {
+    "lunge_distance": 0.0,
+    "lunge_velocity_multiplier": 0.5,
+    "shield_pierce_fraction": 0.0,
+    "guard_stamina_multiplier": 1.0,
+    "informative_range_m": 18.0,
+    "tracking_curve_deg_s": {
+      "phase_1": 180.0,
+      "phase_2": 30.0,
+      "phase_3": 0.0
+    }
+  },
   "_attack_templates": {
     "recto_aparavel": {
       "phase_1_frames": 24, "phase_2_frames": 12, "active": 5, "recovery": 30, "phase_4_frames": 8,
@@ -202,7 +216,7 @@
     }
   },
   "_zone_budgets": {
-    "brumal": {"population": {"orc_spearman": 4, "orc_brute": 2, "goblin_mist_scout": 2}, "souls_first_clear": 390, "souls_ten_rewarded_clears": 3900},
+    "brumal": {"population": {"orc_spearman": 4, "orc_brute": 2, "goblin_mist_scout": 2}, "animated_actor_limit": 8, "active_enemy_limit": 5, "souls_first_clear": 390, "souls_ten_rewarded_clears": 3900},
     "selva_funda": {"population": {"goblin_canopy_raider": 4, "goblin_canopy_slinger": 3, "kobold_bell_trapper": 2, "weaver_canopy_snarer": 2}, "souls_first_clear": 635, "souls_ten_rewarded_clears": 6350},
     "campas_cinzentas": {"population": {"skeleton_swordsman": 4, "skeleton_archer": 3, "mire_zombie": 4, "bloated_zombie": 2}, "souls_first_clear": 825, "souls_ten_rewarded_clears": 8250},
     "fojo": {"population": {"kobold_mine_trapper": 5, "minotaur_quarry_bull": 1, "mine_mimic": 2}, "souls_first_clear": 745, "souls_ten_rewarded_clears": 7450},
@@ -223,12 +237,12 @@
     "descricao_visual": "orc magro de pele verde acinzentada e cabeça rapada, lança serrada de ferro rude com 220 cm, ombreira assimétrica e tiras de couro castanho sobre pano verde escuro", "fatia_1": true,
     "loot_cards": ["arma:lanca_orc_bruma", "armadura:ombreira_orc_bruma", "armadura:arnes_orc_bruma", "armadura:bracadeiras_orc_bruma", "armadura:perneiras_orc_bruma", "almas_bonus:20", "almas_bonus:25", "material:limalha_ferro", "consumivel:resina_bruma", "bias:classe"], "mandatory_loot_count": 5,
     "attacks": [
-      {"id":"thrust","display_name":"Estocada","template":"recto_esquiva","phase_1_frames":20,"phase_2_frames":12,"active":5,"recovery":26,"weight":"light","actor":"lança de ferro de 220 cm","tell":"recua junto à anca direita e aponta a ponta ao peito","impact":"a ponta percorre 2,6 m numa linha de 45 graus","sound":"couro estica e a ponta assobia uma vez","anchor":"ponta polida da lança","range":2.6,"arc_degrees":45},
-      {"id":"double_thrust","display_name":"Estocada dupla","template":"combo_bloqueio","phase_1_frames":22,"phase_2_frames":12,"active":10,"recovery":30,"weight":"light","actor":"lança de ferro de 220 cm","tell":"bate duas vezes com o pé e segura a haste ao centro","impact":"duas estocadas rectas separadas por cinco frames cruzam 2,8 m","sound":"dois grunhidos curtos, um por compromisso","anchor":"ponta da lança com duas marcas curtas","range":2.8,"arc_degrees":40,"commitment_offsets":[0,5],"gramatica":["RAMO_COMBO"],"combo_branches":[{"if":"distance_m<=2.4 and abs_angle_deg<=100","then":"sweep_low"},{"if":"abs_angle_deg>100","then":"turn_and_finish"},{"if":"distance_m>2.4","then":"finish"}],"branch_reads_input":false,"branch_evaluation":"fim_do_golpe"},
-      {"id":"sweep_low","display_name":"Varrimento baixo","template":"varrimento_aparavel","phase_1_frames":24,"phase_2_frames":12,"active":6,"recovery":30,"weight":"light","actor":"haste de carvalho-negro","tell":"desce ao joelho e abre os braços para mostrar o arco","impact":"a haste varre 2,4 m à altura das canelas num arco de 140 graus","sound":"madeira raspa terra húmida da esquerda para a direita","anchor":"terço exterior da haste","range":2.4,"arc_degrees":140},
-      {"id":"closing_lunge","display_name":"Investida de fecho","template":"investida","phase_1_frames":26,"phase_2_frames":12,"active":6,"recovery":34,"weight":"light","actor":"ombro e lança alinhados","tell":"patina o pé traseiro e baixa a ponta até formar uma linha","impact":"corpo e lança avançam 5 m; cada alvo só recebe um contacto","sound":"patada funda seguida de um sopro de haste","anchor":"linha entre o pé traseiro e a ponta","range":2.8,"arc_degrees":40,"anti_kite_only":true,"lunge_distance":5.0,"gramatica":["CASTIGO_CURA"],"heal_punish":{"visible_player_state":"USING_ITEM","requires_line_of_sight":true,"reaction_latency_frames":9,"reads_input":false}}
+      {"id":"thrust","display_name":"Estocada","template":"recto_esquiva","phase_1_frames":20,"phase_2_frames":12,"active":5,"recovery":26,"weight":"light","actor":"lança de ferro de 220 cm","tell":"recua junto à anca direita e aponta a ponta ao peito","impact":"a ponta percorre 2,6 m numa linha de 45 graus","sound":"couro estica e a ponta assobia uma vez","anchor":"ponta polida da lança","range":2.6,"arc_degrees":45,"damage":52},
+      {"id":"double_thrust","display_name":"Estocada dupla","template":"combo_bloqueio","phase_1_frames":22,"phase_2_frames":12,"active":10,"recovery":30,"weight":"light","actor":"lança de ferro de 220 cm","tell":"bate duas vezes com o pé e segura a haste ao centro","impact":"duas estocadas rectas separadas por cinco frames cruzam 2,8 m","sound":"dois grunhidos curtos, um por compromisso","anchor":"ponta da lança com duas marcas curtas","range":2.8,"arc_degrees":40,"commitment_offsets":[0,5],"gramatica":["RAMO_COMBO"],"combo_branches":[{"if":"distance_m<=2.4 and abs_angle_deg<=100","then":"sweep_low"},{"if":"abs_angle_deg>100","then":"turn_and_finish"},{"if":"distance_m>2.4","then":"finish"}],"branch_reads_input":false,"branch_evaluation":"fim_do_golpe","damage":60},
+      {"id":"sweep_low","display_name":"Varrimento baixo","template":"varrimento_aparavel","phase_1_frames":24,"phase_2_frames":12,"active":6,"recovery":30,"weight":"light","actor":"haste de carvalho-negro","tell":"desce ao joelho e abre os braços para mostrar o arco","impact":"a haste varre 2,4 m à altura das canelas num arco de 140 graus","sound":"madeira raspa terra húmida da esquerda para a direita","anchor":"terço exterior da haste","range":2.4,"arc_degrees":140,"damage":57},
+      {"id":"closing_lunge","display_name":"Investida de fecho","template":"investida","phase_1_frames":26,"phase_2_frames":12,"active":6,"recovery":34,"weight":"light","actor":"ombro e lança alinhados","tell":"patina o pé traseiro e baixa a ponta até formar uma linha","impact":"corpo e lança avançam 5 m; cada alvo só recebe um contacto","sound":"patada funda seguida de um sopro de haste","anchor":"linha entre o pé traseiro e a ponta","range":2.8,"arc_degrees":40,"anti_kite_only":true,"lunge_distance":5.0,"gramatica":["CASTIGO_CURA"],"heal_punish":{"visible_player_state":"USING_ITEM","requires_line_of_sight":true,"reaction_latency_frames":9,"reads_input":false},"damage":66}
     ],
-    "patterns": [["thrust"],["double_thrust"],["sweep_low"],["thrust"]], "gap_between_patterns": 1.1
+    "patterns": [["thrust"],["sweep_low"],["thrust","double_thrust"],["double_thrust","sweep_low"],["thrust","thrust","sweep_low"],["double_thrust","thrust","sweep_low"]], "gap_between_patterns": 1.25
   },
 
   "orc_brute": {
@@ -238,11 +252,11 @@
     "descricao_visual": "orc largo de três metros e cabeça descoberta, maça cilíndrica de ferro oxidado com 180 cm levantada acima do corpo, placas remendadas e couro grosso", "fatia_1": true,
     "loot_cards": ["arma:maca_orc_pesada", "armadura:ombreira_orc_pesado", "armadura:arnes_orc_pesado", "armadura:cinto_placas_orc", "armadura:grevas_orc_pesado", "almas_bonus:35", "almas_bonus:45", "material:limalha_ferro", "consumivel:resina_bruma", "bias:classe"], "mandatory_loot_count": 5,
     "attacks": [
-      {"id":"overhead","display_name":"Golpe de cima","template":"recto_aparavel","phase_1_frames":34,"phase_2_frames":14,"active":8,"recovery":40,"weight":"heavy","actor":"maça quadrada de ferro","tell":"sobe devagar acima dos chifres e arqueia as costas","impact":"a cabeça da maça cai 2,9 m à frente num arco vertical de 60 graus","sound":"corrente do punho range e o orc expira fundo","anchor":"cabeça quadrada da maça","range":2.9,"arc_degrees":60},
-      {"id":"sweep","display_name":"Varrimento","template":"varrimento_aparavel","phase_1_frames":30,"phase_2_frames":12,"active":10,"recovery":36,"weight":"heavy","actor":"maça quadrada de ferro","tell":"torce o tronco inteiro e arrasta o ferro pelo lado esquerdo","impact":"a maça atravessa 2,8 m num arco horizontal de 170 graus","sound":"ferro grave risca pedra antes do assobio largo","anchor":"cabeça da maça","range":2.8,"arc_degrees":170},
-      {"id":"slam","display_name":"Pancada","template":"pancada_curta","phase_1_frames":38,"phase_2_frames":16,"active":8,"recovery":44,"weight":"heavy","actor":"duas mãos no cabo da maça","tell":"encolhe-se e mostra os dois cotovelos antes de erguer","impact":"a maça esmaga uma faixa curta de 2,6 m e 80 graus","sound":"duas botas fixam-se e a corrente do cabo pára de repente","anchor":"mãos e cabeça da maça","range":2.6,"arc_degrees":80,"gramatica":["ESMAGA_GUARDA"],"guard_stamina_multiplier":2.5}
+      {"id":"overhead","display_name":"Golpe de cima","template":"recto_aparavel","phase_1_frames":34,"phase_2_frames":14,"active":8,"recovery":40,"weight":"heavy","actor":"maça quadrada de ferro","tell":"sobe devagar acima dos chifres e arqueia as costas","impact":"a cabeça da maça cai 2,9 m à frente num arco vertical de 60 graus","sound":"corrente do punho range e o orc expira fundo","anchor":"cabeça quadrada da maça","range":2.9,"arc_degrees":60,"damage":128},
+      {"id":"sweep","display_name":"Varrimento","template":"varrimento_aparavel","phase_1_frames":30,"phase_2_frames":12,"active":10,"recovery":36,"weight":"heavy","actor":"maça quadrada de ferro","tell":"torce o tronco inteiro e arrasta o ferro pelo lado esquerdo","impact":"a maça atravessa 2,8 m num arco horizontal de 170 graus","sound":"ferro grave risca pedra antes do assobio largo","anchor":"cabeça da maça","range":2.8,"arc_degrees":170,"damage":122},
+      {"id":"slam","display_name":"Pancada","template":"pancada_curta","phase_1_frames":38,"phase_2_frames":16,"active":8,"recovery":44,"weight":"heavy","actor":"duas mãos no cabo da maça","tell":"encolhe-se e mostra os dois cotovelos antes de erguer","impact":"a maça esmaga uma faixa curta de 2,6 m e 80 graus","sound":"duas botas fixam-se e a corrente do cabo pára de repente","anchor":"mãos e cabeça da maça","range":2.6,"arc_degrees":80,"gramatica":["ESMAGA_GUARDA"],"guard_stamina_multiplier":2.5,"damage":136}
     ],
-    "patterns": [["overhead"],["sweep"],["slam"],["overhead","sweep"]], "gap_between_patterns": 1.6
+    "patterns": [["overhead"],["sweep"],["slam"],["sweep","overhead"],["overhead","slam"]], "gap_between_patterns": 1.75
   },
 
   "goblin_mist_scout": {
@@ -250,10 +264,11 @@
     "descricao_visual":"goblin baixo com casaco de couro de javali, faca curva de ferro rude com 45 cm e máscara de casca de carvalho coberta de líquen cinzento","fatia_1":false,"color_idle":"#697a55",
     "loot_cards":["arma:faca_goblin_bruma","armadura:mascara_casca_bruma","armadura:casaco_goblin_bruma","almas_bonus:15","almas_bonus:20","material:limalha_ferro","material:couro_javali","consumivel:bomba_bruma","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"quick_stab","display_name":"Picada baixa","template":"recto_aparavel","actor":"faca curva de ferro rude","tell":"encolhe o cotovelo e mostra o ombro esquerdo","impact":"a faca entra 1,4 m numa linha baixa de 35 graus","sound":"faca toca uma vez na fivela de osso","anchor":"ponta curta da faca","range":1.4,"arc_degrees":35,"weight":"light"},
-      {"id":"mist_flank","display_name":"Salto de flanco","template":"investida","actor":"duas botas de couro","tell":"agacha-se e levanta a mão livre para o bando","impact":"salta 3,8 m numa linha oblíqua, com um contacto por passagem","sound":"duas palmadas no couro precedem o salto","anchor":"seta entre as duas botas e o destino","range":1.5,"arc_degrees":45,"lunge_distance":3.8,"weight":"light"},
-      {"id":"dust_cast","display_name":"Punhado de bruma","template":"area_persistente","active":60,"radius":2.5,"actor":"bolsa de pó cinzento","tell":"arranca a rolha vermelha e afasta a cara","impact":"nuvem visível de 2,5 m permanece um segundo e pulsa a cada 30 frames","sound":"rolha estala e grãos chocalham dentro da bolsa","anchor":"círculo hachurado sob a bolsa","weight":"light"}
-    ]
+      {"id":"quick_stab","display_name":"Picada baixa","template":"recto_aparavel","actor":"faca curva de ferro rude","tell":"encolhe o cotovelo e mostra o ombro esquerdo","impact":"a faca entra 1,4 m numa linha baixa de 35 graus","sound":"faca toca uma vez na fivela de osso","anchor":"ponta curta da faca","range":1.4,"arc_degrees":35,"weight":"light","damage":39},
+      {"id":"mist_flank","display_name":"Salto de flanco","template":"investida","actor":"duas botas de couro","tell":"agacha-se e levanta a mão livre para o bando","impact":"salta 3,8 m numa linha oblíqua, com um contacto por passagem","sound":"duas palmadas no couro precedem o salto","anchor":"seta entre as duas botas e o destino","range":1.5,"arc_degrees":45,"lunge_distance":3.8,"weight":"light","damage":46},
+      {"id":"dust_cast","display_name":"Punhado de bruma","template":"area_persistente","active":60,"radius":2.5,"actor":"bolsa de pó cinzento","tell":"arranca a rolha vermelha e afasta a cara","impact":"nuvem visível de 2,5 m permanece um segundo e pulsa a cada 30 frames","sound":"rolha estala e grãos chocalham dentro da bolsa","anchor":"círculo hachurado sob a bolsa","weight":"light","damage":33}
+    ],
+    "patterns": [["quick_stab"],["mist_flank"],["dust_cast"],["quick_stab","quick_stab"],["mist_flank","quick_stab"],["dust_cast","mist_flank","quick_stab"]], "gap_between_patterns": 1.05
   },
 
   "goblin_canopy_raider": {
@@ -261,10 +276,11 @@
     "descricao_visual":"goblin magro com sabre de osso serrado de 65 cm, colete de vime verde e cordas cor-de-rosa atadas aos pulsos para atravessar passadiços","fatia_1":false,"color_idle":"#58754d",
     "loot_cards":["arma:sabre_osso_goblin","armadura:colete_vime_goblin","armadura:braceletes_corda_selva","almas_bonus:20","almas_bonus:25","material:seiva_peconha","material:vime_trancado","consumivel:antidoto_selva","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"bone_cut","display_name":"Talho serrado","template":"recto_aparavel","actor":"sabre de osso serrado","tell":"recua o sabre até à orelha e expõe os dentes","impact":"o osso corta 1,8 m num arco frontal estreito de 65 graus","sound":"dentes do sabre raspam no bracelete de vime","anchor":"serrilha clara do sabre","range":1.8,"arc_degrees":65,"weight":"light"},
-      {"id":"rope_swing","display_name":"Balanço de corda","template":"mergulho","actor":"corda cor-de-rosa presa à cintura","tell":"salta para trás e a corda fica tensa sobre o passadiço","impact":"o corpo cruza 4,5 m pelo arco visível da corda e acerta uma vez","sound":"vime range e a corda vibra antes do balanço","anchor":"corda tensa e sombra do destino","range":1.6,"arc_degrees":55,"lunge_distance":4.5,"weight":"light"},
-      {"id":"pack_flurry","display_name":"Cortes de bando","template":"combo_bloqueio","actor":"sabre curto e cotovelo","tell":"bate três vezes com o pé para chamar a cadência do grupo","impact":"três cortes curtos ocupam 1,5 m sem perseguir depois do sinal","sound":"três estalidos de língua marcam os compromissos","anchor":"sabre com três marcas curtas","range":1.5,"arc_degrees":90,"weight":"light"}
-    ]
+      {"id":"bone_cut","display_name":"Talho serrado","template":"recto_aparavel","actor":"sabre de osso serrado","tell":"recua o sabre até à orelha e expõe os dentes","impact":"o osso corta 1,8 m num arco frontal estreito de 65 graus","sound":"dentes do sabre raspam no bracelete de vime","anchor":"serrilha clara do sabre","range":1.8,"arc_degrees":65,"weight":"light","damage":47},
+      {"id":"rope_swing","display_name":"Balanço de corda","template":"mergulho","actor":"corda cor-de-rosa presa à cintura","tell":"salta para trás e a corda fica tensa sobre o passadiço","impact":"o corpo cruza 4,5 m pelo arco visível da corda e acerta uma vez","sound":"vime range e a corda vibra antes do balanço","anchor":"corda tensa e sombra do destino","range":1.6,"arc_degrees":55,"lunge_distance":4.5,"weight":"light","damage":54},
+      {"id":"pack_flurry","display_name":"Cortes de bando","template":"combo_bloqueio","actor":"sabre curto e cotovelo","tell":"bate três vezes com o pé para chamar a cadência do grupo","impact":"três cortes curtos ocupam 1,5 m sem perseguir depois do sinal","sound":"três estalidos de língua marcam os compromissos","anchor":"sabre com três marcas curtas","range":1.5,"arc_degrees":90,"weight":"light","damage":58}
+    ],
+    "patterns": [["bone_cut"],["rope_swing"],["pack_flurry"],["bone_cut","bone_cut"],["rope_swing","pack_flurry"],["rope_swing","bone_cut","pack_flurry"]], "gap_between_patterns": 0.95
   },
 
   "goblin_canopy_slinger": {
@@ -272,10 +288,11 @@
     "descricao_visual":"goblin de capuz de folhas largas, funda de seda crua com bolsa magenta e aljava de caroços negros presa a um cinto de vime","fatia_1":false,"color_idle":"#4d6b3f",
     "loot_cards":["arma:funda_seda_selva","armadura:capuz_folhas_goblin","armadura:cinto_vime_caroços","almas_bonus:25","almas_bonus:30","material:seiva_peconha","material:seda_crua","consumivel:antidoto_selva","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"seed_shot","display_name":"Caroço directo","template":"tiro","actor":"funda de seda crua","tell":"faz uma volta larga acima do capuz com a bolsa magenta visível","impact":"caroço negro percorre uma linha de 14 m e parte na primeira superfície","sound":"seda assobia uma volta completa antes de soltar","anchor":"bolsa magenta da funda","range":14.0,"arc_degrees":8,"weight":"light"},
-      {"id":"poison_seed","display_name":"Caroço-peçonha","template":"area_persistente","radius":2.8,"actor":"caroço verde inchado na funda","tell":"segura a funda parada e aperta o caroço até pingar seiva rosa","impact":"poça verde de 2,8 m fica visível por 90 frames e pulsa a cada 30","sound":"casca estala molhada antes do lançamento","anchor":"caroço verde e círculo de destino","weight":"light"},
-      {"id":"retreat_shot","display_name":"Tiro em retirada","template":"investida","actor":"pé no cabo de vime e funda na mão","tell":"puxa a corda do passadiço e vira o ombro para trás","impact":"recua 4 m na linha marcada enquanto solta um tiro frontal","sound":"corda de vime geme e a funda dá um estalo","anchor":"seta de recuo sob os pés","range":2.0,"arc_degrees":45,"lunge_distance":4.0,"weight":"light"}
-    ]
+      {"id":"seed_shot","display_name":"Caroço directo","template":"tiro","actor":"funda de seda crua","tell":"faz uma volta larga acima do capuz com a bolsa magenta visível","impact":"caroço negro percorre uma linha de 14 m e parte na primeira superfície","sound":"seda assobia uma volta completa antes de soltar","anchor":"bolsa magenta da funda","range":14.0,"arc_degrees":8,"weight":"light","damage":44},
+      {"id":"poison_seed","display_name":"Caroço-peçonha","template":"area_persistente","radius":2.8,"actor":"caroço verde inchado na funda","tell":"segura a funda parada e aperta o caroço até pingar seiva rosa","impact":"poça verde de 2,8 m fica visível por 90 frames e pulsa a cada 30","sound":"casca estala molhada antes do lançamento","anchor":"caroço verde e círculo de destino","weight":"light","damage":53},
+      {"id":"retreat_shot","display_name":"Tiro em retirada","template":"investida","actor":"pé no cabo de vime e funda na mão","tell":"puxa a corda do passadiço e vira o ombro para trás","impact":"recua 4 m na linha marcada enquanto solta um tiro frontal","sound":"corda de vime geme e a funda dá um estalo","anchor":"seta de recuo sob os pés","range":2.0,"arc_degrees":45,"lunge_distance":4.0,"weight":"light","damage":48}
+    ],
+    "patterns": [["seed_shot"],["poison_seed"],["seed_shot","retreat_shot"],["poison_seed","retreat_shot"],["seed_shot","seed_shot","retreat_shot"]], "gap_between_patterns": 1.2
   },
 
   "kobold_bell_trapper": {
@@ -283,10 +300,11 @@
     "descricao_visual":"kobold de focinho estreito com sino de bronze ao pescoço, gibão de couro verde, lança curta de bambu e bobina de corda com espinhos cor-de-rosa","fatia_1":false,"color_idle":"#796d45",
     "loot_cards":["arma:lanca_bambu_kobold","armadura:gibao_kobold_selva","anel:fome_do_musgo","almas_bonus:25","almas_bonus:30","material:seiva_peconha","material:corda_espinhosa","consumivel:antidoto_selva","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"bamboo_jab","display_name":"Picada de bambu","template":"recto_aparavel","actor":"lança curta de bambu","tell":"encosta a haste ao sino e baixa o focinho","impact":"ponta de osso percorre 2,1 m numa linha de 40 graus","sound":"sino dá uma nota única quando a haste recua","anchor":"ponta branca da lança","range":2.1,"arc_degrees":40,"weight":"light"},
-      {"id":"thorn_snare","display_name":"Laço de espinhos","template":"area_persistente","radius":3.0,"actor":"bobina de corda com espinhos rosa","tell":"lança a bobina ao chão e o círculo de corda abre inteiro","impact":"laço visível de 3 m prende e pulsa enquanto a corda permanece","sound":"sino treme três vezes e a corda desenrola áspera","anchor":"contorno de corda no chão","weight":"heavy"},
-      {"id":"bell_retreat","display_name":"Fuga do sino","template":"investida","actor":"cauda baixa e sino erguido","tell":"vira o corpo para a armadilha já visível e toca o sino duas vezes","impact":"corre 4,5 m pela seta até ao terreno armado, sem mudar de direcção","sound":"duas notas rápidas marcam a fuga","anchor":"seta entre o sino e a armadilha","range":1.4,"arc_degrees":35,"lunge_distance":4.5,"weight":"light"}
-    ]
+      {"id":"bamboo_jab","display_name":"Picada de bambu","template":"recto_aparavel","actor":"lança curta de bambu","tell":"encosta a haste ao sino e baixa o focinho","impact":"ponta de osso percorre 2,1 m numa linha de 40 graus","sound":"sino dá uma nota única quando a haste recua","anchor":"ponta branca da lança","range":2.1,"arc_degrees":40,"weight":"light","damage":43},
+      {"id":"thorn_snare","display_name":"Laço de espinhos","template":"area_persistente","radius":3.0,"actor":"bobina de corda com espinhos rosa","tell":"lança a bobina ao chão e o círculo de corda abre inteiro","impact":"laço visível de 3 m prende e pulsa enquanto a corda permanece","sound":"sino treme três vezes e a corda desenrola áspera","anchor":"contorno de corda no chão","weight":"heavy","damage":76},
+      {"id":"bell_retreat","display_name":"Fuga do sino","template":"investida","actor":"cauda baixa e sino erguido","tell":"vira o corpo para a armadilha já visível e toca o sino duas vezes","impact":"corre 4,5 m pela seta até ao terreno armado, sem mudar de direcção","sound":"duas notas rápidas marcam a fuga","anchor":"seta entre o sino e a armadilha","range":1.4,"arc_degrees":35,"lunge_distance":4.5,"weight":"light","damage":38}
+    ],
+    "patterns": [["bamboo_jab"],["thorn_snare"],["bell_retreat"],["thorn_snare","bell_retreat"],["bamboo_jab","thorn_snare","bell_retreat"]], "gap_between_patterns": 1.55
   },
 
   "weaver_canopy_snarer": {
@@ -294,10 +312,11 @@
     "descricao_visual":"aracnídeo de seis pernas com quitina verde-escura, abdómen riscado a magenta e braceletes de vime que guiam fios de seda grossa entre os ramos","fatia_1":false,"color_idle":"#31543b",
     "loot_cards":["arma:fuso_teciao_selva","armadura:braceletes_vime_teciao","almas_bonus:30","almas_bonus:35","material:seda_crua","material:seiva_peconha","material:quitina_verde","consumivel:solvente_teia","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"silk_lash","display_name":"Chicote de seda","template":"varrimento_dentro","actor":"fio branco entre os dois braços dianteiros","tell":"abre os braços até o fio formar um arco brilhante completo","impact":"fio varre 3,2 m e 150 graus, deixando o centro junto ao corpo seguro","sound":"seda tensa canta uma nota aguda crescente","anchor":"fio branco entre os braços","range":3.2,"arc_degrees":150,"weight":"light"},
-      {"id":"visible_web","display_name":"Teia à vista","template":"area_persistente","radius":3.6,"actor":"abdómen magenta voltado ao chão","tell":"quatro pernas fixam-se e seis linhas desenham o limite antes de encher","impact":"teia branca de 3,6 m permanece 90 frames e prende por pulsos de 30","sound":"seis fios estalam do exterior para o centro","anchor":"hexágono de seda no chão","weight":"heavy"},
-      {"id":"thread_pursuer","display_name":"Novelo perseguidor","template":"perseguidor","actor":"novelo ciano preso ao fuso de vime","tell":"enrola três vezes o fio e aponta o fuso à última posição vista","impact":"novelo segue por 72 frames e desfaz-se ao perder linha de visão","sound":"fuso roda com zumbido crescente e pára ao lançar","anchor":"novelo ciano e rasto até ao fuso","range":12.0,"arc_degrees":20,"weight":"light"}
-    ]
+      {"id":"silk_lash","display_name":"Chicote de seda","template":"varrimento_dentro","actor":"fio branco entre os dois braços dianteiros","tell":"abre os braços até o fio formar um arco brilhante completo","impact":"fio varre 3,2 m e 150 graus, deixando o centro junto ao corpo seguro","sound":"seda tensa canta uma nota aguda crescente","anchor":"fio branco entre os braços","range":3.2,"arc_degrees":150,"weight":"light","damage":50},
+      {"id":"visible_web","display_name":"Teia à vista","template":"area_persistente","radius":3.6,"actor":"abdómen magenta voltado ao chão","tell":"quatro pernas fixam-se e seis linhas desenham o limite antes de encher","impact":"teia branca de 3,6 m permanece 90 frames e prende por pulsos de 30","sound":"seis fios estalam do exterior para o centro","anchor":"hexágono de seda no chão","weight":"heavy","damage":83},
+      {"id":"thread_pursuer","display_name":"Novelo perseguidor","template":"perseguidor","actor":"novelo ciano preso ao fuso de vime","tell":"enrola três vezes o fio e aponta o fuso à última posição vista","impact":"novelo segue por 72 frames e desfaz-se ao perder linha de visão","sound":"fuso roda com zumbido crescente e pára ao lançar","anchor":"novelo ciano e rasto até ao fuso","range":12.0,"arc_degrees":20,"weight":"light","damage":51}
+    ],
+    "patterns": [["silk_lash"],["visible_web"],["thread_pursuer"],["visible_web","silk_lash"],["visible_web","thread_pursuer"],["thread_pursuer","silk_lash","visible_web"]], "gap_between_patterns": 1.6
   },
 
   "skeleton_swordsman": {
@@ -305,10 +324,11 @@
     "descricao_visual":"esqueleto amarelado com espada curta de ferro ferrugento de 75 cm, elmo rachado e tiras de madeira encharcada presas às costelas","fatia_1":false,"color_idle":"#a89f89",
     "loot_cards":["arma:espada_curta_campas","armadura:elmo_rachado_campas","armadura:tirantes_campas","almas_bonus:25","almas_bonus:30","material:cinza_ossario","material:osso_antigo","consumivel:agua_lustral","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"rust_cut","display_name":"Corte ferrugento","template":"recto_aparavel","actor":"espada curta ferrugenta","tell":"recolhe o cotovelo entre as costelas e inclina o elmo","impact":"lâmina corta 1,9 m num arco frontal de 70 graus","sound":"ferro solto raspa osso duas vezes","anchor":"gume laranja da espada","range":1.9,"arc_degrees":70,"weight":"light"},
-      {"id":"rib_sweep","display_name":"Varrimento de costelas","template":"varrimento_dentro","actor":"espada e braço sem carne","tell":"roda a caixa torácica até a lâmina desaparecer atrás da coluna","impact":"espada varre 2 m e 165 graus, com espaço seguro junto às ancas","sound":"vértebras estalam em sequência antes do assobio","anchor":"mão óssea e gume","range":2.0,"arc_degrees":165,"weight":"light"},
-      {"id":"bone_rattle","display_name":"Rajada sem fôlego","template":"combo_bloqueio","actor":"espada curta e ombro descarnado","tell":"bate os dentes três vezes e levanta a guarda","impact":"três golpes curtos ocupam 1,6 m e param sem seguir o alvo","sound":"três batidas de dentes anunciam os três tempos","anchor":"espada com três marcas brancas","range":1.6,"arc_degrees":100,"weight":"light","gramatica":["FALSA_RECUPERACAO"],"false_recovery":{"optional_followup":"rib_sweep","chosen_before_tell":true,"variant_weight_pct":20,"readable_pose":"guarda ossea alta; na recuperacao verdadeira a espada baixa","trigger":"player_enters_range_m<=2.0"}}
-    ]
+      {"id":"rust_cut","display_name":"Corte ferrugento","template":"recto_aparavel","actor":"espada curta ferrugenta","tell":"recolhe o cotovelo entre as costelas e inclina o elmo","impact":"lâmina corta 1,9 m num arco frontal de 70 graus","sound":"ferro solto raspa osso duas vezes","anchor":"gume laranja da espada","range":1.9,"arc_degrees":70,"weight":"light","damage":55},
+      {"id":"rib_sweep","display_name":"Varrimento de costelas","template":"varrimento_dentro","actor":"espada e braço sem carne","tell":"roda a caixa torácica até a lâmina desaparecer atrás da coluna","impact":"espada varre 2 m e 165 graus, com espaço seguro junto às ancas","sound":"vértebras estalam em sequência antes do assobio","anchor":"mão óssea e gume","range":2.0,"arc_degrees":165,"weight":"light","damage":61},
+      {"id":"bone_rattle","display_name":"Rajada sem fôlego","template":"combo_bloqueio","actor":"espada curta e ombro descarnado","tell":"bate os dentes três vezes e levanta a guarda","impact":"três golpes curtos ocupam 1,6 m e param sem seguir o alvo","sound":"três batidas de dentes anunciam os três tempos","anchor":"espada com três marcas brancas","range":1.6,"arc_degrees":100,"weight":"light","gramatica":["FALSA_RECUPERACAO"],"false_recovery":{"optional_followup":"rib_sweep","chosen_before_tell":true,"variant_weight_pct":20,"variant_roll_max":100,"readable_pose":"guarda ossea alta; na recuperacao verdadeira a espada baixa","trigger":"player_enters_range_m<=2.0","trigger_range_m":2.0},"damage":67}
+    ],
+    "patterns": [["rust_cut"],["rib_sweep"],["bone_rattle"],["rust_cut","rust_cut"],["bone_rattle","rust_cut"],["rust_cut","rib_sweep","bone_rattle"]], "gap_between_patterns": 1.15
   },
 
   "skeleton_archer": {
@@ -316,10 +336,11 @@
     "descricao_visual":"esqueleto de costelas negras com arco de madeira encharcada de 140 cm, capuz de linho cinzento e aljava de flechas com penas verde-água","fatia_1":false,"color_idle":"#999383",
     "loot_cards":["arma:arco_encharcado_campas","armadura:capuz_linho_campas","armadura:aljava_fatuos","almas_bonus:30","almas_bonus:35","material:cinza_ossario","material:madeira_encharcada","consumivel:agua_lustral","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"grave_arrow","display_name":"Flecha de campa","template":"tiro","actor":"arco de madeira encharcada","tell":"puxa a pena verde-água até ao maxilar sem olhos","impact":"flecha percorre 16 m numa linha estreita e prende-se onde toca","sound":"madeira húmida range longa e a corda estala seca","anchor":"ponta verde-água da flecha","range":16.0,"arc_degrees":7,"weight":"light"},
-      {"id":"high_arc","display_name":"Flecha de arco alto","template":"area_instantanea","radius":2.4,"actor":"arco apontado ao céu cinzento","tell":"eleva a mão até a flecha ficar vertical e uma sombra circular surge no destino","impact":"flecha cai no círculo de 2,4 m uma vez, sem corrigir depois do sinal","sound":"corda grave seguida de assobio que desce de tom","anchor":"círculo de sombra sob o destino","weight":"heavy"},
-      {"id":"bone_shove","display_name":"Empurrão de arco","template":"pancada_curta","parryable":true,"actor":"travessa central do arco","tell":"vira o arco horizontal e avança o esterno","impact":"madeira empurra 1,3 m num arco de 80 graus","sound":"travessa bate nas costelas antes do passo","anchor":"centro do arco","range":1.3,"arc_degrees":80,"weight":"light"}
-    ]
+      {"id":"grave_arrow","display_name":"Flecha de campa","template":"tiro","actor":"arco de madeira encharcada","tell":"puxa a pena verde-água até ao maxilar sem olhos","impact":"flecha percorre 16 m numa linha estreita e prende-se onde toca","sound":"madeira húmida range longa e a corda estala seca","anchor":"ponta verde-água da flecha","range":16.0,"arc_degrees":7,"weight":"light","damage":56},
+      {"id":"high_arc","display_name":"Flecha de arco alto","template":"area_instantanea","radius":2.4,"actor":"arco apontado ao céu cinzento","tell":"eleva a mão até a flecha ficar vertical e uma sombra circular surge no destino","impact":"flecha cai no círculo de 2,4 m uma vez, sem corrigir depois do sinal","sound":"corda grave seguida de assobio que desce de tom","anchor":"círculo de sombra sob o destino","weight":"heavy","damage":80},
+      {"id":"bone_shove","display_name":"Empurrão de arco","template":"pancada_curta","parryable":true,"actor":"travessa central do arco","tell":"vira o arco horizontal e avança o esterno","impact":"madeira empurra 1,3 m num arco de 80 graus","sound":"travessa bate nas costelas antes do passo","anchor":"centro do arco","range":1.3,"arc_degrees":80,"weight":"light","damage":45}
+    ],
+    "patterns": [["grave_arrow"],["high_arc"],["grave_arrow","grave_arrow"],["bone_shove","grave_arrow"],["high_arc","grave_arrow","grave_arrow"]], "gap_between_patterns": 1.45
   },
 
   "mire_zombie": {
@@ -327,10 +348,11 @@
     "descricao_visual":"cadáver inchado em linho castanho, pele cinzenta coberta de lodo, enxada de ferro ferrugento de 130 cm e raízes de pântano enroladas nos tornozelos","fatia_1":false,"color_idle":"#696b5e",
     "loot_cards":["arma:enxada_lodo","armadura:linho_encharcado_zumbi","almas_bonus:20","almas_bonus:25","material:cinza_ossario","material:lodo_mortuorio","consumivel:agua_lustral","consumivel:musgo_seco","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"hoe_drop","display_name":"Enxada caída","template":"pancada_curta","actor":"enxada ferrugenta de 130 cm","tell":"deixa o braço morto subir atrás da cabeça e inclina-se para trás","impact":"ferro cai 2,2 m numa faixa vertical de 55 graus","sound":"cabo húmido range e água pinga do cotovelo","anchor":"lâmina plana da enxada","range":2.2,"arc_degrees":55,"weight":"heavy"},
-      {"id":"dead_grab","display_name":"Abraço morto","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"dois braços cobertos de lodo","tell":"abre as mãos e deixa as raízes dos pulsos ficarem tensas","impact":"mãos fecham num volume curto de 1,2 m à frente do peito","sound":"lodo suga nas articulações e os dedos estalam","anchor":"dois ganchos visuais junto às mãos","range":1.2,"arc_degrees":70,"weight":"heavy"},
-      {"id":"mire_fall","display_name":"Queda no lodo","template":"area_instantanea","radius":2.8,"actor":"corpo inteiro inclinado sobre o lodo","tell":"joelhos cedem e a sombra do torso cobre o círculo frontal","impact":"corpo cai e desloca lodo num círculo visível de 2,8 m","sound":"bolhas graves rebentam do centro para fora","anchor":"silhueta do torso e círculo de lodo","weight":"heavy"}
-    ]
+      {"id":"hoe_drop","display_name":"Enxada caída","template":"pancada_curta","actor":"enxada ferrugenta de 130 cm","tell":"deixa o braço morto subir atrás da cabeça e inclina-se para trás","impact":"ferro cai 2,2 m numa faixa vertical de 55 graus","sound":"cabo húmido range e água pinga do cotovelo","anchor":"lâmina plana da enxada","range":2.2,"arc_degrees":55,"weight":"heavy","damage":102},
+      {"id":"dead_grab","display_name":"Abraço morto","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"dois braços cobertos de lodo","tell":"abre as mãos e deixa as raízes dos pulsos ficarem tensas","impact":"mãos fecham num volume curto de 1,2 m à frente do peito","sound":"lodo suga nas articulações e os dedos estalam","anchor":"dois ganchos visuais junto às mãos","range":1.2,"arc_degrees":70,"weight":"heavy","damage":112},
+      {"id":"mire_fall","display_name":"Queda no lodo","template":"area_instantanea","radius":2.8,"actor":"corpo inteiro inclinado sobre o lodo","tell":"joelhos cedem e a sombra do torso cobre o círculo frontal","impact":"corpo cai e desloca lodo num círculo visível de 2,8 m","sound":"bolhas graves rebentam do centro para fora","anchor":"silhueta do torso e círculo de lodo","weight":"heavy","damage":96}
+    ],
+    "patterns": [["hoe_drop"],["dead_grab"],["mire_fall"],["dead_grab","hoe_drop"]], "gap_between_patterns": 2.1
   },
 
   "bloated_zombie": {
@@ -338,10 +360,11 @@
     "descricao_visual":"cadáver enorme de ventre translúcido verde-água, cinturão de ferro ferrugento, pele cinza esticada e juncos mortos presos às costas","fatia_1":false,"color_idle":"#66736b",
     "loot_cards":["armadura:cinturao_tumido","almas_bonus:35","almas_bonus:45","material:cinza_ossario","material:bile_fatua","material:ferro_ferrugento","consumivel:agua_lustral","consumivel:musgo_seco","bias:classe","bias:classe"],"mandatory_loot_count":1,
     "attacks":[
-      {"id":"belly_slam","display_name":"Pancada de ventre","template":"area_instantanea","radius":3.4,"actor":"ventre translúcido verde-água","tell":"inspira até o cinturão ficar tenso e levanta os calcanhares","impact":"ventre bate no lodo e ocupa uma vez o círculo visível de 3,4 m","sound":"cinturão geme e líquido desloca-se para baixo","anchor":"círculo sob o ventre","weight":"heavy"},
-      {"id":"bile_pool","display_name":"Poça de bile","template":"area_persistente","radius":3.2,"active":120,"actor":"boca aberta e ventre luminoso","tell":"a luz verde sobe do ventre até à garganta e marca o chão","impact":"bile ocupa 3,2 m por 120 frames e pulsa a cada 30","sound":"borbulhar sobe de grave para agudo antes de verter","anchor":"contorno verde no chão diante da boca","weight":"light"},
-      {"id":"bloated_roll","display_name":"Rolamento túmido","template":"investida","active":30,"lunge_distance":5.2,"actor":"corpo redondo deitado de lado","tell":"apoia uma mão no lodo e levanta as duas pernas","impact":"rola 5,2 m pela linha marcada e só acerta uma vez por passagem","sound":"cinto bate três vezes no ferro antes de rodar","anchor":"seta larga sob o corpo","range":1.8,"arc_degrees":65,"weight":"heavy"}
-    ]
+      {"id":"belly_slam","display_name":"Pancada de ventre","template":"area_instantanea","radius":3.4,"actor":"ventre translúcido verde-água","tell":"inspira até o cinturão ficar tenso e levanta os calcanhares","impact":"ventre bate no lodo e ocupa uma vez o círculo visível de 3,4 m","sound":"cinturão geme e líquido desloca-se para baixo","anchor":"círculo sob o ventre","weight":"heavy","damage":108},
+      {"id":"bile_pool","display_name":"Poça de bile","template":"area_persistente","radius":3.2,"active":120,"actor":"boca aberta e ventre luminoso","tell":"a luz verde sobe do ventre até à garganta e marca o chão","impact":"bile ocupa 3,2 m por 120 frames e pulsa a cada 30","sound":"borbulhar sobe de grave para agudo antes de verter","anchor":"contorno verde no chão diante da boca","weight":"light","damage":37},
+      {"id":"bloated_roll","display_name":"Rolamento túmido","template":"investida","active":30,"lunge_distance":5.2,"actor":"corpo redondo deitado de lado","tell":"apoia uma mão no lodo e levanta as duas pernas","impact":"rola 5,2 m pela linha marcada e só acerta uma vez por passagem","sound":"cinto bate três vezes no ferro antes de rodar","anchor":"seta larga sob o corpo","range":1.8,"arc_degrees":65,"weight":"heavy","damage":118}
+    ],
+    "patterns": [["belly_slam"],["bile_pool"],["bloated_roll"],["bloated_roll","belly_slam"],["bile_pool","bloated_roll"]], "gap_between_patterns": 2.4
   },
 
   "kobold_mine_trapper": {
@@ -349,10 +372,11 @@
     "descricao_visual":"kobold ocre com capacete de couro, sino de ferro ao pescoço, picareta curta de 70 cm e três placas de pressão presas por corda à mochila","fatia_1":false,"color_idle":"#9a7045",
     "loot_cards":["arma:picareta_kobold_fojo","armadura:capacete_mineiro_kobold","anel:ganancia_mineira","almas_bonus:30","almas_bonus:40","material:ferro_bruto","material:corda_mina","consumivel:pedra_raio","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"pick_jab","display_name":"Bico de picareta","template":"recto_aparavel","actor":"picareta curta de ferro","tell":"recolhe o bico junto à axila e abre a mão traseira","impact":"bico percorre 1,8 m numa linha de 35 graus","sound":"sino toca contra a cabeça da picareta","anchor":"bico brilhante da ferramenta","range":1.8,"arc_degrees":35,"weight":"light"},
-      {"id":"pressure_plate","display_name":"Placa de pressão","template":"area_persistente","radius":3.0,"actor":"placa quadrada presa à mochila","tell":"atira a placa à vista e a corda desenha o perímetro completo","impact":"pedras saltam no quadrado inscrito durante 90 frames, por pulsos de 30","sound":"roldana chia e o sino dá uma nota baixa","anchor":"quadrado de corda no chão","weight":"heavy"},
-      {"id":"tunnel_dash","display_name":"Fuga para a galeria","template":"investida","lunge_distance":4.8,"actor":"lanterna do capacete apontada à galeria","tell":"vira a luz para o destino e bate a cauda no chão","impact":"corre 4,8 m pela faixa iluminada sem voltar a seguir","sound":"sino repica duas vezes e botas raspam granito","anchor":"faixa de luz entre o capacete e a galeria","range":1.3,"arc_degrees":40,"weight":"light"}
-    ]
+      {"id":"pick_jab","display_name":"Bico de picareta","template":"recto_aparavel","actor":"picareta curta de ferro","tell":"recolhe o bico junto à axila e abre a mão traseira","impact":"bico percorre 1,8 m numa linha de 35 graus","sound":"sino toca contra a cabeça da picareta","anchor":"bico brilhante da ferramenta","range":1.8,"arc_degrees":35,"weight":"light","damage":59},
+      {"id":"pressure_plate","display_name":"Placa de pressão","template":"area_persistente","radius":3.0,"actor":"placa quadrada presa à mochila","tell":"atira a placa à vista e a corda desenha o perímetro completo","impact":"pedras saltam no quadrado inscrito durante 90 frames, por pulsos de 30","sound":"roldana chia e o sino dá uma nota baixa","anchor":"quadrado de corda no chão","weight":"heavy","damage":89},
+      {"id":"tunnel_dash","display_name":"Fuga para a galeria","template":"investida","lunge_distance":4.8,"actor":"lanterna do capacete apontada à galeria","tell":"vira a luz para o destino e bate a cauda no chão","impact":"corre 4,8 m pela faixa iluminada sem voltar a seguir","sound":"sino repica duas vezes e botas raspam granito","anchor":"faixa de luz entre o capacete e a galeria","range":1.3,"arc_degrees":40,"weight":"light","damage":49}
+    ],
+    "patterns": [["pick_jab"],["pressure_plate"],["tunnel_dash"],["pressure_plate","tunnel_dash"],["pick_jab","pressure_plate","tunnel_dash"]], "gap_between_patterns": 1.65
   },
 
   "minotaur_quarry_bull": {
@@ -360,10 +384,11 @@
     "descricao_visual":"minotauro errante de pelo castanho com chifres riscados a ocre, machado duplo de ferro bruto com 190 cm e placas de granito atadas por corda grossa","fatia_1":false,"color_idle":"#76533b","not_the_labyrinth_guardian":true,"hard_body_zones":["chifres","placas_de_granito"],
     "loot_cards":["arma:machado_labirinto","armadura:placa_granito_minotauro","armadura:braceletes_corda_minotauro","almas_bonus:60","almas_bonus:75","material:ferro_bruto","material:chifre_riscado","consumivel:pedra_raio","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"maze_cleave","display_name":"Talho do labirinto","template":"varrimento_dentro","actor":"machado duplo de ferro bruto","tell":"roda os chifres para o lado e mostra as duas lâminas atrás do corpo","impact":"machado varre 3,4 m e 180 graus, deixando o centro sob os braços seguro","sound":"duas lâminas raspam granito em estéreo antes do arco","anchor":"dois gumes do machado","range":3.4,"arc_degrees":180,"weight":"heavy"},
-      {"id":"horn_charge","display_name":"Investida de chifres","template":"investida","active":30,"lunge_distance":7.0,"actor":"dois chifres riscados a ocre","tell":"raspa a bota três vezes e baixa a testa para a linha marcada","impact":"massa de 310 kg percorre 7 m e acerta cada alvo uma vez","sound":"três raspões de casco precedem o sopro nasal","anchor":"linha entre os chifres e 7 m de chão","range":2.4,"arc_degrees":55,"weight":"heavy"},
-      {"id":"stone_stomp","display_name":"Pisada de granito","template":"area_instantanea","radius":4.2,"actor":"casco direito e placas de granito","tell":"levanta o joelho até as placas baterem e o círculo rachar","impact":"pisada ocupa uma vez o círculo rachado de 4,2 m","sound":"placas chocam e o casco cala no compromisso","anchor":"rachas circulares sob o casco","weight":"heavy","gramatica":["CORPO_DURO"],"hard_body_passes":["heavy","two_handed","contusao","weapon_art"]}
-    ]
+      {"id":"maze_cleave","display_name":"Talho do labirinto","template":"varrimento_dentro","actor":"machado duplo de ferro bruto","tell":"roda os chifres para o lado e mostra as duas lâminas atrás do corpo","impact":"machado varre 3,4 m e 180 graus, deixando o centro sob os braços seguro","sound":"duas lâminas raspam granito em estéreo antes do arco","anchor":"dois gumes do machado","range":3.4,"arc_degrees":180,"weight":"heavy","damage":158},
+      {"id":"horn_charge","display_name":"Investida de chifres","template":"investida","active":30,"lunge_distance":7.0,"actor":"dois chifres riscados a ocre","tell":"raspa a bota três vezes e baixa a testa para a linha marcada","impact":"massa de 310 kg percorre 7 m e acerta cada alvo uma vez","sound":"três raspões de casco precedem o sopro nasal","anchor":"linha entre os chifres e 7 m de chão","range":2.4,"arc_degrees":55,"weight":"heavy","damage":170},
+      {"id":"stone_stomp","display_name":"Pisada de granito","template":"area_instantanea","radius":4.2,"actor":"casco direito e placas de granito","tell":"levanta o joelho até as placas baterem e o círculo rachar","impact":"pisada ocupa uma vez o círculo rachado de 4,2 m","sound":"placas chocam e o casco cala no compromisso","anchor":"rachas circulares sob o casco","weight":"heavy","gramatica":["CORPO_DURO"],"hard_body_passes":["heavy","two_handed","contusao","weapon_art"],"damage":148}
+    ],
+    "patterns": [["maze_cleave"],["horn_charge"],["stone_stomp"],["horn_charge","stone_stomp"],["maze_cleave","horn_charge"]], "gap_between_patterns": 2.25
   },
 
   "mine_mimic": {
@@ -371,10 +396,11 @@
     "descricao_visual":"baú de carvalho escuro com cintas de ferro bruto, tampa que sobe dois centímetros a cada respiração e língua cinzenta entre moedas falsas cobertas de pó ocre","fatia_1":false,"color_idle":"#60452f","breath_telegraph":true,
     "loot_cards":["arma:dente_mimico_fojo","armadura:cinta_ferro_mimico","almas_bonus:50","almas_bonus:60","material:ferro_bruto","material:madeira_bau_antiga","consumivel:pedra_raio","anel:ganancia_mineira","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"lid_bite","display_name":"Mordida da tampa","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"tampa com duas filas de dentes de ferro","tell":"abre até noventa graus e a língua recua para dentro","impact":"tampa fecha num volume curto de 1,8 m diante do baú","sound":"dobradiças guincham e dentes batem uma vez","anchor":"dois ganchos em torno da tampa","range":1.8,"arc_degrees":80,"weight":"heavy"},
-      {"id":"tongue_sweep","display_name":"Língua de galeria","template":"varrimento_dentro","actor":"língua cinzenta coberta de pó ocre","tell":"estende-se imóvel pelo lado direito antes de curvar","impact":"língua varre 3 m e 160 graus, com centro seguro junto ao baú","sound":"moedas falsas chocalham e a língua raspa pedra","anchor":"ponta húmida da língua","range":3.0,"arc_degrees":160,"weight":"light"},
-      {"id":"chest_charge","display_name":"Salto do baú","template":"investida","lunge_distance":4.5,"actor":"quatro patas de madeira sob o baú","tell":"todas dobram e a tampa fecha para formar uma silhueta compacta","impact":"baú salta 4,5 m pela linha de poeira e acerta uma vez","sound":"quatro garras riscam granito ao mesmo tempo","anchor":"sombra rectangular e seta de poeira","range":2.0,"arc_degrees":70,"weight":"heavy"}
-    ]
+      {"id":"lid_bite","display_name":"Mordida da tampa","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"tampa com duas filas de dentes de ferro","tell":"abre até noventa graus e a língua recua para dentro","impact":"tampa fecha num volume curto de 1,8 m diante do baú","sound":"dobradiças guincham e dentes batem uma vez","anchor":"dois ganchos em torno da tampa","range":1.8,"arc_degrees":80,"weight":"heavy","damage":142},
+      {"id":"tongue_sweep","display_name":"Língua de galeria","template":"varrimento_dentro","actor":"língua cinzenta coberta de pó ocre","tell":"estende-se imóvel pelo lado direito antes de curvar","impact":"língua varre 3 m e 160 graus, com centro seguro junto ao baú","sound":"moedas falsas chocalham e a língua raspa pedra","anchor":"ponta húmida da língua","range":3.0,"arc_degrees":160,"weight":"light","damage":77},
+      {"id":"chest_charge","display_name":"Salto do baú","template":"investida","lunge_distance":4.5,"actor":"quatro patas de madeira sob o baú","tell":"todas dobram e a tampa fecha para formar uma silhueta compacta","impact":"baú salta 4,5 m pela linha de poeira e acerta uma vez","sound":"quatro garras riscam granito ao mesmo tempo","anchor":"sombra rectangular e seta de poeira","range":2.0,"arc_degrees":70,"weight":"heavy","damage":134}
+    ],
+    "patterns": [["lid_bite"],["tongue_sweep"],["chest_charge"],["chest_charge","lid_bite"],["lid_bite","tongue_sweep"]], "gap_between_patterns": 1.85
   },
 
   "sea_orc_hookbearer": {
@@ -382,10 +408,11 @@
     "descricao_visual":"orc de pele verde salgada com gancho de bronze verde de 80 cm, casaco de madeira de naufrágio laminada e corda de cânhamo enrolada no antebraço","fatia_1":false,"color_idle":"#527467",
     "loot_cards":["arma:gancho_orc_mar","armadura:casaco_naufragio_orc","armadura:bracelete_corda_mar","almas_bonus:40","almas_bonus:50","material:bronze_mar","material:madeira_naufragio","consumivel:oleo_salino","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"hook_pull","display_name":"Gancho de arrasto","template":"recto_esquiva","vectores_fuga":["sair_da_linha"],"actor":"gancho de bronze verde","tell":"estica a corda atrás do ombro e alinha a ponta curva","impact":"gancho percorre 3,1 m em linha e puxa apenas se a ponta tocar","sound":"corda húmida aperta e bronze toca na fivela","anchor":"ponta curva do gancho","range":3.1,"arc_degrees":35,"weight":"light","gramatica":["ATRAVESSA_ESCUDO"],"shield_pierce_fraction":0.40},
-      {"id":"salt_sweep","display_name":"Ceifa salgada","template":"varrimento_aparavel","actor":"gancho preso a 120 cm de corda","tell":"abre o braço e deixa a corda formar um semicírculo visível","impact":"bronze varre 3,4 m e 170 graus junto ao chão","sound":"corda assobia e o gancho raspa basalto","anchor":"gancho e curva da corda","range":3.4,"arc_degrees":170,"weight":"light"},
-      {"id":"cliff_shove","display_name":"Ombro da falésia","template":"investida","lunge_distance":5.0,"actor":"ombreira de madeira de naufrágio","tell":"planta a bota e inclina a ombreira para a borda oposta","impact":"avança 5 m pela faixa molhada e só empurra uma vez","sound":"tábuas rangem e a bota bate no basalto","anchor":"ombreira e seta de água no chão","range":2.0,"arc_degrees":60,"weight":"heavy"}
-    ]
+      {"id":"hook_pull","display_name":"Gancho de arrasto","template":"recto_esquiva","vectores_fuga":["sair_da_linha"],"actor":"gancho de bronze verde","tell":"estica a corda atrás do ombro e alinha a ponta curva","impact":"gancho percorre 3,1 m em linha e puxa apenas se a ponta tocar","sound":"corda húmida aperta e bronze toca na fivela","anchor":"ponta curva do gancho","range":3.1,"arc_degrees":35,"weight":"light","gramatica":["ATRAVESSA_ESCUDO"],"shield_pierce_fraction":0.40,"damage":68},
+      {"id":"salt_sweep","display_name":"Ceifa salgada","template":"varrimento_aparavel","actor":"gancho preso a 120 cm de corda","tell":"abre o braço e deixa a corda formar um semicírculo visível","impact":"bronze varre 3,4 m e 170 graus junto ao chão","sound":"corda assobia e o gancho raspa basalto","anchor":"gancho e curva da corda","range":3.4,"arc_degrees":170,"weight":"light","damage":74},
+      {"id":"cliff_shove","display_name":"Ombro da falésia","template":"investida","lunge_distance":5.0,"actor":"ombreira de madeira de naufrágio","tell":"planta a bota e inclina a ombreira para a borda oposta","impact":"avança 5 m pela faixa molhada e só empurra uma vez","sound":"tábuas rangem e a bota bate no basalto","anchor":"ombreira e seta de água no chão","range":2.0,"arc_degrees":60,"weight":"heavy","damage":111}
+    ],
+    "patterns": [["hook_pull"],["salt_sweep"],["cliff_shove"],["hook_pull","salt_sweep"],["cliff_shove","hook_pull"],["hook_pull","cliff_shove","salt_sweep"]], "gap_between_patterns": 1.35
   },
 
   "tide_submerged": {
@@ -393,10 +420,11 @@
     "descricao_visual":"humanoide anfíbio de pele azul-petróleo com arpão de bronze verde de 170 cm, membranas translúcidas nos braços e rede salgada presa à cintura","fatia_1":false,"color_idle":"#386f73",
     "loot_cards":["arma:arpao_submerso_costa","armadura:rede_salgada_submerso","almas_bonus:45","almas_bonus:55","material:bronze_mar","material:membrana_mare","consumivel:oleo_salino","consumivel:sal_seco","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"tide_jab","display_name":"Arpão da maré","template":"recto_aparavel","actor":"arpão de bronze verde","tell":"recolhe o cabo sob a axila e abre as membranas laterais","impact":"ponta tripla percorre 2,7 m numa linha de 40 graus","sound":"água escorre do cabo e bronze vibra uma nota","anchor":"três pontas do arpão","range":2.7,"arc_degrees":40,"weight":"light"},
-      {"id":"water_dash","display_name":"Arranco de água","template":"investida","lunge_distance":6.0,"actor":"cauda curta e membranas abertas","tell":"achata o corpo na água e deixa uma esteira recta de espuma","impact":"nada 6 m pela esteira e acerta uma vez por passagem","sound":"bolhas aceleram até uma pancada de água","anchor":"esteira de espuma sob o corpo","range":1.8,"arc_degrees":55,"weight":"light"},
-      {"id":"net_pool","display_name":"Rede de maré","template":"area_persistente","radius":3.2,"actor":"rede salgada da cintura","tell":"abre a rede entre as mãos até o círculo no chão ficar completo","impact":"rede cobre 3,2 m durante 90 frames e prende a cada pulso de 30","sound":"chumbos de bronze batem em círculo","anchor":"anel de chumbos da rede","weight":"heavy"}
-    ]
+      {"id":"tide_jab","display_name":"Arpão da maré","template":"recto_aparavel","actor":"arpão de bronze verde","tell":"recolhe o cabo sob a axila e abre as membranas laterais","impact":"ponta tripla percorre 2,7 m numa linha de 40 graus","sound":"água escorre do cabo e bronze vibra uma nota","anchor":"três pontas do arpão","range":2.7,"arc_degrees":40,"weight":"light","damage":75},
+      {"id":"water_dash","display_name":"Arranco de água","template":"investida","lunge_distance":6.0,"actor":"cauda curta e membranas abertas","tell":"achata o corpo na água e deixa uma esteira recta de espuma","impact":"nada 6 m pela esteira e acerta uma vez por passagem","sound":"bolhas aceleram até uma pancada de água","anchor":"esteira de espuma sob o corpo","range":1.8,"arc_degrees":55,"weight":"light","damage":84},
+      {"id":"net_pool","display_name":"Rede de maré","template":"area_persistente","radius":3.2,"actor":"rede salgada da cintura","tell":"abre a rede entre as mãos até o círculo no chão ficar completo","impact":"rede cobre 3,2 m durante 90 frames e prende a cada pulso de 30","sound":"chumbos de bronze batem em círculo","anchor":"anel de chumbos da rede","weight":"heavy","damage":105}
+    ],
+    "patterns": [["tide_jab"],["water_dash"],["net_pool"],["net_pool","water_dash"],["tide_jab","net_pool","water_dash"]], "gap_between_patterns": 1.25
   },
 
   "cliff_windborne": {
@@ -404,10 +432,11 @@
     "descricao_visual":"ave humanoide de penas cinza-chuva com lança curta de espinho de 110 cm, asas marcadas por tiras de bronze verde e pés enrolados em corda de navio","fatia_1":false,"color_idle":"#788b98",
     "loot_cards":["arma:lanca_espinho_ventaneira","armadura:tiras_bronze_asa","armadura:corda_pes_ventaneira","almas_bonus:45","almas_bonus:60","material:bronze_mar","material:pena_tempestade","consumivel:oleo_salino","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"cliff_dive","display_name":"Mergulho da falésia","template":"mergulho","lunge_distance":6.5,"actor":"asas cinzentas e lança de espinho","tell":"grita uma nota longa fora do ecrã e fecha as asas sobre a lança","impact":"desce 6,5 m pela sombra marcada e acerta uma vez","sound":"grito longo seguido do vento a estreitar","anchor":"sombra da ave e ponta da lança","range":2.4,"arc_degrees":45,"weight":"heavy"},
-      {"id":"feather_shot","display_name":"Pena cortante","template":"tiro","actor":"pena rígida arrancada da asa direita","tell":"abre uma falha triangular nas penas antes de puxar","impact":"pena cinzenta percorre 13 m em linha recta","sound":"três penas roçam e uma assobia sozinha","anchor":"pena com ponta de bronze","range":13.0,"arc_degrees":8,"weight":"light"},
-      {"id":"gust_ring","display_name":"Anel de rajada","template":"area_instantanea","radius":3.8,"actor":"duas asas abertas junto ao chão","tell":"poeira e chuva afastam-se até revelar o círculo inteiro","impact":"rajada ocupa uma vez o anel de 3,8 m e empurra para fora","sound":"asas batem uma vez depois de um vazio audível","anchor":"anel de chuva afastada","weight":"light"}
-    ]
+      {"id":"cliff_dive","display_name":"Mergulho da falésia","template":"mergulho","lunge_distance":6.5,"actor":"asas cinzentas e lança de espinho","tell":"grita uma nota longa fora do ecrã e fecha as asas sobre a lança","impact":"desce 6,5 m pela sombra marcada e acerta uma vez","sound":"grito longo seguido do vento a estreitar","anchor":"sombra da ave e ponta da lança","range":2.4,"arc_degrees":45,"weight":"heavy","damage":120},
+      {"id":"feather_shot","display_name":"Pena cortante","template":"tiro","actor":"pena rígida arrancada da asa direita","tell":"abre uma falha triangular nas penas antes de puxar","impact":"pena cinzenta percorre 13 m em linha recta","sound":"três penas roçam e uma assobia sozinha","anchor":"pena com ponta de bronze","range":13.0,"arc_degrees":8,"weight":"light","damage":70},
+      {"id":"gust_ring","display_name":"Anel de rajada","template":"area_instantanea","radius":3.8,"actor":"duas asas abertas junto ao chão","tell":"poeira e chuva afastam-se até revelar o círculo inteiro","impact":"rajada ocupa uma vez o anel de 3,8 m e empurra para fora","sound":"asas batem uma vez depois de um vazio audível","anchor":"anel de chuva afastada","weight":"light","damage":63}
+    ],
+    "patterns": [["feather_shot"],["cliff_dive"],["gust_ring"],["feather_shot","cliff_dive"],["gust_ring","cliff_dive"],["feather_shot","feather_shot","cliff_dive"]], "gap_between_patterns": 1.7
   },
 
   "wreck_mimic": {
@@ -415,10 +444,11 @@
     "descricao_visual":"baú de madeira encharcada com ferragens de bronze verde, cracas brancas, tampa que respira contra uma corda tensa e língua azul coberta de sal","fatia_1":false,"color_idle":"#52665e","breath_telegraph":true,
     "loot_cards":["arma:dente_mimico_costa","armadura:ferragem_bronze_mimico","almas_bonus:55","almas_bonus:70","material:bronze_mar","material:craca_branca","consumivel:oleo_salino","anel:marujo_perdido","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"salt_bite","display_name":"Mordida salgada","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"tampa com dentes cobertos de sal","tell":"a corda da tampa estica e as cracas abrem juntas","impact":"tampa fecha num volume curto de 1,9 m à frente","sound":"corda naval geme e cracas estalam","anchor":"ganchos em torno da tampa","range":1.9,"arc_degrees":85,"weight":"heavy"},
-      {"id":"brine_spit","display_name":"Cuspo de salmoura","template":"area_persistente","radius":3.0,"actor":"língua azul e bolsa de água dentro do baú","tell":"língua recolhe e a água sobe acima das moedas falsas","impact":"salmoura cobre 3 m por 90 frames e pulsa de 30 em 30","sound":"água chocalha dentro da caixa antes de verter","anchor":"círculo verde-água diante da boca","weight":"light"},
-      {"id":"wreck_roll","display_name":"Rolamento de destroço","template":"investida","lunge_distance":5.0,"actor":"baú fechado sobre duas ferragens curvas","tell":"fecha a tampa e inclina até uma ferragem tocar no basalto","impact":"rola 5 m pela faixa de água e acerta uma vez","sound":"bronze raspa rocha em crescendo","anchor":"seta de salmoura sob o baú","range":2.0,"arc_degrees":70,"weight":"heavy"}
-    ]
+      {"id":"salt_bite","display_name":"Mordida salgada","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"tampa com dentes cobertos de sal","tell":"a corda da tampa estica e as cracas abrem juntas","impact":"tampa fecha num volume curto de 1,9 m à frente","sound":"corda naval geme e cracas estalam","anchor":"ganchos em torno da tampa","range":1.9,"arc_degrees":85,"weight":"heavy","damage":146},
+      {"id":"brine_spit","display_name":"Cuspo de salmoura","template":"area_persistente","radius":3.0,"actor":"língua azul e bolsa de água dentro do baú","tell":"língua recolhe e a água sobe acima das moedas falsas","impact":"salmoura cobre 3 m por 90 frames e pulsa de 30 em 30","sound":"água chocalha dentro da caixa antes de verter","anchor":"círculo verde-água diante da boca","weight":"light","damage":72},
+      {"id":"wreck_roll","display_name":"Rolamento de destroço","template":"investida","lunge_distance":5.0,"actor":"baú fechado sobre duas ferragens curvas","tell":"fecha a tampa e inclina até uma ferragem tocar no basalto","impact":"rola 5 m pela faixa de água e acerta uma vez","sound":"bronze raspa rocha em crescendo","anchor":"seta de salmoura sob o baú","range":2.0,"arc_degrees":70,"weight":"heavy","damage":138}
+    ],
+    "patterns": [["salt_bite"],["brine_spit"],["wreck_roll"],["wreck_roll","salt_bite","brine_spit"]], "gap_between_patterns": 2
   },
 
   "summit_windborne": {
@@ -426,10 +456,11 @@
     "descricao_visual":"ave humanoide de penas branco-azuladas com lança de aço frio de 150 cm, máscara de gelo-azul translúcido e manto curto de pele de cabra","fatia_1":false,"color_idle":"#c6d7e9",
     "loot_cards":["arma:lanca_aco_frio","armadura:mascara_gelo_ventaneira","armadura:manto_cabra_ventaneira","almas_bonus:55","almas_bonus:65","material:flor_gelo","material:pena_cimeira","consumivel:sal_gelo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"ice_dive","display_name":"Mergulho de gelo","template":"mergulho","lunge_distance":7.0,"actor":"lança de aço frio e asas fechadas","tell":"grito cristalino antecede a sombra e a máscara aponta ao destino","impact":"mergulha 7 m pela faixa azul e acerta uma vez","sound":"grito agudo seguido de assobio descendente","anchor":"sombra azul e ponta da lança","range":2.8,"arc_degrees":40,"weight":"heavy"},
-      {"id":"cold_feather","display_name":"Pena de gelo","template":"tiro","actor":"pena endurecida por gelo-azul","tell":"a asa esquerda fica rígida e uma pena acende na ponta","impact":"pena percorre 15 m em linha e estilhaça na primeira superfície","sound":"gelo tilinta três vezes antes do silvo","anchor":"ponta azul da pena","range":15.0,"arc_degrees":7,"weight":"light"},
-      {"id":"snow_gust","display_name":"Rajada de neve","template":"area_persistente","radius":3.8,"active":90,"actor":"asas abertas sobre a neve","tell":"neve levanta no perímetro e revela a área inteira","impact":"redemoinho de 3,8 m fica por 90 frames e pulsa a cada 30","sound":"vento sobe de baixo para cima antes da asa bater","anchor":"anel de neve levantada","weight":"light"}
-    ]
+      {"id":"ice_dive","display_name":"Mergulho de gelo","template":"mergulho","lunge_distance":7.0,"actor":"lança de aço frio e asas fechadas","tell":"grito cristalino antecede a sombra e a máscara aponta ao destino","impact":"mergulha 7 m pela faixa azul e acerta uma vez","sound":"grito agudo seguido de assobio descendente","anchor":"sombra azul e ponta da lança","range":2.8,"arc_degrees":40,"weight":"heavy","damage":130},
+      {"id":"cold_feather","display_name":"Pena de gelo","template":"tiro","actor":"pena endurecida por gelo-azul","tell":"a asa esquerda fica rígida e uma pena acende na ponta","impact":"pena percorre 15 m em linha e estilhaça na primeira superfície","sound":"gelo tilinta três vezes antes do silvo","anchor":"ponta azul da pena","range":15.0,"arc_degrees":7,"weight":"light","damage":78},
+      {"id":"snow_gust","display_name":"Rajada de neve","template":"area_persistente","radius":3.8,"active":90,"actor":"asas abertas sobre a neve","tell":"neve levanta no perímetro e revela a área inteira","impact":"redemoinho de 3,8 m fica por 90 frames e pulsa a cada 30","sound":"vento sobe de baixo para cima antes da asa bater","anchor":"anel de neve levantada","weight":"light","damage":62}
+    ],
+    "patterns": [["cold_feather"],["ice_dive"],["snow_gust"],["cold_feather","cold_feather"],["snow_gust","ice_dive"],["cold_feather","ice_dive","snow_gust"]], "gap_between_patterns": 1.85
   },
 
   "snow_minotaur": {
@@ -437,10 +468,11 @@
     "descricao_visual":"minotauro de pelo branco espesso com martelo de aço frio de 180 cm, chifres cobertos de gelo-azul e avental de pele de cabra até aos joelhos","fatia_1":false,"color_idle":"#d5deea",
     "loot_cards":["arma:martelo_aco_frio","armadura:avental_cabra_minotauro","armadura:braceletes_gelo_minotauro","almas_bonus:75","almas_bonus:90","material:flor_gelo","material:chifre_gelado","consumivel:sal_gelo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"ice_hammer","display_name":"Martelo glacial","template":"pancada_curta","actor":"martelo de aço frio","tell":"ergue a cabeça azul acima dos chifres e prende a respiração","impact":"martelo cai 3,1 m numa faixa vertical de 65 graus","sound":"gelo racha na cabeça do martelo antes do sopro","anchor":"cabeça azul do martelo","range":3.1,"arc_degrees":65,"weight":"heavy"},
-      {"id":"snow_charge","display_name":"Investida na neve","template":"investida","active":32,"lunge_distance":7.2,"actor":"chifres gelados e ombros baixos","tell":"raspa os dois cascos até a neve formar uma linha limpa","impact":"massa de 340 kg percorre 7,2 m e acerta uma vez","sound":"dois cascos cavam e o fôlego sai numa nuvem","anchor":"trilho limpo entre os chifres","range":2.5,"arc_degrees":55,"weight":"heavy"},
-      {"id":"frost_ring","display_name":"Anel de geada","template":"area_persistente","radius":4.0,"active":120,"actor":"martelo pousado no centro da neve","tell":"gelo-azul cresce pelo perímetro antes de tocar no centro","impact":"geada de 4 m persiste 120 frames e pulsa a cada 30","sound":"cristais tilintam do exterior para dentro","anchor":"círculo de cristais azuis","weight":"light"}
-    ]
+      {"id":"ice_hammer","display_name":"Martelo glacial","template":"pancada_curta","actor":"martelo de aço frio","tell":"ergue a cabeça azul acima dos chifres e prende a respiração","impact":"martelo cai 3,1 m numa faixa vertical de 65 graus","sound":"gelo racha na cabeça do martelo antes do sopro","anchor":"cabeça azul do martelo","range":3.1,"arc_degrees":65,"weight":"heavy","damage":175},
+      {"id":"snow_charge","display_name":"Investida na neve","template":"investida","active":32,"lunge_distance":7.2,"actor":"chifres gelados e ombros baixos","tell":"raspa os dois cascos até a neve formar uma linha limpa","impact":"massa de 340 kg percorre 7,2 m e acerta uma vez","sound":"dois cascos cavam e o fôlego sai numa nuvem","anchor":"trilho limpo entre os chifres","range":2.5,"arc_degrees":55,"weight":"heavy","damage":185},
+      {"id":"frost_ring","display_name":"Anel de geada","template":"area_persistente","radius":4.0,"active":120,"actor":"martelo pousado no centro da neve","tell":"gelo-azul cresce pelo perímetro antes de tocar no centro","impact":"geada de 4 m persiste 120 frames e pulsa a cada 30","sound":"cristais tilintam do exterior para dentro","anchor":"círculo de cristais azuis","weight":"light","damage":65}
+    ],
+    "patterns": [["ice_hammer"],["snow_charge"],["frost_ring"],["snow_charge","ice_hammer"],["snow_charge","frost_ring"]], "gap_between_patterns": 2.55
   },
 
   "emberling_hammersmith": {
@@ -448,10 +480,11 @@
     "descricao_visual":"humanoide de pedra negra com fissuras laranja, martelo-lâmina de obsidiana de 150 cm, avental de couro curtido e fios de bronze fundido nos ombros","fatia_1":false,"color_idle":"#51342d",
     "loot_cards":["arma:martelo_lamina_obsidiana","armadura:avental_borralheiro","armadura:ombreiras_bronze_fundido","almas_bonus:60","almas_bonus:75","material:obsidiana","material:bronze_fundido","consumivel:sal_gelo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"hot_cleave","display_name":"Talho ainda quente","template":"recto_aparavel","actor":"martelo-lâmina de obsidiana","tell":"fissuras do braço acendem e o gume recua junto à anca","impact":"gume corta 2,8 m num arco frontal de 70 graus","sound":"obsidiana canta e couro crepita","anchor":"gume laranja da obsidiana","range":2.8,"arc_degrees":70,"weight":"heavy"},
-      {"id":"ember_sweep","display_name":"Varrimento de brasa","template":"varrimento_dentro","actor":"martelo-lâmina incandescente","tell":"arrasta o gume e deixa um arco rubro completo no chão","impact":"gume varre 3,2 m e 175 graus, com centro seguro junto ao cabo","sound":"pedra quente chia sobre obsidiana fria","anchor":"arco rubro deixado pelo gume","range":3.2,"arc_degrees":175,"weight":"heavy"},
-      {"id":"ember_patch","display_name":"Marca de brasa","template":"area_persistente","radius":3.3,"active":120,"actor":"face plana do martelo","tell":"bate leve uma vez e desenha fissuras em todo o círculo","impact":"brasa de 3,3 m persiste 120 frames e pulsa de 30 em 30","sound":"estalido seco corre pelo círculo até ao centro","anchor":"fissuras laranja no chão","weight":"light"}
-    ]
+      {"id":"hot_cleave","display_name":"Talho ainda quente","template":"recto_aparavel","actor":"martelo-lâmina de obsidiana","tell":"fissuras do braço acendem e o gume recua junto à anca","impact":"gume corta 2,8 m num arco frontal de 70 graus","sound":"obsidiana canta e couro crepita","anchor":"gume laranja da obsidiana","range":2.8,"arc_degrees":70,"weight":"heavy","damage":155},
+      {"id":"ember_sweep","display_name":"Varrimento de brasa","template":"varrimento_dentro","actor":"martelo-lâmina incandescente","tell":"arrasta o gume e deixa um arco rubro completo no chão","impact":"gume varre 3,2 m e 175 graus, com centro seguro junto ao cabo","sound":"pedra quente chia sobre obsidiana fria","anchor":"arco rubro deixado pelo gume","range":3.2,"arc_degrees":175,"weight":"heavy","damage":147},
+      {"id":"ember_patch","display_name":"Marca de brasa","template":"area_persistente","radius":3.3,"active":120,"actor":"face plana do martelo","tell":"bate leve uma vez e desenha fissuras em todo o círculo","impact":"brasa de 3,3 m persiste 120 frames e pulsa de 30 em 30","sound":"estalido seco corre pelo círculo até ao centro","anchor":"fissuras laranja no chão","weight":"light","damage":41}
+    ],
+    "patterns": [["hot_cleave"],["ember_sweep"],["ember_patch"],["hot_cleave","ember_sweep"],["ember_patch","ember_sweep","hot_cleave"]], "gap_between_patterns": 2.1
   },
 
   "fire_orc_smith": {
@@ -459,10 +492,11 @@
     "descricao_visual":"orc de pele negra de fuligem com tenaz de bronze de 140 cm, máscara estreita de obsidiana e avental de couro curtido marcado por gotas laranja","fatia_1":false,"color_idle":"#5e3a2f",
     "loot_cards":["arma:tenaz_orc_fornalha","armadura:mascara_obsidiana_orc","armadura:avental_orc_fornalha","almas_bonus:55","almas_bonus:70","material:obsidiana","material:bronze_fundido","consumivel:sal_gelo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"tong_clamp","display_name":"Mordida da tenaz","template":"recto_aparavel","actor":"tenaz de bronze de 140 cm","tell":"abre as duas mandíbulas até mostrar o vazio entre elas","impact":"tenaz fecha 2,5 m à frente numa faixa de 40 graus","sound":"bronze raspa duas vezes antes de bater","anchor":"duas pontas da tenaz","range":2.5,"arc_degrees":40,"weight":"heavy"},
-      {"id":"forge_sweep","display_name":"Varrimento da forja","template":"varrimento_aparavel","actor":"tenaz fechada como bastão","tell":"roda o avental e deixa a tenaz atrás da máscara","impact":"bronze varre 2,9 m e 165 graus","sound":"avental estala e bronze assobia grave","anchor":"extremo laranja da tenaz","range":2.9,"arc_degrees":165,"weight":"heavy"},
-      {"id":"molten_drop","display_name":"Gota fundida","template":"area_persistente","radius":3.0,"active":90,"actor":"gota de bronze presa entre as pontas","tell":"a gota cresce e ilumina o círculo de destino antes de cair","impact":"metal ocupa 3 m por 90 frames e pulsa a cada 30","sound":"metal líquido chia dentro da tenaz","anchor":"gota laranja e círculo no chão","weight":"light"}
-    ]
+      {"id":"tong_clamp","display_name":"Mordida da tenaz","template":"recto_aparavel","actor":"tenaz de bronze de 140 cm","tell":"abre as duas mandíbulas até mostrar o vazio entre elas","impact":"tenaz fecha 2,5 m à frente numa faixa de 40 graus","sound":"bronze raspa duas vezes antes de bater","anchor":"duas pontas da tenaz","range":2.5,"arc_degrees":40,"weight":"heavy","damage":145},
+      {"id":"forge_sweep","display_name":"Varrimento da forja","template":"varrimento_aparavel","actor":"tenaz fechada como bastão","tell":"roda o avental e deixa a tenaz atrás da máscara","impact":"bronze varre 2,9 m e 165 graus","sound":"avental estala e bronze assobia grave","anchor":"extremo laranja da tenaz","range":2.9,"arc_degrees":165,"weight":"heavy","damage":152},
+      {"id":"molten_drop","display_name":"Gota fundida","template":"area_persistente","radius":3.0,"active":90,"actor":"gota de bronze presa entre as pontas","tell":"a gota cresce e ilumina o círculo de destino antes de cair","impact":"metal ocupa 3 m por 90 frames e pulsa a cada 30","sound":"metal líquido chia dentro da tenaz","anchor":"gota laranja e círculo no chão","weight":"light","damage":69}
+    ],
+    "patterns": [["tong_clamp"],["forge_sweep"],["molten_drop"],["tong_clamp","forge_sweep"],["molten_drop","tong_clamp","forge_sweep"]], "gap_between_patterns": 1.95
   },
 
   "storm_minotaur": {
@@ -470,10 +504,11 @@
     "descricao_visual":"minotauro de pelo ocre com maça de fulgurite de 190 cm, chifres enrolados em couro seco e placas de osso branco sem qualquer metal","fatia_1":false,"color_idle":"#8a7654",
     "loot_cards":["arma:maca_fulgurite_minotauro","armadura:placas_osso_fulgor","armadura:correias_couro_seco","almas_bonus:80","almas_bonus:95","material:fulgurite","material:chifre_tempestade","consumivel:po_terra","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"glass_crush","display_name":"Esmagamento de vidro","template":"pancada_curta","actor":"maça irregular de fulgurite","tell":"ergue o vidro violeta entre os chifres e firma os dois cascos","impact":"maça cai 3,2 m numa faixa de 70 graus","sound":"fulgurite vibra como taça rachada e o couro estala","anchor":"cabeça violeta da maça","range":3.2,"arc_degrees":70,"weight":"heavy"},
-      {"id":"storm_charge","display_name":"Investida sob o raio","template":"investida","active":32,"lunge_distance":7.5,"actor":"chifres baixos sem metal","tell":"casco raspa uma linha na areia enquanto ambos os chifres apontam","impact":"corpo percorre 7,5 m e acerta uma vez por passagem","sound":"bufido grave e areia a chiar sob os cascos","anchor":"sulco recto de areia","range":2.6,"arc_degrees":55,"weight":"heavy"},
-      {"id":"grounded_stomp","display_name":"Pisada ligada à terra","template":"area_instantanea","radius":4.3,"actor":"casco dianteiro pousado no centro das rachas","tell":"o chão brilha violeta em todo o círculo durante o aviso","impact":"descarga ocupa uma vez o círculo de 4,3 m","sound":"zumbido eléctrico termina numa pancada de casco","anchor":"círculo de rachas violetas","weight":"heavy"}
-    ]
+      {"id":"glass_crush","display_name":"Esmagamento de vidro","template":"pancada_curta","actor":"maça irregular de fulgurite","tell":"ergue o vidro violeta entre os chifres e firma os dois cascos","impact":"maça cai 3,2 m numa faixa de 70 graus","sound":"fulgurite vibra como taça rachada e o couro estala","anchor":"cabeça violeta da maça","range":3.2,"arc_degrees":70,"weight":"heavy","damage":188},
+      {"id":"storm_charge","display_name":"Investida sob o raio","template":"investida","active":32,"lunge_distance":7.5,"actor":"chifres baixos sem metal","tell":"casco raspa uma linha na areia enquanto ambos os chifres apontam","impact":"corpo percorre 7,5 m e acerta uma vez por passagem","sound":"bufido grave e areia a chiar sob os cascos","anchor":"sulco recto de areia","range":2.6,"arc_degrees":55,"weight":"heavy","damage":198},
+      {"id":"grounded_stomp","display_name":"Pisada ligada à terra","template":"area_instantanea","radius":4.3,"actor":"casco dianteiro pousado no centro das rachas","tell":"o chão brilha violeta em todo o círculo durante o aviso","impact":"descarga ocupa uma vez o círculo de 4,3 m","sound":"zumbido eléctrico termina numa pancada de casco","anchor":"círculo de rachas violetas","weight":"heavy","damage":176}
+    ],
+    "patterns": [["glass_crush"],["storm_charge"],["grounded_stomp"],["storm_charge","grounded_stomp"],["glass_crush","storm_charge"]], "gap_between_patterns": 2.65
   },
 
   "storm_kobold": {
@@ -481,10 +516,11 @@
     "descricao_visual":"kobold amarelo-poeira com sino de osso, funda de couro seco, varetas de fulgurite na mochila e marcas brancas de raio pintadas no focinho","fatia_1":false,"color_idle":"#9a885b",
     "loot_cards":["arma:funda_couro_fulgor","armadura:mochila_fulgurite_kobold","anel:ferro_aterrado","almas_bonus:50","almas_bonus:60","material:fulgurite","material:couro_seco","consumivel:po_terra","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"glass_shot","display_name":"Estilhaço de fulgurite","template":"tiro","actor":"funda de couro seco com vidro violeta","tell":"gira a funda uma vez acima do sino de osso","impact":"estilhaço percorre 14 m em linha e parte onde toca","sound":"sino de osso soa oco antes do silvo de vidro","anchor":"estilhaço violeta na funda","range":14.0,"arc_degrees":7,"weight":"light"},
-      {"id":"lightning_rod","display_name":"Vareta de chamada","template":"area_persistente","radius":3.1,"active":90,"actor":"vareta de fulgurite cravada no chão","tell":"ergue a vareta e o círculo violeta brilha inteiro antes de a cravar","impact":"três pulsos eléctricos ocupam 3,1 m a intervalos de 30 frames","sound":"vidro canta cada vez mais agudo até ao primeiro pulso","anchor":"vareta e círculo violeta","weight":"heavy"},
-      {"id":"dust_escape","display_name":"Fuga na poeira","template":"investida","lunge_distance":4.8,"actor":"cauda esticada e mochila baixa","tell":"atira areia para trás e aponta o focinho à próxima vareta","impact":"corre 4,8 m pela seta de poeira sem corrigir","sound":"sino de osso dá duas pancadas secas","anchor":"seta de poeira entre as varetas","range":1.4,"arc_degrees":40,"weight":"light"}
-    ]
+      {"id":"glass_shot","display_name":"Estilhaço de fulgurite","template":"tiro","actor":"funda de couro seco com vidro violeta","tell":"gira a funda uma vez acima do sino de osso","impact":"estilhaço percorre 14 m em linha e parte onde toca","sound":"sino de osso soa oco antes do silvo de vidro","anchor":"estilhaço violeta na funda","range":14.0,"arc_degrees":7,"weight":"light","damage":71},
+      {"id":"lightning_rod","display_name":"Vareta de chamada","template":"area_persistente","radius":3.1,"active":90,"actor":"vareta de fulgurite cravada no chão","tell":"ergue a vareta e o círculo violeta brilha inteiro antes de a cravar","impact":"três pulsos eléctricos ocupam 3,1 m a intervalos de 30 frames","sound":"vidro canta cada vez mais agudo até ao primeiro pulso","anchor":"vareta e círculo violeta","weight":"heavy","damage":36},
+      {"id":"dust_escape","display_name":"Fuga na poeira","template":"investida","lunge_distance":4.8,"actor":"cauda esticada e mochila baixa","tell":"atira areia para trás e aponta o focinho à próxima vareta","impact":"corre 4,8 m pela seta de poeira sem corrigir","sound":"sino de osso dá duas pancadas secas","anchor":"seta de poeira entre as varetas","range":1.4,"arc_degrees":40,"weight":"light","damage":64}
+    ],
+    "patterns": [["glass_shot"],["lightning_rod"],["dust_escape"],["glass_shot","dust_escape"],["lightning_rod","glass_shot","dust_escape"]], "gap_between_patterns": 1.7
   },
 
   "spore_weaver": {
@@ -492,10 +528,11 @@
     "descricao_visual":"aracnídeo de quitina azul-negra com abdómen ciano luminoso, fuso de madeira-cogumelo de 120 cm e véus de seda entre seis pernas finas","fatia_1":false,"color_idle":"#294260",
     "loot_cards":["arma:fuso_esporos_teciao","armadura:veu_seda_raizama","armadura:placas_quitina_azul","almas_bonus:60","almas_bonus:75","material:esporo_lumen","material:seda_teia","consumivel:tocha_esporo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"lumen_thread","display_name":"Fio-lúmen","template":"varrimento_dentro","actor":"fio ciano entre o fuso e a perna dianteira","tell":"estica o fio até desenhar um arco luminoso completo","impact":"fio varre 3,4 m e 170 graus com centro seguro junto ao abdómen","sound":"seda vibra e esporos estalam ao longo do arco","anchor":"fio ciano contínuo","range":3.4,"arc_degrees":170,"weight":"light"},
-      {"id":"spore_web","display_name":"Teia de esporos","template":"area_persistente","radius":3.8,"active":120,"actor":"véu de seda cheio de pontos ciano","tell":"seis pernas fixam o perímetro antes de o véu tocar no chão","impact":"teia de 3,8 m persiste 120 frames e pulsa a cada 30","sound":"seis fios estalam e os esporos crepitam","anchor":"hexágono ciano no chão","weight":"heavy"},
-      {"id":"glow_hunter","display_name":"Casulo perseguidor","template":"perseguidor","actor":"casulo ciano lançado pelo fuso","tell":"fuso roda três vezes e a ponta fica alinhada à última posição vista","impact":"casulo segue por 72 frames e cai ao perder linha de visão","sound":"zumbido de seda cessa no instante do lançamento","anchor":"casulo e rasto de duas pontas","range":13.0,"arc_degrees":18,"weight":"light"}
-    ]
+      {"id":"lumen_thread","display_name":"Fio-lúmen","template":"varrimento_dentro","actor":"fio ciano entre o fuso e a perna dianteira","tell":"estica o fio até desenhar um arco luminoso completo","impact":"fio varre 3,4 m e 170 graus com centro seguro junto ao abdómen","sound":"seda vibra e esporos estalam ao longo do arco","anchor":"fio ciano contínuo","range":3.4,"arc_degrees":170,"weight":"light","damage":82},
+      {"id":"spore_web","display_name":"Teia de esporos","template":"area_persistente","radius":3.8,"active":120,"actor":"véu de seda cheio de pontos ciano","tell":"seis pernas fixam o perímetro antes de o véu tocar no chão","impact":"teia de 3,8 m persiste 120 frames e pulsa a cada 30","sound":"seis fios estalam e os esporos crepitam","anchor":"hexágono ciano no chão","weight":"heavy","damage":42},
+      {"id":"glow_hunter","display_name":"Casulo perseguidor","template":"perseguidor","actor":"casulo ciano lançado pelo fuso","tell":"fuso roda três vezes e a ponta fica alinhada à última posição vista","impact":"casulo segue por 72 frames e cai ao perder linha de visão","sound":"zumbido de seda cessa no instante do lançamento","anchor":"casulo e rasto de duas pontas","range":13.0,"arc_degrees":18,"weight":"light","damage":79}
+    ],
+    "patterns": [["lumen_thread"],["spore_web"],["glow_hunter"],["spore_web","lumen_thread"],["spore_web","glow_hunter"],["glow_hunter","lumen_thread","spore_web"]], "gap_between_patterns": 1.9
   },
 
   "fungus_goblin": {
@@ -503,10 +540,11 @@
     "descricao_visual":"goblin azul-escuro com chapéu de cogumelo ciano, clava de madeira-cogumelo de 90 cm e bolsas de esporos translúcidas cosidas num colete de seda","fatia_1":false,"color_idle":"#34506b",
     "loot_cards":["arma:clava_cogumelo_goblin","armadura:chapeu_fungo_goblin","armadura:colete_seda_raizama","almas_bonus:50","almas_bonus:65","material:esporo_lumen","material:madeira_cogumelo","consumivel:tocha_esporo","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"fungus_club","display_name":"Clava esponjosa","template":"recto_aparavel","actor":"clava de madeira-cogumelo","tell":"aperta a pega e o chapéu inclina para trás","impact":"clava percorre 2 m num arco frontal de 75 graus","sound":"madeira oca dá uma nota abafada no colete","anchor":"cabeça ciano da clava","range":2.0,"arc_degrees":75,"weight":"light"},
-      {"id":"spore_bag","display_name":"Bolsa de esporos","template":"area_persistente","radius":3.0,"active":90,"actor":"bolsa translúcida no colete","tell":"arranca a bolsa e os pontos ciano marcam o círculo inteiro","impact":"nuvem de 3 m persiste 90 frames e pulsa a cada 30","sound":"membrana estica e rebenta num sopro baixo","anchor":"bolsa e círculo de esporos","weight":"light"},
-      {"id":"pack_bonk","display_name":"Pancadas de toca","template":"combo_bloqueio","actor":"clava curta e ombro","tell":"bate a clava duas vezes no chapéu para chamar o bando","impact":"três pancadas curtas ocupam 1,6 m sem seguimento tardio","sound":"duas notas ocas e um grito curto marcam a cadeia","anchor":"clava com três marcas ciano","range":1.6,"arc_degrees":100,"weight":"light"}
-    ]
+      {"id":"fungus_club","display_name":"Clava esponjosa","template":"recto_aparavel","actor":"clava de madeira-cogumelo","tell":"aperta a pega e o chapéu inclina para trás","impact":"clava percorre 2 m num arco frontal de 75 graus","sound":"madeira oca dá uma nota abafada no colete","anchor":"cabeça ciano da clava","range":2.0,"arc_degrees":75,"weight":"light","damage":73},
+      {"id":"spore_bag","display_name":"Bolsa de esporos","template":"area_persistente","radius":3.0,"active":90,"actor":"bolsa translúcida no colete","tell":"arranca a bolsa e os pontos ciano marcam o círculo inteiro","impact":"nuvem de 3 m persiste 90 frames e pulsa a cada 30","sound":"membrana estica e rebenta num sopro baixo","anchor":"bolsa e círculo de esporos","weight":"light","damage":40},
+      {"id":"pack_bonk","display_name":"Pancadas de toca","template":"combo_bloqueio","actor":"clava curta e ombro","tell":"bate a clava duas vezes no chapéu para chamar o bando","impact":"três pancadas curtas ocupam 1,6 m sem seguimento tardio","sound":"duas notas ocas e um grito curto marcam a cadeia","anchor":"clava com três marcas ciano","range":1.6,"arc_degrees":100,"weight":"light","damage":88}
+    ],
+    "patterns": [["fungus_club"],["spore_bag"],["pack_bonk"],["fungus_club","fungus_club"],["spore_bag","pack_bonk"],["spore_bag","fungus_club","pack_bonk"]], "gap_between_patterns": 1.15
   },
 
   "flooded_submerged": {
@@ -514,10 +552,11 @@
     "descricao_visual":"humanoide anfíbio verde-escuro com tridente de prata escurecida de 180 cm, placas finas de mármore afogado e membranas transparentes marcadas a branco","fatia_1":false,"color_idle":"#3f716d",
     "loot_cards":["arma:tridente_prata_afogada","armadura:placas_marmore_submerso","armadura:membranas_brancas_submerso","almas_bonus:70","almas_bonus:85","material:prata_afogada","material:vidro_afogado","consumivel:oleo_condutor","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"silver_thrust","display_name":"Tridente escurecido","template":"recto_aparavel","actor":"tridente de prata escurecida","tell":"recolhe a haste junto às guelras e abre as três pontas","impact":"tridente percorre 3 m numa linha de 45 graus","sound":"prata toca no mármore e água sai das guelras","anchor":"três pontas prateadas","range":3.0,"arc_degrees":45,"weight":"light"},
-      {"id":"underwater_dash","display_name":"Arranco submerso","template":"investida","active":30,"lunge_distance":6.8,"actor":"membranas abertas sob a água","tell":"o corpo fica horizontal e uma esteira branca marca a linha","impact":"nada 6,8 m pela esteira e acerta uma vez","sound":"bolhas aceleram do grave para o agudo","anchor":"esteira branca sob a superfície","range":2.0,"arc_degrees":50,"weight":"light"},
-      {"id":"silver_net","display_name":"Malha de prata","template":"area_persistente","radius":3.5,"actor":"fios de prata entre as pontas do tridente","tell":"abre a malha até o círculo no fundo ficar completo","impact":"malha de 3,5 m persiste 90 frames e pulsa a cada 30","sound":"prata tilinta em anel por baixo de água","anchor":"malha branca no fundo","weight":"heavy"}
-    ]
+      {"id":"silver_thrust","display_name":"Tridente escurecido","template":"recto_aparavel","actor":"tridente de prata escurecida","tell":"recolhe a haste junto às guelras e abre as três pontas","impact":"tridente percorre 3 m numa linha de 45 graus","sound":"prata toca no mármore e água sai das guelras","anchor":"três pontas prateadas","range":3.0,"arc_degrees":45,"weight":"light","damage":90},
+      {"id":"underwater_dash","display_name":"Arranco submerso","template":"investida","active":30,"lunge_distance":6.8,"actor":"membranas abertas sob a água","tell":"o corpo fica horizontal e uma esteira branca marca a linha","impact":"nada 6,8 m pela esteira e acerta uma vez","sound":"bolhas aceleram do grave para o agudo","anchor":"esteira branca sob a superfície","range":2.0,"arc_degrees":50,"weight":"light","damage":98},
+      {"id":"silver_net","display_name":"Malha de prata","template":"area_persistente","radius":3.5,"actor":"fios de prata entre as pontas do tridente","tell":"abre a malha até o círculo no fundo ficar completo","impact":"malha de 3,5 m persiste 90 frames e pulsa a cada 30","sound":"prata tilinta em anel por baixo de água","anchor":"malha branca no fundo","weight":"heavy","damage":135}
+    ],
+    "patterns": [["silver_thrust"],["underwater_dash"],["silver_net"],["silver_net","underwater_dash"],["silver_thrust","silver_net","underwater_dash"]], "gap_between_patterns": 1.35
   },
 
   "drowned_zombie": {
@@ -525,10 +564,11 @@
     "descricao_visual":"cadáver coberto de lodo verde com sino pequeno de prata preso ao pescoço, coluna de mármore partida usada como maça e algas brancas nos braços","fatia_1":false,"color_idle":"#53716d",
     "loot_cards":["arma:coluna_marmore_zumbi","anel:conta_afogada","almas_bonus:55","almas_bonus:70","material:prata_afogada","material:marmore_afogado","consumivel:oleo_condutor","consumivel:sal_seco","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"marble_drop","display_name":"Coluna caída","template":"pancada_curta","actor":"fragmento de coluna de mármore","tell":"ergue a pedra devagar e o sino sai da água","impact":"mármore cai 2,5 m numa faixa vertical de 65 graus","sound":"sino toca claro e água escorre da coluna","anchor":"extremo branco do mármore","range":2.5,"arc_degrees":65,"weight":"heavy"},
-      {"id":"drowned_grab","display_name":"Mãos afogadas","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"duas mãos cobertas de algas","tell":"abre os braços e as algas ficam tensas entre os dedos","impact":"mãos fecham num volume de 1,4 m à frente","sound":"sino afunda e bolhas rebentam junto às mãos","anchor":"dois ganchos nas mãos","range":1.4,"arc_degrees":75,"weight":"heavy"},
-      {"id":"water_fall","display_name":"Queda afogada","template":"area_instantanea","radius":3.2,"actor":"corpo e coluna de mármore","tell":"joelhos cedem e a água foge do círculo marcado","impact":"corpo ocupa uma vez o círculo de 3,2 m","sound":"água recua em silêncio e regressa no impacto","anchor":"círculo sem água sob o corpo","weight":"heavy"}
-    ]
+      {"id":"marble_drop","display_name":"Coluna caída","template":"pancada_curta","actor":"fragmento de coluna de mármore","tell":"ergue a pedra devagar e o sino sai da água","impact":"mármore cai 2,5 m numa faixa vertical de 65 graus","sound":"sino toca claro e água escorre da coluna","anchor":"extremo branco do mármore","range":2.5,"arc_degrees":65,"weight":"heavy","damage":141},
+      {"id":"drowned_grab","display_name":"Mãos afogadas","template":"recto_esquiva","vectores_fuga":["afastar_se"],"actor":"duas mãos cobertas de algas","tell":"abre os braços e as algas ficam tensas entre os dedos","impact":"mãos fecham num volume de 1,4 m à frente","sound":"sino afunda e bolhas rebentam junto às mãos","anchor":"dois ganchos nas mãos","range":1.4,"arc_degrees":75,"weight":"heavy","damage":150},
+      {"id":"water_fall","display_name":"Queda afogada","template":"area_instantanea","radius":3.2,"actor":"corpo e coluna de mármore","tell":"joelhos cedem e a água foge do círculo marcado","impact":"corpo ocupa uma vez o círculo de 3,2 m","sound":"água recua em silêncio e regressa no impacto","anchor":"círculo sem água sob o corpo","weight":"heavy","damage":129}
+    ],
+    "patterns": [["marble_drop"],["drowned_grab"],["water_fall"],["drowned_grab","marble_drop"]], "gap_between_patterns": 2.35
   },
 
   "penitent_cantor": {
@@ -536,10 +576,11 @@
     "descricao_visual":"figura sem olhos em túnica de cera branca, diapasão de ouro baço com 100 cm e gola de mármore fino riscada por sangue seco","fatia_1":false,"color_idle":"#d8caa8","buffs_allies_while_singing":true,
     "loot_cards":["arma:diapasao_penitente","armadura:tunica_cera_cantor","armadura:gola_marmore_cantor","almas_bonus:75","almas_bonus:90","material:cera_benta","material:ouro_baco","consumivel:veu_sombra","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"binding_note","display_name":"Nota de conversão","template":"perseguidor","actor":"diapasão de ouro baço","tell":"encosta as duas pontas à garganta e um aro preto marca a voz","impact":"nota visível segue por 72 frames e quebra ao perder linha de visão","sound":"vogal única cresce sem mudar de altura","anchor":"aro preto entre garganta e diapasão","range":14.0,"arc_degrees":15,"weight":"light"},
-      {"id":"choir_burst","display_name":"Círculo do coro","template":"area_persistente","radius":4.0,"active":90,"actor":"diapasão cravado no mármore","tell":"as velas do perímetro inclinam para o centro antes do canto","impact":"luz ocupa 4 m por 90 frames e pulsa a cada 30","sound":"três vozes entram uma a uma até ao primeiro pulso","anchor":"anel de velas inclinadas","weight":"heavy"},
-      {"id":"fork_jab","display_name":"Ponta do diapasão","template":"recto_aparavel","actor":"diapasão de ouro com duas pontas","tell":"cala a voz e recolhe o cabo junto à cintura","impact":"duas pontas percorrem 2,2 m numa linha de 40 graus","sound":"metal vibra curto quando o canto pára","anchor":"duas pontas do diapasão","range":2.2,"arc_degrees":40,"weight":"light"}
-    ]
+      {"id":"binding_note","display_name":"Nota de conversão","template":"perseguidor","actor":"diapasão de ouro baço","tell":"encosta as duas pontas à garganta e um aro preto marca a voz","impact":"nota visível segue por 72 frames e quebra ao perder linha de visão","sound":"vogal única cresce sem mudar de altura","anchor":"aro preto entre garganta e diapasão","range":14.0,"arc_degrees":15,"weight":"light","damage":81},
+      {"id":"choir_burst","display_name":"Círculo do coro","template":"area_persistente","radius":4.0,"active":90,"actor":"diapasão cravado no mármore","tell":"as velas do perímetro inclinam para o centro antes do canto","impact":"luz ocupa 4 m por 90 frames e pulsa a cada 30","sound":"três vozes entram uma a uma até ao primeiro pulso","anchor":"anel de velas inclinadas","weight":"heavy","damage":35},
+      {"id":"fork_jab","display_name":"Ponta do diapasão","template":"recto_aparavel","actor":"diapasão de ouro com duas pontas","tell":"cala a voz e recolhe o cabo junto à cintura","impact":"duas pontas percorrem 2,2 m numa linha de 40 graus","sound":"metal vibra curto quando o canto pára","anchor":"duas pontas do diapasão","range":2.2,"arc_degrees":40,"weight":"light","damage":86}
+    ],
+    "patterns": [["binding_note"],["choir_burst"],["fork_jab"],["binding_note","fork_jab"],["choir_burst","fork_jab"],["binding_note","choir_burst","fork_jab"]], "gap_between_patterns": 1.55
   },
 
   "penitent_censer": {
@@ -547,10 +588,11 @@
     "descricao_visual":"penitente sem olhos em placas de mármore branco, turíbulo de ouro baço numa corrente de 160 cm e capuz de cera endurecida manchado de sangue seco","fatia_1":false,"color_idle":"#e1d3b1",
     "loot_cards":["arma:turibulo_penitente","armadura:capuz_cera_penitente","armadura:placas_marmore_penitente","almas_bonus:70","almas_bonus:85","material:cera_benta","material:ouro_baco","consumivel:veu_sombra","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"censer_sweep","display_name":"Varrimento do turíbulo","template":"varrimento_dentro","actor":"turíbulo de ouro numa corrente de 160 cm","tell":"estende a corrente até formar um arco dourado inteiro","impact":"turíbulo varre 3,5 m e 180 graus, seguro junto ao ombro","sound":"elos contam o arco antes do assobio do recipiente","anchor":"turíbulo e corrente dourada","range":3.5,"arc_degrees":180,"weight":"heavy"},
-      {"id":"white_incense","display_name":"Incenso branco","template":"area_persistente","radius":3.6,"active":120,"actor":"turíbulo pousado no centro","tell":"fumo branco desenha primeiro todo o perímetro hachurado","impact":"incenso ocupa 3,6 m por 120 frames e pulsa a cada 30","sound":"corrente pára e brasas crepitam ritmadas","anchor":"contorno de fumo branco no chão","weight":"light"},
-      {"id":"marble_shove","display_name":"Ombro de mármore","template":"investida","lunge_distance":4.8,"actor":"placa rectangular do ombro","tell":"baixa o capuz e alinha a placa com uma faixa de luz","impact":"avança 4,8 m pela faixa e acerta uma vez","sound":"placas batem duas vezes e as sandálias param","anchor":"faixa de luz sob a ombreira","range":2.0,"arc_degrees":60,"weight":"heavy"}
-    ]
+      {"id":"censer_sweep","display_name":"Varrimento do turíbulo","template":"varrimento_dentro","actor":"turíbulo de ouro numa corrente de 160 cm","tell":"estende a corrente até formar um arco dourado inteiro","impact":"turíbulo varre 3,5 m e 180 graus, seguro junto ao ombro","sound":"elos contam o arco antes do assobio do recipiente","anchor":"turíbulo e corrente dourada","range":3.5,"arc_degrees":180,"weight":"heavy","damage":144},
+      {"id":"white_incense","display_name":"Incenso branco","template":"area_persistente","radius":3.6,"active":120,"actor":"turíbulo pousado no centro","tell":"fumo branco desenha primeiro todo o perímetro hachurado","impact":"incenso ocupa 3,6 m por 120 frames e pulsa a cada 30","sound":"corrente pára e brasas crepitam ritmadas","anchor":"contorno de fumo branco no chão","weight":"light","damage":34},
+      {"id":"marble_shove","display_name":"Ombro de mármore","template":"investida","lunge_distance":4.8,"actor":"placa rectangular do ombro","tell":"baixa o capuz e alinha a placa com uma faixa de luz","impact":"avança 4,8 m pela faixa e acerta uma vez","sound":"placas batem duas vezes e as sandálias param","anchor":"faixa de luz sob a ombreira","range":2.0,"arc_degrees":60,"weight":"heavy","damage":154}
+    ],
+    "patterns": [["censer_sweep"],["white_incense"],["marble_shove"],["white_incense","marble_shove"],["marble_shove","censer_sweep"]], "gap_between_patterns": 1.85
   },
 
   "gilded_skeleton": {
@@ -558,10 +600,11 @@
     "descricao_visual":"esqueleto revestido por folha de ouro baço, espada recta de prata de 95 cm, cota de elos dourados e gotas de cera branca nas órbitas vazias","fatia_1":false,"color_idle":"#bca66f",
     "loot_cards":["arma:espada_prata_santuario","armadura:cota_dourada_esqueleto","armadura:elmo_cera_esqueleto","almas_bonus:65","almas_bonus:80","material:cera_benta","material:ouro_baco","consumivel:veu_sombra","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"silver_line","display_name":"Linha de prata","template":"recto_aparavel","actor":"espada recta de prata","tell":"ponta baixa até reflectir uma linha negra no mármore","impact":"lâmina percorre 2,4 m numa linha de 45 graus","sound":"prata canta contra os elos dourados","anchor":"reflexo preto no gume","range":2.4,"arc_degrees":45,"weight":"light"},
-      {"id":"golden_sweep","display_name":"Arco dourado","template":"varrimento_aparavel","actor":"espada e braço revestido a ouro","tell":"roda as costelas até a folha dourada formar um crescente","impact":"espada varre 2,6 m e 165 graus","sound":"folha de ouro crepita sobre os ossos","anchor":"crescente dourado do braço","range":2.6,"arc_degrees":165,"weight":"light"},
-      {"id":"prayer_chain","display_name":"Litania de golpes","template":"combo_bloqueio","actor":"espada de prata junto ao esterno","tell":"bate os dentes quatro vezes no ritmo da oração","impact":"quatro cortes curtos ocupam 1,8 m sem seguimento tardio","sound":"quatro batidas de dentes marcam os compromissos","anchor":"gume com quatro marcas brancas","range":1.8,"arc_degrees":95,"weight":"light"}
-    ]
+      {"id":"silver_line","display_name":"Linha de prata","template":"recto_aparavel","actor":"espada recta de prata","tell":"ponta baixa até reflectir uma linha negra no mármore","impact":"lâmina percorre 2,4 m numa linha de 45 graus","sound":"prata canta contra os elos dourados","anchor":"reflexo preto no gume","range":2.4,"arc_degrees":45,"weight":"light","damage":87},
+      {"id":"golden_sweep","display_name":"Arco dourado","template":"varrimento_aparavel","actor":"espada e braço revestido a ouro","tell":"roda as costelas até a folha dourada formar um crescente","impact":"espada varre 2,6 m e 165 graus","sound":"folha de ouro crepita sobre os ossos","anchor":"crescente dourado do braço","range":2.6,"arc_degrees":165,"weight":"light","damage":95},
+      {"id":"prayer_chain","display_name":"Litania de golpes","template":"combo_bloqueio","actor":"espada de prata junto ao esterno","tell":"bate os dentes quatro vezes no ritmo da oração","impact":"quatro cortes curtos ocupam 1,8 m sem seguimento tardio","sound":"quatro batidas de dentes marcam os compromissos","anchor":"gume com quatro marcas brancas","range":1.8,"arc_degrees":95,"weight":"light","damage":104}
+    ],
+    "patterns": [["silver_line"],["golden_sweep"],["prayer_chain"],["silver_line","silver_line"],["prayer_chain","golden_sweep"],["prayer_chain","silver_line","golden_sweep"]], "gap_between_patterns": 1.25
   },
 
   "faceless_halberdier": {
@@ -569,10 +612,11 @@
     "descricao_visual":"figura alta sem face em manto de pedra negra, alabarda de raiz petrificada com 240 cm e três aros de prata baça suspensos sem tocar no corpo","fatia_1":false,"color_idle":"#282338","loot_origin":"objectos_perdidos_surgem_no_relicario_mais_proximo",
     "loot_cards":["arma:alabarda_raiz_petrificada","armadura:manto_pedra_sem_rosto","almas_bonus:95","almas_bonus:110","material:lagrima_bruma","material:prata_baca","consumivel:lanterna_raiz","anel:eco_sem_face","bias:classe","bias:classe"],"mandatory_loot_count":2,
     "attacks":[
-      {"id":"root_thrust","display_name":"Estocada da raiz","template":"recto_aparavel","actor":"alabarda de raiz petrificada","tell":"os três aros alinham-se com a ponta antes do corpo se mover","impact":"ponta percorre 3,6 m numa linha de 35 graus","sound":"único estalo de raiz rompe o silêncio","anchor":"ponta e três aros alinhados","range":3.6,"arc_degrees":35,"weight":"heavy"},
-      {"id":"silent_reap","display_name":"Ceifa silenciosa","template":"varrimento_dentro","actor":"lâmina longa da alabarda","tell":"manto abre sem som e revela o arco branco no chão","impact":"lâmina varre 3,8 m e 185 graus, segura junto à haste","sound":"uma inspiração curta é o único aviso atmosférico","anchor":"arco branco sob a lâmina","range":3.8,"arc_degrees":185,"weight":"heavy"},
-      {"id":"mist_hunter","display_name":"Aro perseguidor","template":"perseguidor","actor":"aro de prata baça separado da alabarda","tell":"o aro gira e aponta a abertura à última posição vista","impact":"aro segue por 72 frames e cai quando uma raiz corta a visão","sound":"prata vibra uma nota baixa no início do movimento","anchor":"aro e rasto de duas pontas","range":16.0,"arc_degrees":16,"weight":"light"}
-    ]
+      {"id":"root_thrust","display_name":"Estocada da raiz","template":"recto_aparavel","actor":"alabarda de raiz petrificada","tell":"os três aros alinham-se com a ponta antes do corpo se mover","impact":"ponta percorre 3,6 m numa linha de 35 graus","sound":"único estalo de raiz rompe o silêncio","anchor":"ponta e três aros alinhados","range":3.6,"arc_degrees":35,"weight":"heavy","damage":190},
+      {"id":"silent_reap","display_name":"Ceifa silenciosa","template":"varrimento_dentro","actor":"lâmina longa da alabarda","tell":"manto abre sem som e revela o arco branco no chão","impact":"lâmina varre 3,8 m e 185 graus, segura junto à haste","sound":"uma inspiração curta é o único aviso atmosférico","anchor":"arco branco sob a lâmina","range":3.8,"arc_degrees":185,"weight":"heavy","damage":202},
+      {"id":"mist_hunter","display_name":"Aro perseguidor","template":"perseguidor","actor":"aro de prata baça separado da alabarda","tell":"o aro gira e aponta a abertura à última posição vista","impact":"aro segue por 72 frames e cai quando uma raiz corta a visão","sound":"prata vibra uma nota baixa no início do movimento","anchor":"aro e rasto de duas pontas","range":16.0,"arc_degrees":16,"weight":"light","damage":85}
+    ],
+    "patterns": [["root_thrust"],["silent_reap"],["mist_hunter"],["mist_hunter","root_thrust"],["silent_reap","root_thrust"]], "gap_between_patterns": 2
   },
 
   "ancient_skeleton": {
@@ -580,10 +624,11 @@
     "descricao_visual":"esqueleto negro mineralizado com espada curva de prata baça de 105 cm, elos de raiz petrificada nas costelas e lanterna violeta pendurada à anca","fatia_1":false,"color_idle":"#383044",
     "loot_cards":["arma:espada_curva_raiz","armadura:elos_raiz_esqueleto","consumivel:lanterna_raiz","almas_bonus:85","almas_bonus:100","material:lagrima_bruma","material:prata_baca","anel:eco_sem_face","bias:classe","bias:classe"],"mandatory_loot_count":3,
     "attacks":[
-      {"id":"black_cut","display_name":"Corte mineral","template":"recto_aparavel","actor":"espada curva de prata baça","tell":"lanterna violeta sobe enquanto o gume recua às costelas","impact":"espada corta 2,6 m num arco frontal de 75 graus","sound":"prata raspa osso mineral uma vez","anchor":"gume pálido contra o osso negro","range":2.6,"arc_degrees":75,"weight":"light","gramatica":["FINGE_MORTE"],"feign_death":{"placement_owned":true,"once_per_placement":true,"trigger_distance_m":2.6,"readable_tells":["espada_agarrada","pulso_violeta_audivel"],"rise_into_attack":"black_cut"}},
-      {"id":"root_arc","display_name":"Arco de raiz","template":"varrimento_aparavel","actor":"espada e corrente de raiz petrificada","tell":"corrente fica tensa e desenha o arco inteiro atrás das costelas","impact":"gume varre 2,9 m e 170 graus","sound":"elos de pedra batem do punho para a anca","anchor":"corrente tensa e gume","range":2.9,"arc_degrees":170,"weight":"light"},
-      {"id":"violet_chain","display_name":"Cadeia violeta","template":"combo_bloqueio","actor":"espada iluminada pela lanterna violeta","tell":"lanterna pulsa três vezes e o esqueleto levanta a guarda","impact":"três cortes curtos ocupam 1,9 m sem seguir após o compromisso","sound":"três tilintares de prata coincidem com os pulsos","anchor":"gume com três marcas violetas","range":1.9,"arc_degrees":100,"weight":"light"}
-    ]
+      {"id":"black_cut","display_name":"Corte mineral","template":"recto_aparavel","actor":"espada curva de prata baça","tell":"lanterna violeta sobe enquanto o gume recua às costelas","impact":"espada corta 2,6 m num arco frontal de 75 graus","sound":"prata raspa osso mineral uma vez","anchor":"gume pálido contra o osso negro","range":2.6,"arc_degrees":75,"weight":"light","gramatica":["FINGE_MORTE"],"feign_death":{"placement_owned":true,"once_per_placement":true,"trigger_distance_m":2.6,"readable_tells":["espada_agarrada","pulso_violeta_audivel"],"rise_into_attack":"black_cut"},"damage":107},
+      {"id":"root_arc","display_name":"Arco de raiz","template":"varrimento_aparavel","actor":"espada e corrente de raiz petrificada","tell":"corrente fica tensa e desenha o arco inteiro atrás das costelas","impact":"gume varre 2,9 m e 170 graus","sound":"elos de pedra batem do punho para a anca","anchor":"corrente tensa e gume","range":2.9,"arc_degrees":170,"weight":"light","damage":116},
+      {"id":"violet_chain","display_name":"Cadeia violeta","template":"combo_bloqueio","actor":"espada iluminada pela lanterna violeta","tell":"lanterna pulsa três vezes e o esqueleto levanta a guarda","impact":"três cortes curtos ocupam 1,9 m sem seguir após o compromisso","sound":"três tilintares de prata coincidem com os pulsos","anchor":"gume com três marcas violetas","range":1.9,"arc_degrees":100,"weight":"light","damage":124}
+    ],
+    "patterns": [["black_cut"],["root_arc"],["violet_chain"],["black_cut","black_cut"],["violet_chain","root_arc"],["black_cut","root_arc","violet_chain"]], "gap_between_patterns": 1.35
   },
 
   "vorgar": {
@@ -595,15 +640,189 @@
     "descricao_visual": "chefe orc de três metros com cabeça descoberta, armadura serrada de ferro negro, troféus de osso e cutelo largo de 210 cm diante de um portão rachado", "fatia_1": true,
     "phase_2_at_health_fraction": 0.5,
     "attacks": [
-      {"id":"cleave","display_name":"Talho","template":"recto_aparavel","phase_1_frames":28,"phase_2_frames":12,"active":8,"recovery":34,"weight":"light","actor":"machado largo de ferro negro","tell":"recua junto ao ombro e expõe a lâmina inteira","impact":"a lâmina corta 3,2 m num arco frontal de 70 graus","sound":"ferro pesado desliza na ombreira e o chefe rosna","anchor":"gume do machado","range":3.2,"arc_degrees":70},
-      {"id":"wide_sweep","display_name":"Varrimento largo","template":"varrimento_aparavel","phase_1_frames":30,"phase_2_frames":14,"active":10,"recovery":38,"weight":"light","actor":"machado largo de 210 cm","tell":"roda a cintura e deixa o gume atrás do corpo","impact":"o gume desenha 3,4 m e 180 graus, sem acertar para lá do arco visível","sound":"ponta do machado risca o chão antes do assobio circular","anchor":"ponta exterior do gume","range":3.4,"arc_degrees":180},
-      {"id":"overhead_crush","display_name":"Esmagamento","template":"pancada_curta","phase_1_frames":40,"phase_2_frames":16,"active":8,"recovery":46,"weight":"heavy","actor":"machado seguro com as duas mãos","tell":"sobe sobre os chifres e deixa o peito aberto","impact":"a cabeça do machado cai 3 m numa faixa de 60 graus","sound":"cabo de madeira estala sob as mãos e o ar fica grave","anchor":"cabeça do machado","range":3.0,"arc_degrees":60,"gramatica":["DUAS_LARGADAS"],"release_variants_frames":[56,72],"release_variant_weights_pct":[80,20],"late_release_signal":{"frame":64,"visual":"gume sobe mais um palmo","sound":"segundo estalo seco do cabo"},"release_choice_reads_input":false},
-      {"id":"shoulder_charge","display_name":"Investida de ombro","template":"investida","phase_1_frames":24,"phase_2_frames":12,"active":8,"recovery":40,"weight":"light","actor":"ombreira esquerda de ferro negro","tell":"bate a bota e baixa o corpo até o chifre apontar em frente","impact":"a massa de Vorgar percorre 6,5 m e só acerta uma vez por passagem","sound":"patada seca seguida de placas a bater","anchor":"ombreira e vector de 6,5 m no chão","range":2.8,"arc_degrees":50,"lunge_distance":6.5},
-      {"id":"ground_pound","display_name":"Pancada de chão","template":"area_instantanea","phase_1_frames":36,"phase_2_frames":16,"active":12,"recovery":48,"weight":"heavy","actor":"punho fechado e joelho no chão","tell":"ergue o punho enquanto a poeira forma um círculo completo","impact":"onda de terra ocupa o círculo visível de raio 5 m uma única vez","sound":"carga grave sobe e cala no impacto","anchor":"círculo de 5 m centrado no punho","radius":5.0,"is_aoe":true}
+      {"id":"cleave","display_name":"Talho","template":"recto_aparavel","phase_1_frames":28,"phase_2_frames":12,"active":5,"recovery":34,"weight":"light","actor":"machado largo de ferro negro","tell":"recua junto ao ombro e expõe a lâmina inteira","impact":"a lâmina corta 3,2 m num arco frontal de 70 graus","sound":"ferro pesado desliza na ombreira e o chefe rosna","anchor":"gume do machado","range":3.2,"arc_degrees":70,"damage":113},
+      {"id":"wide_sweep","display_name":"Varrimento largo","template":"varrimento_aparavel","phase_1_frames":30,"phase_2_frames":14,"active":6,"recovery":38,"weight":"light","actor":"machado largo de 210 cm","tell":"roda a cintura e deixa o gume atrás do corpo","impact":"o gume desenha 3,4 m e 180 graus, sem acertar para lá do arco visível","sound":"ponta do machado risca o chão antes do assobio circular","anchor":"ponta exterior do gume","range":3.4,"arc_degrees":180,"damage":126},
+      {"id":"overhead_crush","display_name":"Esmagamento","template":"pancada_curta","phase_1_frames":40,"phase_2_frames":16,"active":6,"recovery":46,"weight":"heavy","actor":"machado seguro com as duas mãos","tell":"sobe sobre os chifres e deixa o peito aberto","impact":"a cabeça do machado cai 3 m numa faixa de 60 graus","sound":"cabo de madeira estala sob as mãos e o ar fica grave","anchor":"cabeça do machado","range":3.0,"arc_degrees":60,"gramatica":["DUAS_LARGADAS"],"release_variants_frames":[56,72],"release_variant_weights_pct":[80,20],"late_release_signal":{"frame":64,"visual":"gume sobe mais um palmo","sound":"segundo estalo seco do cabo"},"release_choice_reads_input":false,"damage":196},
+      {"id":"shoulder_charge","display_name":"Investida de ombro","template":"investida","phase_1_frames":24,"phase_2_frames":12,"active":8,"recovery":40,"weight":"light","actor":"ombreira esquerda de ferro negro","tell":"bate a bota e baixa o corpo até o chifre apontar em frente","impact":"a massa de Vorgar percorre 6,5 m e só acerta uma vez por passagem","sound":"patada seca seguida de placas a bater","anchor":"ombreira e vector de 6,5 m no chão","range":2.8,"arc_degrees":50,"lunge_distance":6.5,"damage":137},
+      {"id":"ground_pound","display_name":"Pancada de chão","template":"area_instantanea","phase_1_frames":36,"phase_2_frames":16,"active":6,"recovery":48,"weight":"heavy","actor":"punho fechado e joelho no chão","tell":"ergue o punho enquanto a poeira forma um círculo completo","impact":"onda de terra ocupa o círculo visível de raio 5 m uma única vez","sound":"carga grave sobe e cala no impacto","anchor":"círculo de 5 m centrado no punho","radius":5.0,"is_aoe":true,"damage":184}
     ],
     "phases": {
       "1": {"patterns": [["cleave"],["wide_sweep"],["overhead_crush"],["shoulder_charge"],["cleave","cleave"],["ground_pound"]], "gap_between_patterns": 1.7},
       "2": {"patterns": [["cleave","wide_sweep","overhead_crush"],["shoulder_charge","cleave","cleave"],["wide_sweep","wide_sweep"],["overhead_crush","shoulder_charge"],["cleave","ground_pound"],["shoulder_charge","wide_sweep","cleave"]], "gap_between_patterns": 1.0}
+    },
+    "coop_health_status": "[TENSÃO] pergunta 24: o multiplicador 1,8 continua apenas [PROTO] herdado; SEPARAR/JUNTAR não aumentam PV nem dano e não o promovem a decisão.",
+    "vorgar_encounter": {
+      "_codex": {
+        "status": "[CODEX]",
+        "reason": "as duas fases fazem perguntas espaciais diferentes e a ressurreição é uma jogada limitada, interrompível e legível, sem alterar os cinco ataques existentes; a sala usa 24 × 22 m porque conserva duas rotas de fuga com Vorgar e dois jogadores",
+        "alternative_discarded": "aumentar PV/dano a dois, deixar a ressurreição automática ou conservar 20 × 16 m; as duas primeiras removem habilidade/custo e a última comprime os flancos quando o maior volume está activo"
+      },
+      "arena_id": "arena_vorgar",
+      "usable_width_m": 24.0,
+      "usable_depth_m": 22.0,
+      "threshold_depth_m": 4.0,
+      "flank_clearance_m": 4.75,
+      "marker_offsets_m": {
+        "entry": [0.0, 0.55, 7.0],
+        "partner_entry": [2.5, 0.55, 7.0],
+        "boss": [0.0, 0.55, -5.0],
+        "separate_left": [-8.0, 0.05, 1.0],
+        "separate_right": [8.0, 0.05, 1.0],
+        "join": [0.0, 0.05, 2.0],
+        "refuge_left": [-6.0, 0.05, 2.2],
+        "refuge_right": [6.0, 0.05, 2.2]
+      },
+      "flank_offsets_m": [[-8.0, 0.0, 1.0], [8.0, 0.0, 1.0]],
+      "refuge_offsets_m": [[-6.0, 0.0, 2.2], [6.0, 0.0, 2.2]],
+      "flank_marker_radius_m": 1.1,
+      "refuge_marker_radius_m": 1.4,
+      "revive_radius_m": 1.8,
+      "marker_height_m": 0.025,
+      "marker_y_offset_m": 0.045,
+      "marker_radial_segments": 32,
+      "label_height_m": 0.22,
+      "label_font_size": 72,
+      "guide_alpha": 0.22,
+      "danger_alpha": 0.38,
+      "safe_alpha": 0.52,
+      "emission_energy": 0.8,
+      "max_visual_meshes": 7,
+      "max_visual_labels": 7,
+      "colors": {
+        "flank": "#6bb8d6",
+        "refuge": "#d6b96b",
+        "danger": "#d64545",
+        "safe": "#78c985",
+        "revive": "#eee2b2"
+      },
+      "labels": {
+        "flank": "↔ FLANCO",
+        "refuge": "+ REFÚGIO",
+        "separate": "SEPARAR",
+        "join": "JUNTAR",
+        "revive": "LEVANTAR"
+      },
+      "honesty_contract": {
+        "minimum_warning_frames": 30,
+        "instant_active_frames_range": [3, 6],
+        "escape_vector_count_range": [1, 2],
+        "visual_cue_fields": ["ancora", "forma", "inicio", "compromisso", "fim", "fora_ecra"]
+      },
+      "coop_phase_plan": {
+        "1": {"sequence_id": "separar", "normal_patterns_before": 2},
+        "2": {"sequence_id": "juntar", "normal_patterns_before": 1}
+      },
+      "coop_sequences": {
+        "separar": {
+          "id": "separar",
+          "display_name": "Marcas divergentes",
+          "objectivo_coop": "separar",
+          "phase_1_frames": 48,
+          "phase_2_frames": 12,
+          "startup": 60,
+          "active": 30,
+          "recovery": 42,
+          "phase_4_frames": 12,
+          "phase_5_frames": 30,
+          "aviso_total_frames": 60,
+          "fase_1": "48 f — Vorgar finca o machado e grava uma aura completa sob cada jogador",
+          "fase_2": "12 f — as duas auras pulsam três vezes; a intersecção fica branca antes de ferir",
+          "fase_3": "30 f — apenas a intersecção visível fica activa, uma aplicação por jogador",
+          "fase_4": "12 f — as auras apagam-se de fora para dentro",
+          "fase_5": "30 f — Vorgar arranca o machado e devolve a vez",
+          "tipo_contacto": "volume_persistente",
+          "damage_interval_frames": 30,
+          "weight": "light",
+          "parryable": false,
+          "is_aoe": true,
+          "vectores_fuga": ["afastar_se"],
+          "pergunta": "separar_os_corpos_sem_perder_os_flancos",
+          "momento_compromisso_frame": 48,
+          "curva_seguimento": {"fase_1_deg_s": 0.0, "fase_2_deg_s": 0.0, "fase_3_deg_s": 0.0},
+          "seguimento_alvos": "as auras ficam presas aos jogadores; o chefe não roda e a intersecção visível é a hitbox",
+          "marker_radius_m": 3.0,
+          "minimum_player_separation_m": 6.0,
+          "solo_rule": "a aura fixa-se no chão no compromisso; sair dela por qualquer flanco resolve",
+          "solo_marker_freeze_frame": 48,
+          "som_anuncio": {
+            "cue_id": "attack.vorgar.separar",
+            "descricao": "duas pancadas graves alternadas, uma por marca, seguidas de um silêncio no compromisso",
+            "profile": "attack_area",
+            "alcance_informativo_m": 24.0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "círculo completo preso aos pés de cada jogador",
+            "forma": "dois discos vermelhos; a sobreposição pulsa a branco",
+            "inicio": "surge no frame 1 em ambos, nunca apenas no alvo actual",
+            "compromisso": "os alvos ficam escolhidos no frame 48; o pulso final fecha no frame 60",
+            "fim": "os discos existem exactamente durante os 30 frames activos e depois apagam-se",
+            "fora_ecra": "cunha dupla ↔ aponta para o parceiro e mostra três bandas de distância"
+          }
+        },
+        "juntar": {
+          "id": "juntar",
+          "display_name": "Cerco convergente",
+          "objectivo_coop": "juntar",
+          "phase_1_frames": 216,
+          "phase_2_frames": 30,
+          "startup": 246,
+          "active": 90,
+          "recovery": 60,
+          "phase_4_frames": 12,
+          "phase_5_frames": 48,
+          "aviso_total_frames": 246,
+          "fase_1": "216 f — Vorgar raspa o machado em círculo e o exterior da arena acende por quadrantes",
+          "fase_2": "30 f — a zona comum verde pulsa três vezes entre os jogadores e o chefe deixa de seguir",
+          "fase_3": "90 f — o exterior vermelho fica activo por pulsos de 30 f; a zona comum nunca fere",
+          "fase_4": "12 f — o vermelho recua até ao bordo",
+          "fase_5": "48 f — Vorgar fica ajoelhado junto ao machado e devolve a vez",
+          "tipo_contacto": "volume_persistente",
+          "damage_interval_frames": 30,
+          "weight": "light",
+          "parryable": false,
+          "is_aoe": true,
+          "vectores_fuga": ["aproximar_se"],
+          "pergunta": "alcançar_a_mesma_zona_sem_atravessar_o_chefe",
+          "momento_compromisso_frame": 216,
+          "curva_seguimento": {"fase_1_deg_s": 180.0, "fase_2_deg_s": 30.0, "fase_3_deg_s": 0.0},
+          "safe_zone_radius_m": 3.0,
+          "safe_zone_min_boss_distance_m": 4.0,
+          "solo_rule": "a zona nasce no flanco mais próximo e continua a exigir atravessar espaço antes do compromisso",
+          "som_anuncio": {
+            "cue_id": "attack.vorgar.juntar",
+            "descricao": "raspagem circular grave que fecha para uma única nota limpa no centro seguro",
+            "profile": "attack_area",
+            "alcance_informativo_m": 24.0
+          },
+          "sinal_visual_equivalente": {
+            "ancora": "chão exterior vermelho e disco verde comum, ambos completos",
+            "forma": "quatro quadrantes fecham para um círculo verde alcançável pelos dois",
+            "inicio": "o exterior começa a acender no frame 1 sem tapar a zona comum",
+            "compromisso": "a zona fixa-se no frame 216 e o terceiro pulso fecha no frame 246",
+            "fim": "o vermelho existe exactamente durante os 90 frames activos e recua no frame seguinte",
+            "fora_ecra": "cunha ↔ aponta para o centro da zona comum e conserva as três bandas de distância"
+          }
+        }
+      },
+      "resurrection": {
+        "input_action": "interact",
+        "channel_seconds": 6.0,
+        "shared_use_consumed": "on_success",
+        "boss_targets_reviver": true,
+        "cost": "consome a única ressurreição partilhada desta tentativa quando conclui",
+        "risk": "dano, sair do raio ou largar a interacção apagam todo o progresso enquanto Vorgar fixa o ressuscitador",
+        "art_source": "corpo existente + um anel e etiqueta sintetizados por ArenaVorgar; sem asset novo",
+        "sound_source": "perfis sintetizados existentes em Sfx",
+        "sound_profiles": {"begin": "telegraph", "cancel": "posture_break", "success": "parry"}
+      },
+      "performance_budget": {
+        "target_hardware": "Intel Iris Xe integrada, 8 GB, 1920 × 1080",
+        "p99_frame_ms_max": 16.67,
+        "worst_frame_ms_max": 20.0,
+        "working_set_mb_max": 2500.0,
+        "static_obstacles_max": 4,
+        "persistent_rigid_bodies_max": 0
+      }
     }
   }
 }
